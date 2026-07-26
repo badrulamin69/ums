@@ -15,6 +15,18 @@ import { AttendanceResponse } from '../../../models/hrm.model';
         <p>Track and manage employee attendance</p>
       </div>
 
+      <div class="checkin-bar card" *ngIf="ownEmployeeId">
+        <span class="checkin-label">Quick Actions:</span>
+        <button class="btn btn-primary btn-sm" (click)="doCheckIn()" [disabled]="checking">
+          {{checking ? 'Processing...' : 'Check In'}}
+        </button>
+        <button class="btn btn-outline btn-sm" (click)="doCheckOut()" [disabled]="checking">
+          {{checking ? 'Processing...' : 'Check Out'}}
+        </button>
+        <span class="checkin-msg success" *ngIf="checkMsg">{{checkMsg}}</span>
+        <span class="checkin-msg error" *ngIf="checkErr">{{checkErr}}</span>
+      </div>
+
       <div class="toolbar">
         <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Employee ID</label>
@@ -61,12 +73,17 @@ import { AttendanceResponse } from '../../../models/hrm.model';
   `,
   styles: [`
     .page-content { padding: 2rem 0 3rem; }
+    .checkin-bar {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;
+      padding: 1rem 1.5rem; flex-wrap: wrap;
+    }
+    .checkin-label { font-weight: 500; font-size: 0.875rem; color: var(--text-secondary); }
+    .checkin-msg { font-size: 0.8125rem; font-weight: 500;
+      &.success { color: var(--success); }
+      &.error { color: var(--danger); }
+    }
     .toolbar {
-      display: flex;
-      align-items: flex-end;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-      flex-wrap: wrap;
+      display: flex; align-items: flex-end; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap;
     }
     .empty-state { text-align: center; padding: 3rem 0; color: var(--text-muted); }
   `],
@@ -77,6 +94,10 @@ export class AttendanceComponent implements OnInit {
   employeeId: number | null = null;
   startDate = '';
   endDate = '';
+  ownEmployeeId: number | null = null;
+  checking = false;
+  checkMsg = '';
+  checkErr = '';
 
   constructor(private hrmService: HrmService) {
     const today = new Date();
@@ -85,7 +106,18 @@ export class AttendanceComponent implements OnInit {
     this.endDate = today.toISOString().split('T')[0];
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.hrmService.getEmployees().subscribe({
+      next: (res: any) => {
+        const employees = res.data || [];
+        if (employees.length > 0) {
+          this.ownEmployeeId = employees[0].id;
+          this.employeeId = employees[0].id;
+        }
+      },
+      error: () => {},
+    });
+  }
 
   loadAttendance(): void {
     if (!this.employeeId) return;
@@ -96,6 +128,42 @@ export class AttendanceComponent implements OnInit {
         this.loading = false;
       },
       error: () => (this.loading = false),
+    });
+  }
+
+  doCheckIn(): void {
+    if (!this.ownEmployeeId) return;
+    this.checking = true;
+    this.checkMsg = '';
+    this.checkErr = '';
+    this.hrmService.checkIn(this.ownEmployeeId).subscribe({
+      next: (res: any) => {
+        this.checking = false;
+        this.checkMsg = 'Checked in successfully.';
+        if (this.employeeId === this.ownEmployeeId) this.loadAttendance();
+      },
+      error: (err: any) => {
+        this.checking = false;
+        this.checkErr = err.error?.message || 'Check-in failed.';
+      },
+    });
+  }
+
+  doCheckOut(): void {
+    if (!this.ownEmployeeId) return;
+    this.checking = true;
+    this.checkMsg = '';
+    this.checkErr = '';
+    this.hrmService.checkOut(this.ownEmployeeId).subscribe({
+      next: (res: any) => {
+        this.checking = false;
+        this.checkMsg = 'Checked out successfully.';
+        if (this.employeeId === this.ownEmployeeId) this.loadAttendance();
+      },
+      error: (err: any) => {
+        this.checking = false;
+        this.checkErr = err.error?.message || 'Check-out failed.';
+      },
     });
   }
 

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HrmService } from '../../../services/hrm.service';
 import { EmployeeResponse } from '../../../models/hrm.model';
+import { EmployeeFormComponent } from './employee-form.component';
 
 @Component({
   selector: 'app-employee-directory',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EmployeeFormComponent],
   template: `
     <div class="container page-content">
       <div class="page-header">
@@ -24,6 +25,7 @@ import { EmployeeResponse } from '../../../models/hrm.model';
           <option value="ADMINISTRATIVE">Administrative</option>
           <option value="CONTRACTUAL">Contractual</option>
         </select>
+        <button class="btn btn-accent btn-sm" (click)="showForm=true; editEmployee=null">Add Employee</button>
       </div>
 
       <div class="table-container" *ngIf="filteredEmployees.length">
@@ -38,6 +40,7 @@ import { EmployeeResponse } from '../../../models/hrm.model';
               <th>Type</th>
               <th>Phone</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +60,10 @@ import { EmployeeResponse } from '../../../models/hrm.model';
                   {{e.active ? 'Active' : 'Inactive'}}
                 </span>
               </td>
+              <td class="actions-cell">
+                <button class="btn btn-outline btn-sm" (click)="editEmployee=e; showForm=true">Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deactivate(e)" *ngIf="e.active">Deactivate</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -70,30 +77,22 @@ import { EmployeeResponse } from '../../../models/hrm.model';
         <p>Loading employee directory...</p>
       </div>
     </div>
+
+    <app-employee-form *ngIf="showForm" [editEmployee]="editEmployee" (close)="showForm=false" (saved)="loadEmployees()"></app-employee-form>
   `,
   styles: [`
     .page-content { padding: 2rem 0 3rem; }
     .toolbar {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
+      display: flex; gap: 0.75rem; margin-bottom: 1.25rem; align-items: center;
     }
     .search-input { max-width: 320px; }
     .filter-select { max-width: 180px; }
-    .emp-id {
-      font-family: monospace;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--primary);
-    }
+    .emp-id { font-family: monospace; font-size: 0.8125rem; font-weight: 500; color: var(--primary); }
     .name-cell { min-width: 180px; }
     .emp-name { font-weight: 500; font-size: 0.875rem; }
     .emp-email { font-size: 0.75rem; color: var(--text-muted); }
-    .empty-state, .loading-state {
-      text-align: center;
-      padding: 3rem 0;
-      color: var(--text-muted);
-    }
+    .actions-cell { white-space: nowrap; display: flex; gap: 0.375rem; }
+    .empty-state, .loading-state { text-align: center; padding: 3rem 0; color: var(--text-muted); }
   `],
 })
 export class EmployeeDirectoryComponent implements OnInit {
@@ -102,10 +101,17 @@ export class EmployeeDirectoryComponent implements OnInit {
   loading = true;
   searchTerm = '';
   filterType = '';
+  showForm = false;
+  editEmployee: EmployeeResponse | null = null;
 
   constructor(private hrmService: HrmService) {}
 
   ngOnInit(): void {
+    this.loadEmployees();
+  }
+
+  loadEmployees(): void {
+    this.loading = true;
     this.hrmService.getEmployees().subscribe({
       next: (res: any) => {
         this.employees = res.data || [];
@@ -127,6 +133,14 @@ export class EmployeeDirectoryComponent implements OnInit {
         (e.department || '').toLowerCase().includes(term);
       const matchesType = !this.filterType || e.employeeType === this.filterType;
       return matchesSearch && matchesType;
+    });
+  }
+
+  deactivate(e: EmployeeResponse): void {
+    if (!confirm(`Deactivate ${e.firstName} ${e.lastName}?`)) return;
+    this.hrmService.deactivateEmployee(e.id).subscribe({
+      next: () => this.loadEmployees(),
+      error: () => {},
     });
   }
 }

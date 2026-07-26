@@ -32,7 +32,7 @@ import { Subscription } from 'rxjs';
         <div class="navbar-actions">
           <ng-container *ngIf="!isLoggedIn">
             <a routerLink="/login" class="btn btn-outline btn-sm">Log In</a>
-            <a routerLink="/register" class="btn btn-accent btn-sm">Apply Now</a>
+            <a routerLink="/admission" class="btn btn-accent btn-sm">Apply Now</a>
           </ng-container>
           <ng-container *ngIf="isLoggedIn">
             <div class="notification-bell" routerLink="/notifications">
@@ -78,7 +78,7 @@ import { Subscription } from 'rxjs';
           <a routerLink="/contact" (click)="mobileOpen=false">Contact</a>
           <hr />
           <a routerLink="/login" (click)="mobileOpen=false">Log In</a>
-          <a routerLink="/register" (click)="mobileOpen=false" class="btn btn-accent">Apply Now</a>
+          <a routerLink="/admission" (click)="mobileOpen=false" class="btn btn-accent">Apply Now</a>
         </ng-container>
         <ng-container *ngIf="isLoggedIn">
           <a routerLink="/dashboard" (click)="mobileOpen=false">Dashboard</a>

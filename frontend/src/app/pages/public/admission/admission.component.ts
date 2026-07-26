@@ -51,7 +51,7 @@ import { AdmissionCircularResponse } from '../../../models/admission.model';
               <span class="date-value">{{c.registrationEndDate | date:'mediumDate'}}</span>
             </div>
           </div>
-          <a routerLink="/register" class="btn btn-accent" style="width:100%;margin-top:1rem;" *ngIf="c.active">
+          <a [routerLink]="['/apply', c.id]" class="btn btn-accent" style="width:100%;margin-top:1rem;" *ngIf="c.active">
             Apply for this Circular
           </a>
         </div>

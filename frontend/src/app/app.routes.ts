@@ -4,6 +4,10 @@ import { RoleGuard } from './guards/role.guard';
 import { PublicLayoutComponent } from './layout/public-layout.component';
 import { DashboardLayoutComponent } from './layout/dashboard-layout.component';
 
+// Known gap: academic (sessions/courses/results/year-levels), HR appraisal/promotion/
+// separation/job-posting/approval-workflow, and payroll/salary-structure modules have
+// zero frontend service or page coverage. They exist only as backend API endpoints.
+
 export const routes: Routes = [
   {
     path: '',
@@ -37,6 +41,16 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/student/dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent),
       },
       {
+        path: 'apply/:circularId',
+        loadComponent: () => import('./pages/applicant/apply/apply.component').then(m => m.ApplyComponent),
+      },
+      {
+        path: 'applicant',
+        loadComponent: () => import('./pages/applicant/dashboard/applicant-dashboard.component').then(m => m.ApplicantDashboardComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ['APPLICANT'] },
+      },
+      {
         path: 'employees',
         loadComponent: () => import('./pages/hr/employees/employee-directory.component').then(m => m.EmployeeDirectoryComponent),
         canActivate: [RoleGuard],
@@ -49,10 +63,8 @@ export const routes: Routes = [
         data: { roles: ['ADMIN', 'HR'] },
       },
       {
-        path: 'applicant',
-        loadComponent: () => import('./pages/applicant/dashboard/applicant-dashboard.component').then(m => m.ApplicantDashboardComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['APPLICANT'] },
+        path: 'payment',
+        loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent),
       },
     ],
   },

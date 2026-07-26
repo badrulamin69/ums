@@ -10,7 +10,9 @@ import com.smartuniversity.admission.repository.ApplicantRepository;
 import com.smartuniversity.admission.repository.DepartmentRepository;
 import com.smartuniversity.common.exception.BadRequestException;
 import com.smartuniversity.common.exception.ResourceNotFoundException;
+import com.smartuniversity.security.entity.Role;
 import com.smartuniversity.security.entity.User;
+import com.smartuniversity.security.repository.RoleRepository;
 import com.smartuniversity.security.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,17 +29,20 @@ public class ApplicantService {
     private final AdmissionCircularRepository circularRepository;
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final ApplicantMapper applicantMapper;
 
     public ApplicantService(ApplicantRepository applicantRepository,
                             AdmissionCircularRepository circularRepository,
                             DepartmentRepository departmentRepository,
                             UserRepository userRepository,
+                            RoleRepository roleRepository,
                             ApplicantMapper applicantMapper) {
         this.applicantRepository = applicantRepository;
         this.circularRepository = circularRepository;
         this.departmentRepository = departmentRepository;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.applicantMapper = applicantMapper;
     }
 
@@ -74,6 +79,14 @@ public class ApplicantService {
         }
 
         applicant = applicantRepository.save(applicant);
+
+        roleRepository.findByName("APPLICANT").ifPresent(applicantRole -> {
+            if (user.getRoles().stream().noneMatch(r -> r.getName().equals("APPLICANT"))) {
+                user.getRoles().add(applicantRole);
+                userRepository.save(user);
+            }
+        });
+
         return applicantMapper.toResponse(applicant);
     }
 

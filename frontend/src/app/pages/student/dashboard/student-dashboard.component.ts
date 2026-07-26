@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { StudentService } from '../../../services/student.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -12,13 +13,13 @@ import { PaymentResponse } from '../../../models/payment.model';
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   template: `
     <div class="container dashboard">
       <div class="page-header" *ngIf="student">
         <div class="profile-header">
           <div class="avatar">{{student.firstName[0]}}{{student.lastName[0]}}</div>
-          <div>
+          <div class="profile-info">
             <h1>{{student.firstName}} {{student.middleName ? student.middleName + ' ' : ''}}{{student.lastName}}</h1>
             <div class="profile-meta">
               <span class="reg-number">{{student.registrationNumber}}</span>
@@ -27,7 +28,36 @@ import { PaymentResponse } from '../../../models/payment.model';
               </span>
             </div>
           </div>
+          <button class="btn btn-outline btn-sm" (click)="showEdit=!showEdit">
+            {{showEdit ? 'Cancel' : 'Edit Profile'}}
+          </button>
         </div>
+      </div>
+
+      <div class="card edit-form" *ngIf="showEdit">
+        <h3>Edit Profile</h3>
+        <form [formGroup]="editForm" (ngSubmit)="saveProfile()">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name *</label>
+              <input class="form-input" formControlName="firstName" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Middle Name</label>
+              <input class="form-input" formControlName="middleName" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name *</label>
+              <input class="form-input" formControlName="lastName" />
+            </div>
+          </div>
+          <div class="form-error" *ngIf="editError">{{editError}}</div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="saving">
+              {{saving ? 'Saving...' : 'Save Changes'}}
+            </button>
+          </div>
+        </form>
       </div>
 
       <div class="dashboard-grid">
@@ -65,7 +95,7 @@ import { PaymentResponse } from '../../../models/payment.model';
           </div>
           <div class="notification-list" *ngIf="notifications.length">
             <div class="notification-item" *ngFor="let n of notifications" [class.unread]="!n.read">
-              <div class="notif-icon" [attr.data-type]="n.type">
+              <div class="notif-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                   <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -106,95 +136,48 @@ import { PaymentResponse } from '../../../models/payment.model';
   `,
   styles: [`
     .dashboard { padding: 2rem 0 3rem; }
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
+    .profile-header { display: flex; align-items: center; gap: 1.25rem; }
+    .profile-info { flex: 1; }
     .avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: var(--text-inverse);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.25rem;
-      flex-shrink: 0;
+      width: 64px; height: 64px; border-radius: 50%; background: var(--primary); color: var(--text-inverse);
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; flex-shrink: 0;
     }
-    .profile-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-top: 0.25rem;
-    }
-    .reg-number {
-      font-family: monospace;
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-    }
-    .cgpa-card {
-      text-align: center;
-      padding: 1.5rem;
+    .profile-meta { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.25rem; }
+    .reg-number { font-family: monospace; font-size: 0.875rem; color: var(--text-secondary); }
+    .edit-form { padding: 1.5rem; margin-bottom: 1.25rem; }
+    .edit-form h3 { font-size: 1rem; color: var(--primary); margin-bottom: 1rem; }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; }
+    .form-actions { margin-top: 0.75rem; }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .cgpa-card { text-align: center; padding: 1.5rem;
       .cgpa-value { font-size: 2.5rem; color: var(--accent-dark); }
       .stat-label { font-size: 0.875rem; }
     }
-    .results-section, .notifications-section, .payments-section {
-      padding: 1.5rem;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
+    .results-section, .notifications-section, .payments-section { padding: 1.5rem; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
     .results-list { display: flex; flex-direction: column; gap: 0.5rem; }
     .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.75rem;
-      background: var(--bg-page);
-      border-radius: var(--radius);
+      display: flex; justify-content: space-between; align-items: center; padding: 0.75rem;
+      background: var(--bg-page); border-radius: var(--radius);
     }
-    .result-info {
-      display: flex;
-      flex-direction: column;
+    .result-info { display: flex; flex-direction: column;
       .year-label { font-weight: 600; font-size: 0.9375rem; }
       .session-name { font-size: 0.8125rem; color: var(--text-muted); }
     }
     .result-stats { display: flex; gap: 1.5rem; }
-    .result-stat {
-      text-align: center;
+    .result-stat { text-align: center;
       .stat-mini-label { display: block; font-size: 0.6875rem; color: var(--text-muted); text-transform: uppercase; }
       .stat-mini-value { font-weight: 600; font-size: 1rem; }
     }
     .notification-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto; }
     .notification-item {
-      display: flex;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      border-radius: var(--radius);
+      display: flex; gap: 0.75rem; padding: 0.75rem; border-radius: var(--radius);
       border: 1px solid var(--border-light);
       &.unread { background: rgba(15, 42, 74, 0.03); border-color: var(--primary); }
     }
     .notif-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--info-bg);
-      color: var(--info);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      width: 32px; height: 32px; border-radius: 50%; background: var(--info-bg); color: var(--info);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .notif-body { flex: 1; min-width: 0; }
     .notif-title { font-weight: 500; font-size: 0.875rem; }
@@ -202,30 +185,17 @@ import { PaymentResponse } from '../../../models/payment.model';
     .notif-time { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
     .payment-list { display: flex; flex-direction: column; gap: 0.5rem; }
     .payment-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.75rem;
-      background: var(--bg-page);
-      border-radius: var(--radius);
+      display: flex; justify-content: space-between; align-items: center; padding: 0.75rem;
+      background: var(--bg-page); border-radius: var(--radius);
     }
-    .payment-info {
-      display: flex;
-      flex-direction: column;
+    .payment-info { display: flex; flex-direction: column;
       .payment-type { font-weight: 500; font-size: 0.875rem; }
       .payment-date { font-size: 0.75rem; color: var(--text-muted); }
     }
-    .payment-amount {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      .amount { font-weight: 600; }
-    }
+    .payment-amount { display: flex; align-items: center; gap: 0.75rem; .amount { font-weight: 600; } }
     .empty-state { text-align: center; padding: 2rem 0; color: var(--text-muted); font-size: 0.875rem; }
     h3 { font-size: 1rem; color: var(--primary); margin-bottom: 1rem; }
-    @media (max-width: 768px) {
-      .dashboard-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
   `],
 })
 export class StudentDashboardComponent implements OnInit {
@@ -234,8 +204,13 @@ export class StudentDashboardComponent implements OnInit {
   payments: PaymentResponse[] = [];
   results: any[] = [];
   unreadCount = 0;
+  showEdit = false;
+  saving = false;
+  editError = '';
+  editForm!: FormGroup;
 
   constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private studentService: StudentService,
     private notificationService: NotificationService,
@@ -243,6 +218,11 @@ export class StudentDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.editForm = this.fb.group({
+      firstName: ['', Validators.required],
+      middleName: [''],
+      lastName: ['', Validators.required],
+    });
     this.loadStudent();
     this.loadNotifications();
   }
@@ -253,6 +233,11 @@ export class StudentDashboardComponent implements OnInit {
         const students = res.data?.content || [];
         if (students.length > 0) {
           this.student = students[0];
+          this.editForm.patchValue({
+            firstName: this.student!.firstName,
+            middleName: this.student!.middleName,
+            lastName: this.student!.lastName,
+          });
         }
       },
       error: () => {},
@@ -266,6 +251,23 @@ export class StudentDashboardComponent implements OnInit {
         this.unreadCount = this.notifications.filter((n: any) => !n.read).length;
       },
       error: () => {},
+    });
+  }
+
+  saveProfile(): void {
+    if (this.editForm.invalid || !this.student) return;
+    this.saving = true;
+    this.editError = '';
+    this.studentService.updateProfile(this.student.id, this.editForm.value).subscribe({
+      next: (res: any) => {
+        this.saving = false;
+        this.showEdit = false;
+        this.loadStudent();
+      },
+      error: (err: any) => {
+        this.saving = false;
+        this.editError = err.error?.message || 'Update failed.';
+      },
     });
   }
 

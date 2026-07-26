@@ -70,7 +70,7 @@ import { FacultyResponse, AdmissionCircularResponse } from '../../../models/admi
               <span class="date-value">{{c.applicationFee | currency:'BDT':'symbol':'1.0-0'}}</span>
             </div>
           </div>
-          <a routerLink="/admission" class="btn btn-accent" style="width:100%;margin-top:1rem;">Apply Now</a>
+          <a [routerLink]="['/apply', c.id]" class="btn btn-accent" style="width:100%;margin-top:1rem;">Apply Now</a>
         </div>
       </div>
     </section>
@@ -79,7 +79,7 @@ import { FacultyResponse, AdmissionCircularResponse } from '../../../models/admi
       <div class="container cta-inner">
         <h2>Ready to Begin Your Journey?</h2>
         <p>Applications are now open for the upcoming academic session.</p>
-        <a routerLink="/register" class="btn btn-accent btn-lg">Start Your Application</a>
+        <a routerLink="/admission" class="btn btn-accent btn-lg">Start Your Application</a>
       </div>
     </section>
   `,
