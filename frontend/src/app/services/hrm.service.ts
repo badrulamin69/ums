@@ -11,13 +11,12 @@ import {
   LeaveRequestResponse,
 } from '../models/hrm.model';
 import { ApiResponse } from '../models/common.model';
-import { EncryptionService } from './encryption.service';
 
 @Injectable({ providedIn: 'root' })
 export class HrmService {
   private readonly apiUrl = `${environment.apiUrl}`;
 
-  constructor(private http: HttpClient, private encryption: EncryptionService) {}
+  constructor(private http: HttpClient) {}
 
   getEmployees(): Observable<ApiResponse<EmployeeResponse[]>> {
     return this.http.get<ApiResponse<EmployeeResponse[]>>(`${this.apiUrl}/employees`);
@@ -28,13 +27,11 @@ export class HrmService {
   }
 
   createEmployee(request: EmployeeRequest): Observable<ApiResponse<EmployeeResponse>> {
-    const encrypted = this.encryption.encryptSensitiveFields(request as any);
-    return this.http.post<ApiResponse<EmployeeResponse>>(`${this.apiUrl}/employees`, encrypted);
+    return this.http.post<ApiResponse<EmployeeResponse>>(`${this.apiUrl}/employees`, request);
   }
 
   updateEmployee(id: number, request: EmployeeRequest): Observable<ApiResponse<EmployeeResponse>> {
-    const encrypted = this.encryption.encryptSensitiveFields(request as any);
-    return this.http.put<ApiResponse<EmployeeResponse>>(`${this.apiUrl}/employees/${id}`, encrypted);
+    return this.http.put<ApiResponse<EmployeeResponse>>(`${this.apiUrl}/employees/${id}`, request);
   }
 
   deactivateEmployee(id: number): Observable<ApiResponse<void>> {
@@ -43,7 +40,7 @@ export class HrmService {
 
   getAttendance(employeeId: number, startDate: string, endDate: string): Observable<ApiResponse<AttendanceResponse[]>> {
     return this.http.get<ApiResponse<AttendanceResponse[]>>(
-      `${this.apiUrl}/attendance/employee/${employeeId}?startDate=${startDate}&endDate=${endDate}`
+      `${this.apiUrl}/attendance/employee/${employeeId}?start=${startDate}&end=${endDate}`
     );
   }
 

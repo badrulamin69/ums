@@ -16,13 +16,12 @@ import {
   DocumentTypeResponse,
 } from '../models/admission.model';
 import { ApiResponse } from '../models/common.model';
-import { EncryptionService } from './encryption.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdmissionService {
   private readonly apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private encryption: EncryptionService) {}
+  constructor(private http: HttpClient) {}
 
   getFaculties(): Observable<ApiResponse<FacultyResponse[]>> {
     return this.http.get<ApiResponse<FacultyResponse[]>>(`${this.apiUrl}/faculties/active`);
@@ -49,8 +48,7 @@ export class AdmissionService {
   }
 
   registerApplicant(request: ApplicantRequest): Observable<ApiResponse<ApplicantResponse>> {
-    const encrypted = this.encryption.encryptSensitiveFields(request as any);
-    return this.http.post<ApiResponse<ApplicantResponse>>(`${this.apiUrl}/applicants`, encrypted);
+    return this.http.post<ApiResponse<ApplicantResponse>>(`${this.apiUrl}/applicants`, request);
   }
 
   getApplicantById(id: number): Observable<ApiResponse<ApplicantResponse>> {
@@ -78,6 +76,6 @@ export class AdmissionService {
   }
 
   getApplicantDocuments(applicantId: number): Observable<ApiResponse<ApplicantDocumentResponse[]>> {
-    return this.http.get<ApiResponse<ApplicantDocumentResponse[]>>(`${this.apiUrl}/applicants/${applicantId}/documents`);
+    return this.http.get<ApiResponse<ApplicantDocumentResponse[]>>(`${this.apiUrl}/applicant-documents/applicant/${applicantId}`);
   }
 }

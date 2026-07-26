@@ -9,6 +9,7 @@ import {
   AuthResponse,
   UserResponse,
 } from '../models/auth.model';
+import { ApiResponse } from '../models/common.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -23,34 +24,34 @@ export class AuthService {
     }
   }
 
-  login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
+  login(request: LoginRequest): Observable<ApiResponse<AuthResponse>> {
+    return this.http.post<ApiResponse<AuthResponse>>(`${this.apiUrl}/login`, request).pipe(
       tap((res) => {
-        localStorage.setItem('accessToken', res.accessToken);
-        localStorage.setItem('refreshToken', res.refreshToken);
+        localStorage.setItem('accessToken', res.data.accessToken);
+        localStorage.setItem('refreshToken', res.data.refreshToken);
         this.loadCurrentUser();
       })
     );
   }
 
-  register(request: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
+  register(request: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
+    return this.http.post<ApiResponse<AuthResponse>>(`${this.apiUrl}/register`, request).pipe(
       tap((res) => {
-        localStorage.setItem('accessToken', res.accessToken);
-        localStorage.setItem('refreshToken', res.refreshToken);
+        localStorage.setItem('accessToken', res.data.accessToken);
+        localStorage.setItem('refreshToken', res.data.refreshToken);
         this.loadCurrentUser();
       })
     );
   }
 
-  refreshToken(): Observable<AuthResponse> {
+  refreshToken(): Observable<ApiResponse<AuthResponse>> {
     const refreshToken = localStorage.getItem('refreshToken');
     return this.http
-      .post<AuthResponse>(`${this.apiUrl}/refresh`, { refreshToken })
+      .post<ApiResponse<AuthResponse>>(`${this.apiUrl}/refresh`, { refreshToken })
       .pipe(
         tap((res) => {
-          localStorage.setItem('accessToken', res.accessToken);
-          localStorage.setItem('refreshToken', res.refreshToken);
+          localStorage.setItem('accessToken', res.data.accessToken);
+          localStorage.setItem('refreshToken', res.data.refreshToken);
         })
       );
   }

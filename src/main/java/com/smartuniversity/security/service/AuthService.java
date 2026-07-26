@@ -40,7 +40,7 @@ public class AuthService {
     }
 
     @Transactional
-    public UserResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email is already registered");
         }
@@ -57,7 +57,16 @@ public class AuthService {
                 .build();
 
         user = userRepository.save(user);
-        return userMapper.toResponse(user);
+
+        String accessToken = tokenProvider.generateAccessToken(user.getEmail());
+        String refreshToken = tokenProvider.generateRefreshToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .email(user.getEmail())
+                .build();
     }
 
     public AuthResponse login(LoginRequest request) {

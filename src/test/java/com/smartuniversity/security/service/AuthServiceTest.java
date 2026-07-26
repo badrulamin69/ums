@@ -77,7 +77,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void register_shouldCreateUser() {
+    void register_shouldCreateUserAndReturnTokens() {
         RegisterRequest request = new RegisterRequest();
         request.setEmail("new@smart.edu");
         request.setPassword("password123");
@@ -86,18 +86,14 @@ class AuthServiceTest {
         when(roleRepository.findByName("STUDENT")).thenReturn(Optional.of(studentRole));
         when(passwordEncoder.encode("password123")).thenReturn("encoded_password");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userMapper.toResponse(any(User.class))).thenReturn(
-                UserResponse.builder()
-                        .id(1L)
-                        .email("test@smart.edu")
-                        .enabled(true)
-                        .roles(Set.of("STUDENT"))
-                        .build()
-        );
+        when(tokenProvider.generateAccessToken("test@smart.edu")).thenReturn("access-token");
+        when(tokenProvider.generateRefreshToken("test@smart.edu")).thenReturn("refresh-token");
 
-        UserResponse response = authService.register(request);
+        AuthResponse response = authService.register(request);
 
         assertNotNull(response);
+        assertEquals("access-token", response.getAccessToken());
+        assertEquals("refresh-token", response.getRefreshToken());
         assertEquals("test@smart.edu", response.getEmail());
         verify(userRepository).save(any(User.class));
     }
