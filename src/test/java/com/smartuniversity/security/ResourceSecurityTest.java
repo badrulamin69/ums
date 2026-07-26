@@ -6,6 +6,8 @@ import com.smartuniversity.hrm.entity.Employee;
 import com.smartuniversity.hrm.repository.EmployeeRepository;
 import com.smartuniversity.notification.entity.NotificationEvent;
 import com.smartuniversity.notification.repository.NotificationRepository;
+import com.smartuniversity.payment.entity.Payment;
+import com.smartuniversity.payment.repository.PaymentRepository;
 import com.smartuniversity.security.entity.User;
 import com.smartuniversity.security.repository.UserRepository;
 import com.smartuniversity.student.entity.Student;
@@ -21,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -44,6 +47,9 @@ class ResourceSecurityTest {
 
     @Mock
     private NotificationRepository notificationRepository;
+
+    @Mock
+    private PaymentRepository paymentRepository;
 
     @InjectMocks
     private ResourceSecurity resourceSecurity;
@@ -266,5 +272,105 @@ class ResourceSecurityTest {
     @Test
     void isEmailOwner_shouldReturnFalseForNonMatchingEmail() {
         assertFalse(resourceSecurity.isEmailOwner("other@smart.edu"));
+    }
+
+    @Test
+    void isPaymentOwner_shouldReturnTrueWhenUserOwnsPayment() {
+        Payment payment = Payment.builder()
+                .id(1L)
+                .transactionId("TXN-ABC123")
+                .amount(BigDecimal.valueOf(5000))
+                .currency("BDT")
+                .user(user)
+                .build();
+
+        when(paymentRepository.findByTransactionId("TXN-ABC123")).thenReturn(Optional.of(payment));
+        when(userRepository.findByEmail("test@smart.edu")).thenReturn(Optional.of(user));
+
+        assertTrue(resourceSecurity.isPaymentOwner("TXN-ABC123"));
+    }
+
+    @Test
+    void isPaymentOwner_shouldReturnFalseWhenUserDoesNotOwnPayment() {
+        User otherUser = User.builder()
+                .id(2L)
+                .email("other@smart.edu")
+                .password("encoded")
+                .enabled(true)
+                .accountNonLocked(true)
+                .roles(Set.of())
+                .build();
+
+        Payment payment = Payment.builder()
+                .id(1L)
+                .transactionId("TXN-ABC123")
+                .amount(BigDecimal.valueOf(5000))
+                .currency("BDT")
+                .user(otherUser)
+                .build();
+
+        when(paymentRepository.findByTransactionId("TXN-ABC123")).thenReturn(Optional.of(payment));
+        when(userRepository.findByEmail("test@smart.edu")).thenReturn(Optional.of(user));
+
+        assertFalse(resourceSecurity.isPaymentOwner("TXN-ABC123"));
+    }
+
+    @Test
+    void isPaymentOwner_shouldReturnFalseWhenTransactionNotFound() {
+        when(paymentRepository.findByTransactionId("TXN-NONE")).thenReturn(Optional.empty());
+
+        assertFalse(resourceSecurity.isPaymentOwner("TXN-NONE"));
+    }
+
+    @Test
+    void isStudentOwnerByRegNo_shouldReturnTrueWhenUserOwnsStudent() {
+        Student student = Student.builder()
+                .id(10L)
+                .user(user)
+                .registrationNumber("REG-001")
+                .firstName("John")
+                .lastName("Doe")
+                .cgpa(0.0)
+                .active(true)
+                .build();
+
+        when(studentRepository.findByRegistrationNumber("REG-001")).thenReturn(Optional.of(student));
+        when(userRepository.findByEmail("test@smart.edu")).thenReturn(Optional.of(user));
+
+        assertTrue(resourceSecurity.isStudentOwnerByRegNo("REG-001"));
+    }
+
+    @Test
+    void isStudentOwnerByRegNo_shouldReturnFalseWhenUserDoesNotOwnStudent() {
+        User otherUser = User.builder()
+                .id(2L)
+                .email("other@smart.edu")
+                .password("encoded")
+                .enabled(true)
+                .accountNonLocked(true)
+                .roles(Set.of())
+                .build();
+
+        Student student = Student.builder()
+                .id(10L)
+                .user(otherUser)
+                .registrationNumber("REG-002")
+                .firstName("Jane")
+                .lastName("Doe")
+                .cgpa(0.0)
+                .active(true)
+                .build();
+
+        when(studentRepository.findByRegistrationNumber("REG-002")).thenReturn(Optional.of(student));
+        when(userRepository.findByEmail("test@smart.edu")).thenReturn(Optional.of(user));
+
+        assertFalse(resourceSecurity.isStudentOwnerByRegNo("REG-002"));
+    }
+
+    @Test
+    void isStudentOwnerByRegNo_shouldReturnFalseWhenRegNoNotFound() {
+        when(studentRepository.findByRegistrationNumber("REG-NONE")).thenReturn(Optional.empty());
+
+        assertFalse(resourceSecurity.isStudentOwnerByRegNo("REG-NONE"));
     }
 }

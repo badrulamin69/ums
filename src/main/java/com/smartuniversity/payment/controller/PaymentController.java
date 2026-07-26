@@ -9,6 +9,7 @@ import com.smartuniversity.common.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,7 @@ public class PaymentController {
     }
 
     @GetMapping("/{transactionId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PAYROLL') or hasRole('ADMISSION') or @resourceSecurity.isPaymentOwner(#transactionId)")
     public ResponseEntity<ApiResponse<PaymentResponse>> getByTransactionId(@PathVariable String transactionId) {
         return ResponseEntity.ok(ApiResponse.success(paymentService.getByTransactionId(transactionId)));
     }

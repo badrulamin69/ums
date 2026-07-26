@@ -42,7 +42,7 @@ public class StudentController {
     }
 
     @GetMapping("/registration/{regNo}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('REGISTRAR') or hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REGISTRAR') or @resourceSecurity.isStudentOwnerByRegNo(#regNo)")
     public ResponseEntity<ApiResponse<StudentResponse>> getByRegistrationNumber(@PathVariable String regNo) {
         return ResponseEntity.ok(ApiResponse.success(studentService.getByRegistrationNumber(regNo)));
     }

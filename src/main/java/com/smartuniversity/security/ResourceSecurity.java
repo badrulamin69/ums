@@ -7,6 +7,7 @@ import com.smartuniversity.hrm.repository.EmployeeRepository;
 import com.smartuniversity.admission.repository.ApplicantRepository;
 import com.smartuniversity.notification.repository.NotificationRepository;
 import com.smartuniversity.notification.entity.NotificationEvent;
+import com.smartuniversity.payment.repository.PaymentRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,17 +20,20 @@ public class ResourceSecurity {
     private final EmployeeRepository employeeRepository;
     private final ApplicantRepository applicantRepository;
     private final NotificationRepository notificationRepository;
+    private final PaymentRepository paymentRepository;
 
     public ResourceSecurity(UserRepository userRepository,
                             StudentRepository studentRepository,
                             EmployeeRepository employeeRepository,
                             ApplicantRepository applicantRepository,
-                            NotificationRepository notificationRepository) {
+                            NotificationRepository notificationRepository,
+                            PaymentRepository paymentRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.employeeRepository = employeeRepository;
         this.applicantRepository = applicantRepository;
         this.notificationRepository = notificationRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public boolean isOwner(Long resourceUserId) {
@@ -67,6 +71,18 @@ public class ResourceSecurity {
     public boolean isNotificationOwner(Long notificationId) {
         return notificationRepository.findById(notificationId)
                 .map(notification -> isOwner(notification.getUserId()))
+                .orElse(false);
+    }
+
+    public boolean isPaymentOwner(String transactionId) {
+        return paymentRepository.findByTransactionId(transactionId)
+                .map(payment -> isOwner(payment.getUser().getId()))
+                .orElse(false);
+    }
+
+    public boolean isStudentOwnerByRegNo(String registrationNumber) {
+        return studentRepository.findByRegistrationNumber(registrationNumber)
+                .map(student -> isOwner(student.getUser().getId()))
                 .orElse(false);
     }
 

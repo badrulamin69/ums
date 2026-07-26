@@ -6,6 +6,7 @@ import com.smartuniversity.security.jwt.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import jakarta.annotation.PreDestroy;
 import java.util.Map;
 
 @Component
+@ConditionalOnProperty(name = "socketio.enabled", havingValue = "true", matchIfMissing = true)
 public class SocketIOConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SocketIOConfig.class);

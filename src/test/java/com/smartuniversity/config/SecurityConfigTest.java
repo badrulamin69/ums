@@ -105,4 +105,16 @@ class SecurityConfigTest {
         buildMockMvc().perform(get("/api/audit-logs"))
                 .andExpect(status().isForbidden());
     }
+
+    @Test
+    void unauthenticatedGetToPaymentByTransactionIdShouldBeBlocked() throws Exception {
+        buildMockMvc().perform(get("/api/payments/TXN-ABC123"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void unauthenticatedGetToStudentByRegNoShouldBeBlocked() throws Exception {
+        buildMockMvc().perform(get("/api/students/registration/REG-001"))
+                .andExpect(status().isForbidden());
+    }
 }
