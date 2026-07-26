@@ -33,19 +33,19 @@ public class SscResult extends BaseEntity {
     @Column(length = 30)
     private String registrationNumber;
 
-    @Column(nullable = false, length = 30)
-    private String group;
+    @Column(name = "student_group", nullable = false, length = 30)
+    private String studentGroup;
 
     @Column(length = 150)
     private String institution;
 
-    @Column(nullable = false, precision = 4, scale = 2)
+    @Column(nullable = false)
     private Double gpa;
 
-    @Column(precision = 4, scale = 2)
+    @Column
     private Double scienceGpa;
 
-    @Column(precision = 4, scale = 2)
+    @Column
     private Double mathGpa;
 
     @Column(nullable = false)

@@ -33,7 +33,7 @@ public class NotificationEvent extends BaseEntity {
     @Column(nullable = false, length = 2000)
     private String message;
 
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private boolean read = false;
 
     private LocalDateTime readAt;

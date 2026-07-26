@@ -20,6 +20,9 @@ public class AuditListener {
     }
 
     private void createAuditLog(Object entity, String action) {
+        if (entity instanceof AuditLog) {
+            return;
+        }
         String email = "system";
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User user) {

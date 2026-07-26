@@ -63,7 +63,7 @@ public class SscResultService {
         result.setExamYear(request.getExamYear());
         result.setRollNumber(request.getRollNumber());
         result.setRegistrationNumber(request.getRegistrationNumber());
-        result.setGroup(request.getGroup());
+        result.setStudentGroup(request.getGroup());
         result.setInstitution(request.getInstitution());
         result.setGpa(request.getGpa());
         result.setScienceGpa(request.getScienceGpa());
