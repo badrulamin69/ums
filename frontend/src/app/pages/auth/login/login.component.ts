@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   template: `
     <div class="auth-page">
       <div class="auth-card card">
         <div class="auth-header">
-          <h1>Welcome Back</h1>
-          <p>Sign in to your Smart University account</p>
+          <h1>{{isRegister ? 'Create Account' : 'Welcome Back'}}</h1>
+          <p>{{isRegister ? 'Join Smart University — start your application today' : 'Sign in to your Smart University account'}}</p>
         </div>
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="form-group">
@@ -25,18 +25,19 @@ import { AuthService } from '../../../services/auth.service';
           </div>
           <div class="form-group">
             <label class="form-label" for="password">Password</label>
-            <input id="password" type="password" class="form-input" formControlName="password" placeholder="Enter your password" />
+            <input id="password" type="password" class="form-input" formControlName="password" [placeholder]="isRegister ? 'Min 8 characters' : 'Enter your password'" />
             <div class="form-error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
-              Password is required (min 6 characters).
+              {{isRegister ? 'Password must be at least 8 characters.' : 'Password is required (min 6 characters).'}}
             </div>
           </div>
           <div class="form-error server-error" *ngIf="errorMsg">{{errorMsg}}</div>
           <button type="submit" class="btn btn-primary btn-lg" style="width:100%;" [disabled]="loading">
-            {{loading ? 'Signing in...' : 'Sign In'}}
+            {{loading ? (isRegister ? 'Creating Account...' : 'Signing in...') : (isRegister ? 'Create Account' : 'Sign In')}}
           </button>
         </form>
         <div class="auth-footer">
-          <p>Don't have an account? <a routerLink="/register">Register here</a></p>
+          <p *ngIf="!isRegister">Don't have an account? <a (click)="toggleMode()" style="cursor:pointer;font-weight:500;">Register here</a></p>
+          <p *ngIf="isRegister">Already have an account? <a (click)="toggleMode()" style="cursor:pointer;font-weight:500;">Sign in here</a></p>
         </div>
       </div>
     </div>
@@ -68,7 +69,6 @@ import { AuthService } from '../../../services/auth.service';
       padding-top: 1.5rem;
       border-top: 1px solid var(--border-light);
       p { font-size: 0.875rem; color: var(--text-secondary); }
-      a { font-weight: 500; }
     }
   `],
 })
@@ -77,6 +77,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   errorMsg = '';
   returnUrl = '/dashboard';
+  isRegister = false;
 
   constructor(
     private fb: FormBuilder,
@@ -91,23 +92,48 @@ export class LoginComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    if (this.route.snapshot.queryParams['mode'] === 'register') {
+      this.isRegister = true;
+      this.form.get('password')?.setValidators([Validators.required, Validators.minLength(8)]);
+      this.form.get('password')?.updateValueAndValidity();
+    }
     if (this.authService.isLoggedIn()) {
       this.router.navigate([this.returnUrl]);
     }
+  }
+
+  toggleMode(): void {
+    this.isRegister = !this.isRegister;
+    this.errorMsg = '';
+    if (this.isRegister) {
+      this.form.get('password')?.setValidators([Validators.required, Validators.minLength(8)]);
+    } else {
+      this.form.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
+    }
+    this.form.get('password')?.updateValueAndValidity();
   }
 
   onSubmit(): void {
     if (this.form.invalid) return;
     this.loading = true;
     this.errorMsg = '';
-    this.authService.login(this.form.value).subscribe({
-      next: () => {
-        this.router.navigate([this.returnUrl]);
-      },
-      error: (err: any) => {
-        this.loading = false;
-        this.errorMsg = err.error?.message || 'Invalid email or password.';
-      },
-    });
+
+    if (this.isRegister) {
+      this.authService.register(this.form.value).subscribe({
+        next: () => this.router.navigate([this.returnUrl]),
+        error: (err: any) => {
+          this.loading = false;
+          this.errorMsg = err.error?.message || 'Registration failed. Please try again.';
+        },
+      });
+    } else {
+      this.authService.login(this.form.value).subscribe({
+        next: () => this.router.navigate([this.returnUrl]),
+        error: (err: any) => {
+          this.loading = false;
+          this.errorMsg = err.error?.message || 'Invalid email or password.';
+        },
+      });
+    }
   }
 }

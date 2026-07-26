@@ -107,12 +107,11 @@ export class AttendanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.hrmService.getEmployees().subscribe({
+    this.hrmService.getMyEmployee().subscribe({
       next: (res: any) => {
-        const employees = res.data || [];
-        if (employees.length > 0) {
-          this.ownEmployeeId = employees[0].id;
-          this.employeeId = employees[0].id;
+        if (res.data) {
+          this.ownEmployeeId = res.data.id;
+          this.employeeId = res.data.id;
         }
       },
       error: () => {},

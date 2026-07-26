@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
     <footer class="footer">
       <div class="footer-inner">
@@ -18,17 +19,17 @@ import { CommonModule } from '@angular/common';
         <div class="footer-links">
           <div class="footer-col">
             <h4>Quick Links</h4>
-            <a href="#">About Us</a>
-            <a href="#">Academic Calendar</a>
-            <a href="#">Student Portal</a>
-            <a href="#">Research</a>
+            <a routerLink="/">Home</a>
+            <a routerLink="/faculties">Faculties</a>
+            <a routerLink="/dashboard">Student Portal</a>
+            <a routerLink="/notices">Notices</a>
           </div>
           <div class="footer-col">
             <h4>Admissions</h4>
-            <a href="#">Apply Now</a>
-            <a href="#">Fee Structure</a>
-            <a href="#">Scholarships</a>
-            <a href="#">FAQs</a>
+            <a routerLink="/admission">Apply Now</a>
+            <a routerLink="/admission">Fee Structure</a>
+            <a routerLink="/admission">Scholarships</a>
+            <a routerLink="/contact">FAQs</a>
           </div>
           <div class="footer-col">
             <h4>Contact</h4>

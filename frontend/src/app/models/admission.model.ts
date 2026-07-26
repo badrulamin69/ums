@@ -154,3 +154,41 @@ export interface ApplicantDocumentResponse {
   fileUrl: string;
   verified: boolean;
 }
+
+export interface HscResultRequest {
+  board: string;
+  examYear: number;
+  rollNumber: string;
+  registrationNumber: string;
+  group: string;
+  institution: string;
+  gpa: number;
+  scienceGpa: number;
+  mathGpa: number;
+}
+
+export interface SscResultRequest {
+  board: string;
+  examYear: number;
+  rollNumber: string;
+  registrationNumber: string;
+  group: string;
+  institution: string;
+  gpa: number;
+  scienceGpa: number;
+  mathGpa: number;
+}
+
+export interface DocumentTypeRequest {
+  name: string;
+  description: string;
+  required: boolean;
+  allowedFormats: string;
+}
+
+export interface ApplicantDocumentRequest {
+  applicantId: number;
+  documentType: string;
+  fileName: string;
+  fileUrl: string;
+}

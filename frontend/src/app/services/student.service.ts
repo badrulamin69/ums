@@ -34,4 +34,12 @@ export class StudentService {
   deactivate(id: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
   }
+
+  getYearResults(studentId: number): Observable<ApiResponse<YearResultResponse[]>> {
+    return this.http.get<ApiResponse<YearResultResponse[]>>(`${environment.apiUrl}/year-results/student/${studentId}`);
+  }
+
+  enroll(applicantId: number): Observable<ApiResponse<StudentResponse>> {
+    return this.http.post<ApiResponse<StudentResponse>>(`${this.apiUrl}/enroll/${applicantId}`, {});
+  }
 }

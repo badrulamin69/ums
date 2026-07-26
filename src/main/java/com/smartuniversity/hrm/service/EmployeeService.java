@@ -70,6 +70,12 @@ public class EmployeeService {
         return mapper.toResponse(emp);
     }
 
+    public EmployeeResponse getByUserId(Long userId) {
+        Employee emp = employeeRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "userId", userId));
+        return mapper.toResponse(emp);
+    }
+
     public Page<EmployeeResponse> getAll(Pageable pageable) {
         return employeeRepository.findAll(pageable).map(mapper::toResponse);
     }

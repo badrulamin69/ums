@@ -7,8 +7,21 @@ import {
   EmployeeRequest,
   AttendanceResponse,
   DesignationResponse,
+  DesignationRequest,
   GradeResponse,
+  GradeRequest,
   LeaveRequestResponse,
+  LeaveRequestDto,
+  PromotionResponse,
+  PromotionRequest,
+  SeparationResponse,
+  SeparationRequest,
+  AppraisalResponse,
+  AppraisalRequest,
+  JobPostingResponse,
+  JobPostingRequest,
+  ApprovalWorkflowResponse,
+  ApprovalStepActionRequest,
 } from '../models/hrm.model';
 import { ApiResponse } from '../models/common.model';
 
@@ -24,6 +37,10 @@ export class HrmService {
 
   getEmployeeById(id: number): Observable<ApiResponse<EmployeeResponse>> {
     return this.http.get<ApiResponse<EmployeeResponse>>(`${this.apiUrl}/employees/${id}`);
+  }
+
+  getMyEmployee(): Observable<ApiResponse<EmployeeResponse>> {
+    return this.http.get<ApiResponse<EmployeeResponse>>(`${this.apiUrl}/employees/me`);
   }
 
   createEmployee(request: EmployeeRequest): Observable<ApiResponse<EmployeeResponse>> {
@@ -56,11 +73,79 @@ export class HrmService {
     return this.http.get<ApiResponse<DesignationResponse[]>>(`${this.apiUrl}/designations`);
   }
 
+  createDesignation(request: DesignationRequest): Observable<ApiResponse<DesignationResponse>> {
+    return this.http.post<ApiResponse<DesignationResponse>>(`${this.apiUrl}/designations`, request);
+  }
+
+  updateDesignation(id: number, request: DesignationRequest): Observable<ApiResponse<DesignationResponse>> {
+    return this.http.put<ApiResponse<DesignationResponse>>(`${this.apiUrl}/designations/${id}`, request);
+  }
+
+  deleteDesignation(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/designations/${id}`);
+  }
+
   getGrades(): Observable<ApiResponse<GradeResponse[]>> {
     return this.http.get<ApiResponse<GradeResponse[]>>(`${this.apiUrl}/grades`);
   }
 
+  createGrade(request: GradeRequest): Observable<ApiResponse<GradeResponse>> {
+    return this.http.post<ApiResponse<GradeResponse>>(`${this.apiUrl}/grades`, request);
+  }
+
+  updateGrade(id: number, request: GradeRequest): Observable<ApiResponse<GradeResponse>> {
+    return this.http.put<ApiResponse<GradeResponse>>(`${this.apiUrl}/grades/${id}`, request);
+  }
+
   getLeaveRequests(employeeId: number): Observable<ApiResponse<LeaveRequestResponse[]>> {
     return this.http.get<ApiResponse<LeaveRequestResponse[]>>(`${this.apiUrl}/leave-requests/employee/${employeeId}`);
+  }
+
+  createLeaveRequest(request: LeaveRequestDto): Observable<ApiResponse<LeaveRequestResponse>> {
+    return this.http.post<ApiResponse<LeaveRequestResponse>>(`${this.apiUrl}/leave-requests`, request);
+  }
+
+  approveLeaveRequest(id: number): Observable<ApiResponse<LeaveRequestResponse>> {
+    return this.http.post<ApiResponse<LeaveRequestResponse>>(`${this.apiUrl}/leave-requests/${id}/approve`, {});
+  }
+
+  rejectLeaveRequest(id: number): Observable<ApiResponse<LeaveRequestResponse>> {
+    return this.http.post<ApiResponse<LeaveRequestResponse>>(`${this.apiUrl}/leave-requests/${id}/reject`, {});
+  }
+
+  createPromotion(request: PromotionRequest): Observable<ApiResponse<PromotionResponse>> {
+    return this.http.post<ApiResponse<PromotionResponse>>(`${this.apiUrl}/promotions`, request);
+  }
+
+  getPromotions(employeeId: number): Observable<ApiResponse<PromotionResponse[]>> {
+    return this.http.get<ApiResponse<PromotionResponse[]>>(`${this.apiUrl}/promotions/employee/${employeeId}`);
+  }
+
+  createSeparation(request: SeparationRequest): Observable<ApiResponse<SeparationResponse>> {
+    return this.http.post<ApiResponse<SeparationResponse>>(`${this.apiUrl}/separations`, request);
+  }
+
+  createAppraisal(request: AppraisalRequest): Observable<ApiResponse<AppraisalResponse>> {
+    return this.http.post<ApiResponse<AppraisalResponse>>(`${this.apiUrl}/appraisals`, request);
+  }
+
+  getAppraisals(employeeId: number): Observable<ApiResponse<AppraisalResponse[]>> {
+    return this.http.get<ApiResponse<AppraisalResponse[]>>(`${this.apiUrl}/appraisals/employee/${employeeId}`);
+  }
+
+  createJobPosting(request: JobPostingRequest): Observable<ApiResponse<JobPostingResponse>> {
+    return this.http.post<ApiResponse<JobPostingResponse>>(`${this.apiUrl}/job-postings`, request);
+  }
+
+  getJobPostings(): Observable<ApiResponse<JobPostingResponse[]>> {
+    return this.http.get<ApiResponse<JobPostingResponse[]>>(`${this.apiUrl}/job-postings`);
+  }
+
+  approveApprovalStep(request: ApprovalStepActionRequest): Observable<ApiResponse<ApprovalWorkflowResponse>> {
+    return this.http.post<ApiResponse<ApprovalWorkflowResponse>>(`${this.apiUrl}/approval-workflows/approve`, request);
+  }
+
+  getApprovalWorkflows(): Observable<ApiResponse<ApprovalWorkflowResponse[]>> {
+    return this.http.get<ApiResponse<ApprovalWorkflowResponse[]>>(`${this.apiUrl}/approval-workflows`);
   }
 }

@@ -5,10 +5,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { AuthService } from '../../../services/auth.service';
 import { StudentService } from '../../../services/student.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaymentService } from '../../../services/payment.service';
 import { StudentResponse } from '../../../models/student.model';
 import { NotificationResponse } from '../../../models/notification.model';
-import { PaymentResponse } from '../../../models/payment.model';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -94,7 +92,7 @@ import { PaymentResponse } from '../../../models/payment.model';
             <span class="badge badge-info" *ngIf="unreadCount > 0">{{unreadCount}} unread</span>
           </div>
           <div class="notification-list" *ngIf="notifications.length">
-            <div class="notification-item" *ngFor="let n of notifications" [class.unread]="!n.read">
+            <div class="notification-item" *ngFor="let n of notifications" [class.unread]="!n.read" (click)="markNotificationRead(n)">
               <div class="notif-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -201,7 +199,7 @@ import { PaymentResponse } from '../../../models/payment.model';
 export class StudentDashboardComponent implements OnInit {
   student: StudentResponse | null = null;
   notifications: NotificationResponse[] = [];
-  payments: PaymentResponse[] = [];
+  payments: any[] = [];
   results: any[] = [];
   unreadCount = 0;
   showEdit = false;
@@ -214,7 +212,6 @@ export class StudentDashboardComponent implements OnInit {
     private authService: AuthService,
     private studentService: StudentService,
     private notificationService: NotificationService,
-    private paymentService: PaymentService
   ) {}
 
   ngOnInit(): void {
@@ -228,18 +225,27 @@ export class StudentDashboardComponent implements OnInit {
   }
 
   private loadStudent(): void {
-    this.studentService.listAll(0, 1).subscribe({
+    const user = this.authService.getCurrentUser();
+    if (!user) return;
+    this.studentService.getByUserId(user.id).subscribe({
       next: (res: any) => {
-        const students = res.data?.content || [];
-        if (students.length > 0) {
-          this.student = students[0];
+        this.student = res.data;
+        if (this.student) {
           this.editForm.patchValue({
             firstName: this.student!.firstName,
             middleName: this.student!.middleName,
             lastName: this.student!.lastName,
           });
+          this.loadYearResults(this.student!.id);
         }
       },
+      error: () => {},
+    });
+  }
+
+  private loadYearResults(studentId: number): void {
+    this.studentService.getYearResults(studentId).subscribe({
+      next: (res: any) => { this.results = res.data || []; },
       error: () => {},
     });
   }
@@ -278,5 +284,16 @@ export class StudentDashboardComponent implements OnInit {
       case 'FAILED': return 'badge-danger';
       default: return 'badge-info';
     }
+  }
+
+  markNotificationRead(n: NotificationResponse): void {
+    if (n.read) return;
+    this.notificationService.markAsRead(n.id).subscribe({
+      next: () => {
+        n.read = true;
+        this.unreadCount = this.notifications.filter((x: any) => !x.read).length;
+      },
+      error: () => {},
+    });
   }
 }

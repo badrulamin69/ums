@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AdmissionService } from '../../../services/admission.service';
 import { ApplicantResponse } from '../../../models/admission.model';
 import { AdmissionStatus } from '../../../models/common.model';
@@ -7,7 +8,7 @@ import { AdmissionStatus } from '../../../models/common.model';
 @Component({
   selector: 'app-applicant-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="container dashboard">
       <div class="page-header" *ngIf="applicant">
@@ -64,6 +65,11 @@ import { AdmissionStatus } from '../../../models/common.model';
                 </svg>
               </div>
               <span>Payment Completed</span>
+              <a *ngIf="!applicant.paymentCompleted" class="btn btn-sm btn-accent pay-btn"
+                 [routerLink]="['/payment']"
+                 [queryParams]="{paymentType: 'APPLICATION_FEE', referenceEntityType: 'APPLICANT', referenceEntityId: applicant.id}">
+                Pay Now
+              </a>
             </div>
           </div>
         </div>
@@ -168,6 +174,7 @@ import { AdmissionStatus } from '../../../models/common.model';
     .check-icon { flex-shrink: 0; }
     .check-item:not(.done) .check-icon { color: var(--text-muted); }
     .check-item.done .check-icon { color: var(--success); }
+    .pay-btn { margin-left: auto; text-decoration: none; font-size: 0.8125rem; }
     .info-grid { display: flex; flex-direction: column; gap: 0.5rem; }
     .info-row {
       display: flex; justify-content: space-between;

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AdmissionService } from '../../../services/admission.service';
+import { AuthService } from '../../../services/auth.service';
 import { DepartmentResponse } from '../../../models/admission.model';
 import { Gender } from '../../../models/common.model';
 
@@ -150,7 +151,8 @@ export class ApplyComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private admissionService: AdmissionService
+    private admissionService: AdmissionService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -222,7 +224,12 @@ export class ApplyComponent implements OnInit {
     };
 
     this.admissionService.registerApplicant(request).subscribe({
-      next: () => this.router.navigate(['/applicant']),
+      next: () => {
+        this.authService.refreshToken().subscribe({
+          next: () => this.router.navigate(['/applicant']),
+          error: () => this.router.navigate(['/applicant']),
+        });
+      },
       error: (err: any) => {
         this.loading = false;
         this.errorMsg = err.error?.message || 'Application failed. Please try again.';

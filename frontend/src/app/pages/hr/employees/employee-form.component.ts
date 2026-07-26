@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HrmService } from '../../../services/hrm.service';
-import { EmployeeResponse } from '../../../models/hrm.model';
+import { EmployeeResponse, DesignationResponse, GradeResponse } from '../../../models/hrm.model';
 import { Gender, EmployeeType } from '../../../models/common.model';
 
 @Component({
@@ -18,6 +18,10 @@ import { Gender, EmployeeType } from '../../../models/common.model';
       </div>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">User ID *</label>
+            <input type="number" class="form-input" formControlName="userId" placeholder="Linked user account ID" />
+          </div>
           <div class="form-group">
             <label class="form-label">First Name *</label>
             <input class="form-input" formControlName="firstName" />
@@ -63,12 +67,18 @@ import { Gender, EmployeeType } from '../../../models/common.model';
             <input class="form-input" formControlName="department" />
           </div>
           <div class="form-group">
-            <label class="form-label">Designation ID</label>
-            <input type="number" class="form-input" formControlName="designationId" />
+            <label class="form-label">Designation</label>
+            <select class="form-input" formControlName="designationId">
+              <option [ngValue]="null">Select Designation</option>
+              <option *ngFor="let d of designations" [ngValue]="d.id">{{d.name}} (L{{d.level}})</option>
+            </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Grade ID</label>
-            <input type="number" class="form-input" formControlName="gradeId" />
+            <label class="form-label">Grade</label>
+            <select class="form-input" formControlName="gradeId">
+              <option [ngValue]="null">Select Grade</option>
+              <option *ngFor="let g of grades" [ngValue]="g.id">{{g.name}} — {{g.basicSalary | currency}}</option>
+            </select>
           </div>
         </div>
         <div class="form-error server-error" *ngIf="errorMsg">{{errorMsg}}</div>
@@ -118,6 +128,8 @@ export class EmployeeFormComponent implements OnInit {
   errorMsg = '';
   genders = Object.values(Gender);
   employeeTypes = Object.values(EmployeeType);
+  designations: DesignationResponse[] = [];
+  grades: GradeResponse[] = [];
 
   constructor(private fb: FormBuilder, private hrmService: HrmService) {}
 
@@ -134,6 +146,29 @@ export class EmployeeFormComponent implements OnInit {
       designationId: [this.editEmployee?.designationId || null],
       gradeId: [this.editEmployee?.gradeId || null],
       department: [this.editEmployee?.department || ''],
+    });
+
+    this.loadDesignations();
+    this.loadGrades();
+  }
+
+  private loadDesignations(): void {
+    this.hrmService.getDesignations().subscribe({
+      next: (res: any) => {
+        const data = res.data;
+        this.designations = Array.isArray(data) ? data : (data?.content || []);
+      },
+      error: () => {},
+    });
+  }
+
+  private loadGrades(): void {
+    this.hrmService.getGrades().subscribe({
+      next: (res: any) => {
+        const data = res.data;
+        this.grades = Array.isArray(data) ? data : (data?.content || []);
+      },
+      error: () => {},
     });
   }
 
