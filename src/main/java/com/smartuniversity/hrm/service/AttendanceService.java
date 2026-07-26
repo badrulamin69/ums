@@ -40,9 +40,39 @@ public class AttendanceService {
     }
 
     @Transactional
+    public AttendanceResponse checkInForUser(Long userId, AttendanceRequest request) {
+        Employee employee = employeeRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "userId", userId));
+
+        Attendance attendance = attendanceRepository.findByEmployeeIdAndDate(employee.getId(), LocalDate.now())
+                .orElse(Attendance.builder()
+                        .employee(employee)
+                        .date(LocalDate.now())
+                        .build());
+
+        attendance.setCheckInTime(request.getCheckInTime());
+        attendance.setStatus(com.smartuniversity.common.enums.AttendanceStatus.PRESENT);
+        attendance = attendanceRepository.save(attendance);
+        return toResponse(attendance);
+    }
+
+    @Transactional
     public AttendanceResponse checkOut(AttendanceRequest request) {
         Employee employee = employeeRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", request.getEmployeeId()));
+
+        Attendance attendance = attendanceRepository.findByEmployeeIdAndDate(employee.getId(), LocalDate.now())
+                .orElseThrow(() -> new ResourceNotFoundException("Attendance", "date", LocalDate.now()));
+
+        attendance.setCheckOutTime(request.getCheckOutTime());
+        attendance = attendanceRepository.save(attendance);
+        return toResponse(attendance);
+    }
+
+    @Transactional
+    public AttendanceResponse checkOutForUser(Long userId, AttendanceRequest request) {
+        Employee employee = employeeRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "userId", userId));
 
         Attendance attendance = attendanceRepository.findByEmployeeIdAndDate(employee.getId(), LocalDate.now())
                 .orElseThrow(() -> new ResourceNotFoundException("Attendance", "date", LocalDate.now()));

@@ -7,6 +7,8 @@ import com.smartuniversity.payment.entity.Payment;
 import com.smartuniversity.payment.repository.PaymentRepository;
 import com.smartuniversity.security.entity.User;
 import com.smartuniversity.security.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,15 +19,20 @@ import java.util.UUID;
 @Service
 public class PaymentService {
 
+    private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
+
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final SslCommerzService sslCommerzService;
 
     @Value("${SSLCOMMERZ_SANDBOX:true}")
     private boolean sandboxMode;
 
-    public PaymentService(PaymentRepository paymentRepository, UserRepository userRepository) {
+    public PaymentService(PaymentRepository paymentRepository, UserRepository userRepository,
+                          SslCommerzService sslCommerzService) {
         this.paymentRepository = paymentRepository;
         this.userRepository = userRepository;
+        this.sslCommerzService = sslCommerzService;
     }
 
     @Transactional
@@ -63,14 +70,27 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentResponse handleCallback(String transactionId, String status) {
+    public PaymentResponse handleCallback(String transactionId, String status,
+                                          String valId, String amount, String currency) {
         Payment payment = paymentRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "transactionId", transactionId));
 
-        payment.setStatus(status);
         if ("VALID".equals(status) || "SUCCESS".equals(status)) {
-            payment.setPaidAt(LocalDateTime.now());
-            payment.setStatus("COMPLETED");
+            boolean signatureValid = false;
+            try {
+                signatureValid = sslCommerzService.validateSignature(valId, amount, currency);
+            } catch (Exception e) {
+                log.error("Signature validation error for {}: {}", transactionId, e.getMessage());
+            }
+
+            if (signatureValid) {
+                payment.setPaidAt(LocalDateTime.now());
+                payment.setStatus("COMPLETED");
+            } else {
+                log.warn("Payment callback signature validation FAILED for transaction {}: status={}, valId={}, amount={}, currency={}",
+                        transactionId, status, valId, amount, currency);
+                payment.setStatus("FAILED");
+            }
         } else {
             payment.setStatus("FAILED");
         }

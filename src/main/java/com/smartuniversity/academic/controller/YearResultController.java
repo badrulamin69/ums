@@ -7,6 +7,7 @@ import com.smartuniversity.academic.repository.YearResultRepository;
 import com.smartuniversity.common.ApiResponse;
 import com.smartuniversity.common.exception.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class YearResultController {
     }
 
     @GetMapping("/student/{studentId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY') or @resourceSecurity.isStudentOwner(#studentId)")
     public ResponseEntity<ApiResponse<List<YearResultResponse>>> getByStudent(@PathVariable Long studentId) {
         List<YearResultResponse> results = repository.findByStudentId(studentId).stream()
                 .map(mapper::toResponse)

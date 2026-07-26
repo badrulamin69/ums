@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,7 @@ public class ApplicantController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMISSION') or @resourceSecurity.isApplicantOwner(#id)")
     public ResponseEntity<ApiResponse<ApplicantResponse>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(applicantService.getById(id)));
     }
@@ -52,18 +54,21 @@ public class ApplicantController {
     }
 
     @GetMapping("/application/{applicationNumber}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMISSION')")
     public ResponseEntity<ApiResponse<ApplicantResponse>> getByApplicationNumber(
             @PathVariable String applicationNumber) {
         return ResponseEntity.ok(ApiResponse.success(applicantService.getByApplicationNumber(applicationNumber)));
     }
 
     @GetMapping("/circular/{circularId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMISSION')")
     public ResponseEntity<ApiResponse<Page<ApplicantResponse>>> getByCircularId(
             @PathVariable Long circularId, Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(applicantService.getByCircularId(circularId, pageable)));
     }
 
     @PutMapping("/{id}/department/{departmentId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMISSION') or @resourceSecurity.isApplicantOwner(#id)")
     public ResponseEntity<ApiResponse<ApplicantResponse>> updatePreferredDepartment(
             @PathVariable Long id, @PathVariable Long departmentId) {
         return ResponseEntity.ok(ApiResponse.success(

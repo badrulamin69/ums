@@ -2,6 +2,11 @@ package com.smartuniversity.security;
 
 import com.smartuniversity.security.entity.User;
 import com.smartuniversity.security.repository.UserRepository;
+import com.smartuniversity.student.repository.StudentRepository;
+import com.smartuniversity.hrm.repository.EmployeeRepository;
+import com.smartuniversity.admission.repository.ApplicantRepository;
+import com.smartuniversity.notification.repository.NotificationRepository;
+import com.smartuniversity.notification.entity.NotificationEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -10,9 +15,21 @@ import org.springframework.stereotype.Component;
 public class ResourceSecurity {
 
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ApplicantRepository applicantRepository;
+    private final NotificationRepository notificationRepository;
 
-    public ResourceSecurity(UserRepository userRepository) {
+    public ResourceSecurity(UserRepository userRepository,
+                            StudentRepository studentRepository,
+                            EmployeeRepository employeeRepository,
+                            ApplicantRepository applicantRepository,
+                            NotificationRepository notificationRepository) {
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
+        this.employeeRepository = employeeRepository;
+        this.applicantRepository = applicantRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     public boolean isOwner(Long resourceUserId) {
@@ -27,6 +44,30 @@ public class ResourceSecurity {
                     .orElse(false);
         }
         return false;
+    }
+
+    public boolean isStudentOwner(Long studentId) {
+        return studentRepository.findById(studentId)
+                .map(student -> isOwner(student.getUser().getId()))
+                .orElse(false);
+    }
+
+    public boolean isApplicantOwner(Long applicantId) {
+        return applicantRepository.findById(applicantId)
+                .map(applicant -> isOwner(applicant.getUser().getId()))
+                .orElse(false);
+    }
+
+    public boolean isEmployeeOwner(Long employeeId) {
+        return employeeRepository.findById(employeeId)
+                .map(employee -> isOwner(employee.getUser().getId()))
+                .orElse(false);
+    }
+
+    public boolean isNotificationOwner(Long notificationId) {
+        return notificationRepository.findById(notificationId)
+                .map(notification -> isOwner(notification.getUserId()))
+                .orElse(false);
     }
 
     public boolean isEmailOwner(String email) {

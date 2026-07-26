@@ -9,6 +9,7 @@ import com.smartuniversity.common.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,7 @@ public class NotificationController {
     }
 
     @PostMapping("/{id}/read")
+    @PreAuthorize("@resourceSecurity.isNotificationOwner(#id)")
     public ResponseEntity<ApiResponse<Void>> markAsRead(@PathVariable Long id) {
         notificationService.markAsRead(id);
         return ResponseEntity.ok(ApiResponse.success("Notification marked as read", null));

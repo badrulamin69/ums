@@ -42,8 +42,11 @@ public class PaymentController {
 
     @PostMapping("/callback")
     public ResponseEntity<ApiResponse<PaymentResponse>> handleCallback(
-            @RequestParam String transactionId, @RequestParam String status) {
-        return ResponseEntity.ok(ApiResponse.success(
-                "Payment status updated", paymentService.handleCallback(transactionId, status)));
+            @RequestParam String transactionId, @RequestParam String status,
+            @RequestParam(required = false) String valId,
+            @RequestParam(required = false) String amount,
+            @RequestParam(required = false) String currency) {
+        return ResponseEntity.ok(ApiResponse.success("Payment status updated",
+                paymentService.handleCallback(transactionId, status, valId, amount, currency)));
     }
 }

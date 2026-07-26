@@ -29,11 +29,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('HR') or hasRole('ADMIN') or @resourceSecurity.isEmployeeOwner(#id)")
     public ResponseEntity<ApiResponse<EmployeeResponse>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(employeeService.getById(id)));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('HR') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<EmployeeResponse>>> getAll(Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(employeeService.getAll(pageable)));
     }
