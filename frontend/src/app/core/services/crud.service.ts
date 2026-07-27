@@ -74,4 +74,10 @@ export class CrudService {
       .post<ApiResponse<T>>(`${this.base}/${endpoint}`, formData)
       .pipe(map((res) => res.data));
   }
+
+  customGet<T>(fullUrl: string): Observable<T> {
+    return this.http
+      .get<ApiResponse<T>>(`${this.base}/${fullUrl}`)
+      .pipe(map((res) => res.data));
+  }
 }

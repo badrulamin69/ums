@@ -16,19 +16,29 @@ interface AttendanceResponse {
     <app-page-header title="Attendance" subtitle="Track employee attendance and check-ins" />
 
     <div class="attendance-grid animate-fade-in-up stagger-1">
-      <div class="card card-elevated">
-        <div class="card-header"><h3>Quick Actions</h3></div>
-        <div class="card-body">
-          <div class="action-row">
-            <button class="btn btn-gold btn-lg" (click)="checkIn()" [disabled]="checking()">
-              @if (checking()) { <span class="spinner-sm"></span> Processing... } @else { Check In }
-            </button>
-            <button class="btn btn-outline-gold btn-lg" (click)="checkOut()" [disabled]="checking()">
-              Check Out
-            </button>
+      @if (noEmployee()) {
+        <div class="card card-elevated">
+          <div class="card-body">
+            <div class="empty-state">
+              <p>No employee profile linked to your account. Contact HR to set up your profile.</p>
+            </div>
           </div>
         </div>
-      </div>
+      } @else {
+        <div class="card card-elevated">
+          <div class="card-header"><h3>Quick Actions</h3></div>
+          <div class="card-body">
+            <div class="action-row">
+              <button class="btn btn-gold btn-lg" (click)="checkIn()" [disabled]="checking()">
+                @if (checking()) { <span class="spinner-sm"></span> Processing... } @else { Check In }
+              </button>
+              <button class="btn btn-outline-gold btn-lg" (click)="checkOut()" [disabled]="checking()">
+                Check Out
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
 
     <div class="card card-elevated animate-fade-in-up stagger-2" style="margin-top: 1.5rem">
@@ -78,6 +88,7 @@ interface AttendanceResponse {
 export class AttendanceComponent implements OnInit {
   records = signal<AttendanceResponse[]>([]);
   checking = signal(false);
+  noEmployee = signal(false);
   private employeeId: number | null = null;
 
   constructor(private crud: CrudService, private toast: ToastService) {}
@@ -85,22 +96,30 @@ export class AttendanceComponent implements OnInit {
     this.crud.getById<any>('employees', 'me').subscribe({
       next: (employee) => {
         this.employeeId = employee?.id ?? null;
-        if (this.employeeId) this.loadRecords(this.employeeId);
+        if (this.employeeId) {
+          this.loadRecords(this.employeeId);
+        } else {
+          this.noEmployee.set(true);
+        }
       },
-      error: () => {},
+      error: () => this.noEmployee.set(true),
     });
   }
 
   loadRecords(employeeId: number): void {
-    this.crud.getById<AttendanceResponse[]>('attendance/employee', employeeId).subscribe({
+    const today = new Date();
+    const start = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+    const end = today.toISOString().split('T')[0];
+    this.crud.customGet<AttendanceResponse[]>(`attendance/employee/${employeeId}?start=${start}&end=${end}`).subscribe({
       next: (data) => this.records.set(data || []),
       error: () => this.records.set([]),
     });
   }
 
   checkIn(): void {
+    if (!this.employeeId) { this.toast.error('No employee profile linked to your account'); return; }
     this.checking.set(true);
-    this.crud.customPost<any, AttendanceResponse>('attendance/check-in', { date: new Date().toISOString().split('T')[0] }).subscribe({
+    this.crud.customPost<any, AttendanceResponse>('attendance/check-in', { employeeId: this.employeeId }).subscribe({
       next: () => {
         this.toast.success('Checked in successfully');
         this.checking.set(false);
@@ -111,8 +130,9 @@ export class AttendanceComponent implements OnInit {
   }
 
   checkOut(): void {
+    if (!this.employeeId) { this.toast.error('No employee profile linked to your account'); return; }
     this.checking.set(true);
-    this.crud.customPost<any, AttendanceResponse>('attendance/check-out', { date: new Date().toISOString().split('T')[0] }).subscribe({
+    this.crud.customPost<any, AttendanceResponse>('attendance/check-out', { employeeId: this.employeeId }).subscribe({
       next: () => {
         this.toast.success('Checked out successfully');
         this.checking.set(false);

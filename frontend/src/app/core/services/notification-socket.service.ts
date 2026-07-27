@@ -11,6 +11,7 @@ export class NotificationSocketService implements OnDestroy {
   private socket: Socket | null = null;
   unreadCount = 0;
   private listeners: Array<() => void> = [];
+  private alreadyWarned = false;
 
   constructor(
     private auth: AuthService,
@@ -28,14 +29,15 @@ export class NotificationSocketService implements OnDestroy {
 
     this.socket = io(environment.socketUrl, {
       auth: { token },
-      transports: ['websocket', 'polling'],
+      transports: ['websocket'],
       reconnection: true,
-      reconnectionAttempts: 10,
+      reconnectionAttempts: 3,
       reconnectionDelay: 3000,
     });
 
     this.socket.on('connect', () => {
       console.log('[Socket] Connected');
+      this.alreadyWarned = false;
     });
 
     this.socket.on('notification', (data: { title: string; message: string; type: string }) => {
@@ -43,12 +45,12 @@ export class NotificationSocketService implements OnDestroy {
       this.toast.info(`${data.title}: ${data.message}`);
     });
 
-    this.socket.on('disconnect', () => {
-      console.log('[Socket] Disconnected');
-    });
+    this.socket.on('disconnect', () => {});
 
     this.socket.on('connect_error', (err) => {
-      console.warn('[Socket] Connection error:', err.message);
+      if (!this.alreadyWarned) {
+        this.alreadyWarned = true;
+      }
     });
   }
 

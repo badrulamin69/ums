@@ -1,5 +1,6 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { CrudService } from '../../../core/services/crud.service';
@@ -179,17 +180,20 @@ import { CrudService } from '../../../core/services/crud.service';
   `],
 })
 export class DashboardComponent {
-  stats = [
-    { label: 'Students', value: '0', icon: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M14.167 17.5v-1.667a3.333 3.333 0 00-3.334-3.333H5.834a3.333 3.333 0 00-3.334 3.333V17.5m8.334-10a3.333 3.333 0 11-6.667 0 3.333 3.333 0 016.667 0z" stroke="currentColor" stroke-width="1.5"/></svg>', color: '#C8A96E', bgColor: 'rgba(200,169,110,0.12)' },
-    { label: 'Employees', value: '0', icon: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M14.167 17.5v-1.667a3.333 3.333 0 00-3.334-3.333H5.834a3.333 3.333 0 00-3.334 3.333V17.5m8.334-10a3.333 3.333 0 11-6.667 0 3.333 3.333 0 016.667 0z" stroke="currentColor" stroke-width="1.5"/></svg>', color: '#10B981', bgColor: 'rgba(16,185,129,0.12)' },
-    { label: 'Active Circles', value: '0', icon: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15 2.5h-10a1.667 1.667 0 00-1.667 1.667v11.666A1.667 1.667 0 005 17.5h10a1.667 1.667 0 001.667-1.667V4.167A1.667 1.667 0 0015 2.5z" stroke="currentColor" stroke-width="1.5"/></svg>', color: '#3B82F6', bgColor: 'rgba(59,130,246,0.12)' },
-    { label: 'Pending Leave', value: '0', icon: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.333 10h13.334M7.5 3.333V5M12.5 3.333V5M5 3.333h10a1.667 1.667 0 011.667 1.667v10A1.667 1.667 0 0115 16.667H5A1.667 1.667 0 013.333 15V5A1.667 1.667 0 015 3.333z" stroke="currentColor" stroke-width="1.5"/></svg>', color: '#F59E0B', bgColor: 'rgba(245,158,11,0.12)' },
-  ];
+  stats: { label: string; value: string; icon: SafeHtml; color: string; bgColor: string }[];
 
   constructor(
     public auth: AuthService,
     private crud: CrudService,
-  ) {}
+    private sanitizer: DomSanitizer,
+  ) {
+    this.stats = [
+      { label: 'Students', value: '0', icon: this.sanitizer.bypassSecurityTrustHtml('<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M14.167 17.5v-1.667a3.333 3.333 0 00-3.334-3.333H5.834a3.333 3.333 0 00-3.334 3.333V17.5m8.334-10a3.333 3.333 0 11-6.667 0 3.333 3.333 0 016.667 0z" stroke="currentColor" stroke-width="1.5"/></svg>'), color: '#C8A96E', bgColor: 'rgba(200,169,110,0.12)' },
+      { label: 'Employees', value: '0', icon: this.sanitizer.bypassSecurityTrustHtml('<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M14.167 17.5v-1.667a3.333 3.333 0 00-3.334-3.333H5.834a3.333 3.333 0 00-3.334 3.333V17.5m8.334-10a3.333 3.333 0 11-6.667 0 3.333 3.333 0 016.667 0z" stroke="currentColor" stroke-width="1.5"/></svg>'), color: '#10B981', bgColor: 'rgba(16,185,129,0.12)' },
+      { label: 'Active Circles', value: '0', icon: this.sanitizer.bypassSecurityTrustHtml('<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15 2.5h-10a1.667 1.667 0 00-1.667 1.667v11.666A1.667 1.667 0 005 17.5h10a1.667 1.667 0 001.667-1.667V4.167A1.667 1.667 0 0015 2.5z" stroke="currentColor" stroke-width="1.5"/></svg>'), color: '#3B82F6', bgColor: 'rgba(59,130,246,0.12)' },
+      { label: 'Pending Leave', value: '0', icon: this.sanitizer.bypassSecurityTrustHtml('<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.333 10h13.334M7.5 3.333V5M12.5 3.333V5M5 3.333h10a1.667 1.667 0 011.667 1.667v10A1.667 1.667 0 0115 16.667H5A1.667 1.667 0 013.333 15V5A1.667 1.667 0 015 3.333z" stroke="currentColor" stroke-width="1.5"/></svg>'), color: '#F59E0B', bgColor: 'rgba(245,158,11,0.12)' },
+    ];
+  }
 
   ngOnInit(): void {
     this.loadDashboardStats();
