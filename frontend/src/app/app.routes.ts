@@ -1,145 +1,188 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
-import { RoleGuard } from './guards/role.guard';
-import { PublicLayoutComponent } from './layout/public-layout.component';
-import { DashboardLayoutComponent } from './layout/dashboard-layout.component';
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: PublicLayoutComponent,
-    children: [
-      { path: '', loadComponent: () => import('./pages/public/home/home.component').then(m => m.HomeComponent) },
-      { path: 'faculties', loadComponent: () => import('./pages/public/faculties/faculties.component').then(m => m.FacultiesComponent) },
-      { path: 'admission', loadComponent: () => import('./pages/public/admission/admission.component').then(m => m.AdmissionComponent) },
-      { path: 'notices', loadComponent: () => import('./pages/public/notices/notices.component').then(m => m.NoticesComponent) },
-      { path: 'contact', loadComponent: () => import('./pages/public/contact/contact.component').then(m => m.ContactComponent) },
-      { path: 'login', loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent) },
-      { path: 'unauthorized', loadComponent: () => import('./pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent) },
-    ],
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: '',
-    component: DashboardLayoutComponent,
-    canActivate: [AuthGuard],
+    path: 'register',
+    loadComponent: () =>
+      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ADMIN', 'HR', 'PAYROLL'] },
+    loadComponent: () =>
+      import('./layouts/admin-layout/admin-layout.component').then((m) => m.AdminLayoutComponent),
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./pages/student/dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent),
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
       {
-        path: 'profile',
-        loadComponent: () => import('./pages/student/dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent),
+        path: 'faculties',
+        loadComponent: () =>
+          import('./features/admin/faculty/faculty-list.component').then((m) => m.FacultyListComponent),
       },
       {
-        path: 'notifications',
-        loadComponent: () => import('./pages/student/dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent),
+        path: 'departments',
+        loadComponent: () =>
+          import('./features/admin/department/department-list.component').then((m) => m.DepartmentListComponent),
       },
       {
-        path: 'apply/:circularId',
-        loadComponent: () => import('./pages/applicant/apply/apply.component').then(m => m.ApplyComponent),
+        path: 'students',
+        loadComponent: () =>
+          import('./features/admin/student/student-list.component').then((m) => m.StudentListComponent),
       },
       {
-        path: 'applicant',
-        loadComponent: () => import('./pages/applicant/dashboard/applicant-dashboard.component').then(m => m.ApplicantDashboardComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['APPLICANT'] },
+        path: 'document-types',
+        loadComponent: () =>
+          import('./features/admin/document-type/document-type-list.component').then((m) => m.DocumentTypeListComponent),
       },
+      {
+        path: 'grades',
+        loadComponent: () =>
+          import('./features/admin/grade/grade-list.component').then((m) => m.GradeListComponent),
+      },
+      {
+        path: 'designations',
+        loadComponent: () =>
+          import('./features/admin/designation/designation-list.component').then((m) => m.DesignationListComponent),
+      },
+      {
+        path: 'academic-sessions',
+        loadComponent: () =>
+          import('./features/admin/academic-session/academic-session-list.component').then((m) => m.AcademicSessionListComponent),
+      },
+      {
+        path: 'audit-logs',
+        loadComponent: () =>
+          import('./features/admin/audit-log/audit-log-list.component').then((m) => m.AuditLogListComponent),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
+  {
+    path: 'admission',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ADMIN', 'ADMISSION'] },
+    loadComponent: () =>
+      import('./layouts/admin-layout/admin-layout.component').then((m) => m.AdminLayoutComponent),
+    children: [
+      {
+        path: 'circulars',
+        loadComponent: () =>
+          import('./features/admission/circulars/circular-list.component').then((m) => m.CircularListComponent),
+      },
+      {
+        path: 'applicants',
+        loadComponent: () =>
+          import('./features/admission/applicants/applicant-list.component').then((m) => m.ApplicantListComponent),
+      },
+      {
+        path: 'merit-lists',
+        loadComponent: () =>
+          import('./features/admission/merit-list/merit-list.component').then((m) => m.MeritListPageComponent),
+      },
+      { path: '', redirectTo: 'circulars', pathMatch: 'full' },
+    ],
+  },
+  {
+    path: 'student',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['STUDENT'] },
+    loadComponent: () =>
+      import('./layouts/student-layout/student-layout.component').then((m) => m.StudentLayoutComponent),
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/student/dashboard/student-dashboard.component').then((m) => m.StudentDashboardComponent),
+      },
+      {
+        path: 'face',
+        loadComponent: () =>
+          import('./features/student/face-verification/student-face.component').then((m) => m.StudentFaceComponent),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
+  {
+    path: 'academic',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ADMIN', 'FACULTY'] },
+    loadComponent: () =>
+      import('./layouts/faculty-layout/faculty-layout.component').then((m) => m.FacultyLayoutComponent),
+    children: [
+      {
+        path: 'courses',
+        loadComponent: () =>
+          import('./features/academic/courses/course-list.component').then((m) => m.CourseListComponent),
+      },
+      {
+        path: 'student-results',
+        loadComponent: () =>
+          import('./features/academic/student-results/student-result-list.component').then((m) => m.StudentResultListComponent),
+      },
+      { path: '', redirectTo: 'courses', pathMatch: 'full' },
+    ],
+  },
+  {
+    path: 'hrm',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ADMIN', 'HR'] },
+    loadComponent: () =>
+      import('./layouts/admin-layout/admin-layout.component').then((m) => m.AdminLayoutComponent),
+    children: [
       {
         path: 'employees',
-        loadComponent: () => import('./pages/hr/employees/employee-directory.component').then(m => m.EmployeeDirectoryComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'HR', 'REGISTRAR'] },
+        loadComponent: () =>
+          import('./features/hrm/employees/employee-list.component').then((m) => m.EmployeeListComponent),
       },
       {
         path: 'attendance',
-        loadComponent: () => import('./pages/hr/attendance/attendance.component').then(m => m.AttendanceComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'HR'] },
+        loadComponent: () =>
+          import('./features/hrm/attendance/attendance.component').then((m) => m.AttendanceComponent),
       },
       {
-        path: 'payment',
-        loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent),
+        path: 'leave',
+        loadComponent: () =>
+          import('./features/hrm/leave/leave-list.component').then((m) => m.LeaveListComponent),
       },
       {
-        path: 'admin/faculties',
-        loadComponent: () => import('./pages/admin/admission/faculties/faculties.component').then(m => m.AdminFacultiesComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'REGISTRAR'] },
+        path: 'face',
+        loadComponent: () =>
+          import('./features/hrm/face-verification/employee-face.component').then((m) => m.EmployeeFaceComponent),
       },
-      {
-        path: 'admin/departments',
-        loadComponent: () => import('./pages/admin/admission/departments/departments.component').then(m => m.AdminDepartmentsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'REGISTRAR'] },
-      },
-      {
-        path: 'admin/circulars',
-        loadComponent: () => import('./pages/admin/admission/circulars/circulars.component').then(m => m.AdminCircularsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'ADMISSION'] },
-      },
-      {
-        path: 'hr/designations',
-        loadComponent: () => import('./pages/hr/designations/designations.component').then(m => m.DesignationsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'HR'] },
-      },
-      {
-        path: 'hr/grades',
-        loadComponent: () => import('./pages/hr/grades/grades.component').then(m => m.GradesComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'HR'] },
-      },
-      {
-        path: 'hr/job-postings',
-        loadComponent: () => import('./pages/hr/job-postings/job-postings.component').then(m => m.JobPostingsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'HR'] },
-      },
-      {
-        path: 'academic/sessions',
-        loadComponent: () => import('./pages/academic/sessions/sessions.component').then(m => m.SessionsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'FACULTY', 'REGISTRAR'] },
-      },
-      {
-        path: 'academic/courses',
-        loadComponent: () => import('./pages/academic/courses/courses.component').then(m => m.CoursesComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'FACULTY', 'REGISTRAR'] },
-      },
-      {
-        path: 'academic/course-teachers',
-        loadComponent: () => import('./pages/academic/course-teachers/course-teachers.component').then(m => m.CourseTeachersComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'FACULTY', 'REGISTRAR'] },
-      },
-      {
-        path: 'academic/year-levels',
-        loadComponent: () => import('./pages/academic/year-levels/year-levels.component').then(m => m.YearLevelsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'FACULTY', 'REGISTRAR'] },
-      },
-      {
-        path: 'academic/results',
-        loadComponent: () => import('./pages/academic/results/results.component').then(m => m.ResultsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'FACULTY', 'REGISTRAR'] },
-      },
-      {
-        path: 'payroll/salary-structures',
-        loadComponent: () => import('./pages/payroll/salary-structures/salary-structures.component').then(m => m.SalaryStructuresComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'PAYROLL'] },
-      },
-      {
-        path: 'payroll/runs',
-        loadComponent: () => import('./pages/payroll/payroll-runs/payroll-runs.component').then(m => m.PayrollRunsComponent),
-        canActivate: [RoleGuard],
-        data: { roles: ['ADMIN', 'PAYROLL'] },
-      },
+      { path: '', redirectTo: 'employees', pathMatch: 'full' },
     ],
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: 'payroll',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ADMIN', 'PAYROLL'] },
+    loadComponent: () =>
+      import('./layouts/admin-layout/admin-layout.component').then((m) => m.AdminLayoutComponent),
+    children: [
+      {
+        path: 'run',
+        loadComponent: () =>
+          import('./features/payroll/run/payroll-run.component').then((m) => m.PayrollRunComponent),
+      },
+      {
+        path: 'salary-structures',
+        loadComponent: () =>
+          import('./features/payroll/salary-structure/salary-structure-list.component').then((m) => m.SalaryStructureListComponent),
+      },
+      { path: '', redirectTo: 'run', pathMatch: 'full' },
+    ],
+  },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', redirectTo: 'login' },
 ];

@@ -118,6 +118,13 @@
 			<version>${netty-socketio.version}</version>
 		</dependency>
 
+		<!-- JavaCV / OpenCV for face verification -->
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv-platform</artifactId>
+			<version>1.5.10</version>
+		</dependency>
+
 		<!-- H2 for tests -->
 		<dependency>
 			<groupId>com.h2database</groupId>

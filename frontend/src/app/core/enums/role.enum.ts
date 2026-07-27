@@ -1,0 +1,9 @@
+export enum Role {
+  ADMIN = 'ADMIN',
+  ADMISSION = 'ADMISSION',
+  REGISTRAR = 'REGISTRAR',
+  HR = 'HR',
+  PAYROLL = 'PAYROLL',
+  FACULTY = 'FACULTY',
+  STUDENT = 'STUDENT',
+}

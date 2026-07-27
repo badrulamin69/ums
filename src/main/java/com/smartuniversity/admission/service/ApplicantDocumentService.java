@@ -10,6 +10,9 @@ import com.smartuniversity.common.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,5 +54,17 @@ public class ApplicantDocumentService {
         document.setVerified(true);
         document = documentRepository.save(document);
         return documentMapper.toResponse(document);
+    }
+
+    @Transactional
+    public void delete(Long documentId) {
+        ApplicantDocument document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new ResourceNotFoundException("ApplicantDocument", "id", documentId));
+        Path filePath = Paths.get(document.getFileUrl());
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (Exception ignored) {
+        }
+        documentRepository.delete(document);
     }
 }

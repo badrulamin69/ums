@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/faculties/**", "/api/departments/**",
                         "/api/admission-circulars/**", "/api/document-types/**").permitAll()
                 .requestMatchers("/api/payments/callback").permitAll()
+                .requestMatchers("/files/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -60,6 +61,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(frontendUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+        config.setExposedHeaders(List.of("Content-Disposition"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 

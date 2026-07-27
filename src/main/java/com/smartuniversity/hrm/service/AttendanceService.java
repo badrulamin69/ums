@@ -88,6 +88,36 @@ public class AttendanceService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public AttendanceResponse checkInByEmployeeId(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+
+        Attendance attendance = attendanceRepository.findByEmployeeIdAndDate(employee.getId(), LocalDate.now())
+                .orElse(Attendance.builder()
+                        .employee(employee)
+                        .date(LocalDate.now())
+                        .build());
+
+        attendance.setCheckInTime(java.time.LocalTime.now());
+        attendance.setStatus(com.smartuniversity.common.enums.AttendanceStatus.PRESENT);
+        attendance = attendanceRepository.save(attendance);
+        return toResponse(attendance);
+    }
+
+    @Transactional
+    public AttendanceResponse checkOutByEmployeeId(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+
+        Attendance attendance = attendanceRepository.findByEmployeeIdAndDate(employee.getId(), LocalDate.now())
+                .orElseThrow(() -> new ResourceNotFoundException("Attendance", "date", LocalDate.now()));
+
+        attendance.setCheckOutTime(java.time.LocalTime.now());
+        attendance = attendanceRepository.save(attendance);
+        return toResponse(attendance);
+    }
+
     private AttendanceResponse toResponse(Attendance a) {
         return AttendanceResponse.builder()
                 .id(a.getId())
