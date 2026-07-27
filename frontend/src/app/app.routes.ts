@@ -4,6 +4,23 @@ import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () =>
+      import('./layouts/public-layout/public-layout.component').then((m) => m.PublicLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/public/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
+        path: 'circulars',
+        loadComponent: () =>
+          import('./features/public/circulars/public-circulars.component').then((m) => m.PublicCircularsComponent),
+      },
+    ],
+  },
+  {
     path: 'login',
     loadComponent: () =>
       import('./features/auth/login/login.component').then((m) => m.LoginComponent),
@@ -12,6 +29,12 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () =>
       import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
+  },
+  {
+    path: 'apply/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/public/apply/apply.component').then((m) => m.ApplyComponent),
   },
   {
     path: 'admin',
@@ -239,6 +262,5 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/admin/notifications/notifications-page.component').then((m) => m.NotificationsPageComponent),
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' },
+  { path: '**', redirectTo: '' },
 ];

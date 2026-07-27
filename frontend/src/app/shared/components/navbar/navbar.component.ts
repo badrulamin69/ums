@@ -1,13 +1,12 @@
-import { Component, output } from '@angular/core';
+import { Component, output, signal, HostListener } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationSocketService } from '../../../core/services/notification-socket.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, NgbDropdownModule],
+  imports: [RouterLink],
   template: `
     <nav class="navbar">
       <div class="navbar-left">
@@ -29,18 +28,23 @@ import { NotificationSocketService } from '../../../core/services/notification-s
           }
         </div>
 
-        <div class="user-menu dropdown" ngbDropdown>
-          <button class="user-button dropdown-toggle" ngbDropdownToggle>
+        <div class="user-menu" (click)="dropdownOpen.set(!dropdownOpen())" (clickOutside)="dropdownOpen.set(false)">
+          <button class="user-button" (click)="$event.stopPropagation(); dropdownOpen.set(!dropdownOpen())">
             <div class="user-avatar">{{ userInitial }}</div>
             <span class="user-email">{{ auth.currentUserEmail() }}</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" [style.transform]="dropdownOpen() ? 'rotate(180deg)' : ''">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
-            <li><span class="dropdown-item-text text-secondary">{{ primaryRole }}</span></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" routerLink="/student/profile">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><button class="dropdown-item text-danger" (click)="auth.logout()">Sign Out</button></li>
-          </ul>
+          @if (dropdownOpen()) {
+            <ul class="dropdown-menu" (click)="$event.stopPropagation()">
+              <li><span class="dropdown-item-text text-secondary">{{ primaryRole }}</span></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" routerLink="/student/profile" (click)="dropdownOpen.set(false)">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><button class="dropdown-item text-danger" (click)="auth.logout(); dropdownOpen.set(false)">Sign Out</button></li>
+            </ul>
+          }
         </div>
       </div>
     </nav>
@@ -116,6 +120,10 @@ import { NotificationSocketService } from '../../../core/services/notification-s
       animation: pulse-gold 2s infinite;
     }
 
+    .user-menu {
+      position: relative;
+    }
+
     .user-button {
       display: flex;
       align-items: center;
@@ -132,6 +140,11 @@ import { NotificationSocketService } from '../../../core/services/notification-s
         background: var(--color-surface-elevated);
         border-color: var(--color-border);
       }
+    }
+
+    .user-button svg {
+      transition: transform 0.2s ease;
+      color: var(--color-text-muted);
     }
 
     .user-avatar {
@@ -160,10 +173,48 @@ import { NotificationSocketService } from '../../../core/services/notification-s
       .navbar { left: 0; }
       .user-email { display: none; }
     }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      min-width: 180px;
+      background: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 200;
+      padding: 0.375rem 0;
+      animation: fadeInUp 0.15s var(--ease-out);
+    }
+    .dropdown-item {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      font-size: var(--fs-small);
+      color: var(--color-text-primary);
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+      &:hover { background: var(--color-surface-elevated); color: var(--color-gold); }
+    }
+    .dropdown-item-text { padding: 0.5rem 1rem; font-size: var(--fs-xs); }
+    .dropdown-divider { margin: 0.25rem 0; border-color: var(--color-border); }
+    .text-danger { color: var(--color-danger) !important; }
+    .text-secondary { color: var(--color-text-muted) !important; }
   `],
 })
 export class NavbarComponent {
   toggleSidebar = output();
+  dropdownOpen = signal(false);
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.dropdownOpen.set(false);
+  }
 
   constructor(
     public auth: AuthService,

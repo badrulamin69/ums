@@ -29,8 +29,13 @@ export class CrudService {
 
   listAll<T>(endpoint: string): Observable<T[]> {
     return this.http
-      .get<ApiResponse<T[]>>(`${this.base}/${endpoint}`)
-      .pipe(map((res) => res.data));
+      .get<ApiResponse<any>>(`${this.base}/${endpoint}`)
+      .pipe(map((res) => {
+        const d = res.data;
+        if (Array.isArray(d)) return d as T[];
+        if (d && Array.isArray(d.content)) return d.content as T[];
+        return [];
+      }));
   }
 
   getById<T>(endpoint: string, id: number | string): Observable<T> {

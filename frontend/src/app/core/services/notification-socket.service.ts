@@ -30,9 +30,7 @@ export class NotificationSocketService implements OnDestroy {
     this.socket = io(environment.socketUrl, {
       auth: { token },
       transports: ['websocket'],
-      reconnection: true,
-      reconnectionAttempts: 3,
-      reconnectionDelay: 3000,
+      reconnection: false,
     });
 
     this.socket.on('connect', () => {

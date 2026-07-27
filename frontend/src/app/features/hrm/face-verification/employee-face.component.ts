@@ -31,38 +31,40 @@ import { ToastService } from '../../../core/services/toast.service';
         </div>
       </div>
 
-      @if (!isEnrolled()) {
-        <div class="card card-elevated animate-fade-in-up stagger-1">
-          <div class="card-header">
-            <h3>Step 1: Enroll Your Face</h3>
-            <p>Position your face in the center of the frame and click capture</p>
-          </div>
-          <div class="card-body">
-            <app-face-capture (captured)="onEnroll($event)" #enrollCapture />
-          </div>
-        </div>
-      } @else {
-        <div class="face-actions">
+      @if (!noEmployeeProfile()) {
+        @if (!isEnrolled()) {
           <div class="card card-elevated animate-fade-in-up stagger-1">
             <div class="card-header">
-              <h3>Check In</h3>
-              <p>Verify your face to check in for today</p>
+              <h3>Step 1: Enroll Your Face</h3>
+              <p>Position your face in the center of the frame and click capture</p>
             </div>
             <div class="card-body">
-              <app-face-capture (captured)="onCheckIn($event)" #checkInCapture />
+              <app-face-capture (captured)="onEnroll($event)" #enrollCapture />
             </div>
           </div>
+        } @else {
+          <div class="face-actions">
+            <div class="card card-elevated animate-fade-in-up stagger-1">
+              <div class="card-header">
+                <h3>Check In</h3>
+                <p>Verify your face to check in for today</p>
+              </div>
+              <div class="card-body">
+                <app-face-capture (captured)="onCheckIn($event)" #checkInCapture />
+              </div>
+            </div>
 
-          <div class="card card-elevated animate-fade-in-up stagger-2">
-            <div class="card-header">
-              <h3>Check Out</h3>
-              <p>Verify your face to check out for today</p>
-            </div>
-            <div class="card-body">
-              <app-face-capture (captured)="onCheckOut($event)" #checkOutCapture />
+            <div class="card card-elevated animate-fade-in-up stagger-2">
+              <div class="card-header">
+                <h3>Check Out</h3>
+                <p>Verify your face to check out for today</p>
+              </div>
+              <div class="card-body">
+                <app-face-capture (captured)="onCheckOut($event)" #checkOutCapture />
+              </div>
             </div>
           </div>
-        </div>
+        }
       }
 
       @if (resultMessage()) {
@@ -173,6 +175,7 @@ export class EmployeeFaceComponent {
   isEnrolled = signal(false);
   resultMessage = signal<string | null>(null);
   resultSuccess = signal(false);
+  noEmployeeProfile = signal(false);
 
   constructor(
     private faceService: FaceService,
@@ -187,6 +190,11 @@ export class EmployeeFaceComponent {
         if (res.success) {
           this.isEnrolled.set(res.data.enrolled);
         }
+      },
+      error: () => {
+        this.noEmployeeProfile.set(true);
+        this.resultMessage.set('No employee profile linked to your account. Contact HR to set up your profile.');
+        this.resultSuccess.set(false);
       },
     });
   }
