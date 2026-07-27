@@ -1,0 +1,549 @@
+Now I have a complete picture of the backend. Here is the comprehensive plan:
+
+---
+
+# Smart University Management System - Angular Frontend Plan
+
+## Backend Summary
+
+**Tech:** Spring Boot 4.0.7 + Spring Security + JWT (JJWT 0.12.6) + JPA + MySQL + Socket.IO  
+**API Base:** `http://localhost:8085/api`  
+**Response Wrapper:** `ApiResponse<T> { success, message, data, timestamp }`  
+**Error Handling:** Global exception handler returns `ApiResponse` with `success: false`
+
+### Roles (from `@PreAuthorize`):
+| Role | Access |
+|---|---|
+| `ADMIN` | Full access to all modules |
+| `ADMISSION` | Admission circulars, applicants, merit lists, admit cards, SSC/HSC results |
+| `REGISTRAR` | Student management |
+| `HR` | Employees, attendance, leave, designations, grades, promotions, separations, appraisals, job postings |
+| `PAYROLL` | Payroll runs, salary structures |
+| `FACULTY` | Courses, course-teacher assignments, student results, year results |
+| `STUDENT` | Default role on registration; owner-based access to own data |
+
+### Permissions: `USER_READ/WRITE/DELETE`, `ROLE_READ/WRITE/DELETE`, `ADMISSION_READ/WRITE/APPROVE`, `ACADEMIC_READ/WRITE`, `STUDENT_READ/WRITE`, `HRM_READ/WRITE/APPROVE`, `PAYROLL_READ/WRITE/APPROVE`, `PAYMENT_READ/WRITE`, `NOTIFICATION_READ/WRITE`, `AUDIT_READ`
+
+### JWT: Access token (15min) + Refresh token (7 days), type claim distinguishes them
+
+---
+
+## 1. Project Setup
+
+```
+ng new smart-university-ui --routing --style=scss
+```
+
+### Dependencies:
+```bash
+npm install bootstrap@5 bootstrap-icons @ng-bootstrap/ng-bootstrap
+npm install crypto-js @types/crypto-js
+npm install @angular/material (optional, for tables/pagination)
+```
+
+### `angular.json` - add Bootstrap:
+```json
+"styles": [
+  "node_modules/bootstrap/dist/css/bootstrap.min.css",
+  "src/styles.scss"
+],
+"scripts": [
+  "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+]
+```
+
+---
+
+## 2. Project Structure
+
+```
+src/app/
+├── core/
+│   ├── guards/
+│   │   ├── auth.guard.ts
+│   │   ├── role.guard.ts
+│   │   └── permission.guard.ts
+│   ├── interceptors/
+│   │   ├── auth.interceptor.ts
+│   │   └── error.interceptor.ts
+│   ├── models/
+│   │   ├── api-response.model.ts
+│   │   └── pagination.model.ts
+│   ├── services/
+│   │   ├── auth.service.ts
+│   │   ├── crypto.service.ts
+│   │   └── notification-socket.service.ts
+│   └── enums/
+│       ├── role.enum.ts
+│       ├── permission.enum.ts
+│       ├── admission-status.enum.ts
+│       └── ... (all enums)
+├── features/
+│   ├── auth/
+│   │   ├── login/
+│   │   ├── register/
+│   │   └── auth.routes.ts
+│   ├── admin/
+│   │   ├── dashboard/
+│   │   ├── user-management/
+│   │   ├── faculty/
+│   │   ├── department/
+│   │   ├── document-type/
+│   │   ├── grade/
+│   │   ├── designation/
+│   │   ├── academic-session/
+│   │   └── admin.routes.ts
+│   ├── admission/
+│   │   ├── circulars/
+│   │   ├── applicants/
+│   │   ├── hsc-results/
+│   │   ├── ssc-results/
+│   │   ├── merit-list/
+│   │   ├── admit-card/
+│   │   └── admission.routes.ts
+│   ├── student/
+│   │   ├── dashboard/
+│   │   ├── profile/
+│   │   ├── results/
+│   │   └── student.routes.ts
+│   ├── hrm/
+│   │   ├── employees/
+│   │   ├── attendance/
+│   │   ├── leave/
+│   │   ├── promotions/
+│   │   ├── separations/
+│   │   ├── appraisals/
+│   │   ├── job-postings/
+│   │   ├── approval-workflow/
+│   │   └── hrm.routes.ts
+│   ├── academic/
+│   │   ├── courses/
+│   │   ├── course-teachers/
+│   │   ├── student-results/
+│   │   ├── year-levels/
+│   │   ├── year-results/
+│   │   └── academic.routes.ts
+│   ├── payroll/
+│   │   ├── run/
+│   │   ├── salary-structure/
+│   │   ├── payslips/
+│   │   └── payroll.routes.ts
+│   ├── payment/
+│   │   ├── initiate/
+│   │   └── payment.routes.ts
+│   ├── notification/
+│   │   ├── notification-panel/
+│   │   └── notification.routes.ts
+│   └── shared/
+│       ├── components/
+│       │   ├── navbar/
+│       │   ├── sidebar/
+│       │   ├── pagination/
+│       │   ├── confirm-dialog/
+│       │   ├── loading-spinner/
+│       │   ├── page-header/
+│       │   └── data-table/
+│       ├── pipes/
+│       │   ├── enum-label.pipe.ts
+│       │   └── date-format.pipe.ts
+│       └── directives/
+│           └── has-role.directive.ts
+├── layouts/
+│   ├── admin-layout/
+│   ├── student-layout/
+│   ├── faculty-layout/
+│   └── hr-layout/
+├── app.component.ts
+├── app.routes.ts
+└── app.config.ts
+```
+
+---
+
+## 3. Core Infrastructure
+
+### 3a. `ApiResponse<T>` model
+```typescript
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  timestamp: string;
+}
+```
+
+### 3b. `CryptoService` (CryptoJS)
+- Encrypt sensitive payloads (passwords) before sending to backend
+- `encrypt(data: string): string` using AES with a frontend key
+- `decrypt(data: string): string`
+- Used on login/register forms to encrypt password before HTTP transmission
+
+### 3c. `AuthService`
+- `login(email, password)` → POST `/api/auth/login`
+- `register(email, password)` → POST `/api/auth/register`
+- `refreshToken(refreshToken)` → POST `/api/auth/refresh`
+- Store tokens: access token in memory, refresh token in `localStorage`
+- Decode JWT payload client-side to extract: `email`, `roles[]`, `type`, `userId`, `exp`
+- `getLoggedInUser()` → returns decoded token claims
+- `hasRole(role: string): boolean`
+- `hasPermission(permission: string): boolean`
+- `isTokenExpired(): boolean`
+- `logout()` → clear tokens, navigate to login
+
+### 3d. Auth Interceptor (`auth.interceptor.ts`)
+- HTTP Interceptor that:
+  - Attaches `Authorization: Bearer <accessToken>` header to every API request
+  - On 401 response: attempts refresh using stored refresh token
+  - On refresh failure: logout and redirect to `/login`
+
+### 3e. Error Interceptor (`error.interceptor.ts`)
+- Catches HTTP errors
+- Maps `ApiResponse` error messages to toast notifications
+- Handles 401, 403, 404, 409, 400, 500 status codes with appropriate UI feedback
+
+### 3f. Guards
+
+| Guard | Logic |
+|---|---|
+| `authGuard` | Check if JWT exists and is not expired → redirect to `/login` if invalid |
+| `roleGuard` | Accepts `data: { roles: string[] }` → checks decoded token roles against required |
+| `permissionGuard` | Accepts `data: { permissions: string[] }` → checks against token permissions |
+
+Route-level example:
+```typescript
+{ path: 'admin', canActivate: [authGuard, roleGuard], data: { roles: ['ADMIN'] }, ... }
+```
+
+### 3g. `HasRoleDirective` (structural)
+- `*hasRole="'ADMIN'"` or `*hasRole="['ADMIN', 'HR']"` — shows/hides DOM elements based on role
+
+---
+
+## 4. Routing Plan
+
+```
+/login                     → LoginComponent (public)
+/register                  → RegisterComponent (public)
+/forgot-password           → (future)
+
+/                          → redirect by role:
+  ADMIN/HR/PAYROLL         → /admin/dashboard
+  ADMISSION                → /admission/circulars
+  FACULTY                  → /academic/courses
+  STUDENT                  → /student/dashboard
+
+/admin                     → AdminLayout
+  /dashboard               → AdminDashboardComponent
+  /faculties               → FacultyListComponent
+  /departments             → DepartmentListComponent
+  /document-types          → DocumentTypeListComponent
+  /grades                  → GradeListComponent
+  /designations            → DesignationListComponent
+  /academic-sessions       → AcademicSessionListComponent
+  /audit-logs              → AuditLogListComponent
+
+/admission                 → AdminLayout
+  /circulars               → CircularListComponent
+  /circulars/:id           → CircularDetailComponent
+  /applicants              → ApplicantListComponent
+  /applicants/:id          → ApplicantDetailComponent
+  /merit-list/:circularId  → MeritListComponent
+  /admit-card/:applicantId → AdmitCardComponent
+
+/student                   → StudentLayout
+  /dashboard               → StudentDashboardComponent
+  /profile                 → StudentProfileComponent
+  /results/:sessionId      → StudentResultsComponent
+  /year-results            → YearResultsComponent
+
+/hrm                        → AdminLayout
+  /employees               → EmployeeListComponent
+  /employees/:id           → EmployeeDetailComponent
+  /attendance              → AttendanceComponent
+  /leave                   → LeaveListComponent
+  /leave/:id               → LeaveDetailComponent
+  /promotions              → PromotionListComponent
+  /separations             → SeparationListComponent
+  /appraisals              → AppraisalListComponent
+  /job-postings            → JobPostingListComponent
+  /approval-workflows      → ApprovalWorkflowComponent
+
+/academic                  → FacultyLayout
+  /courses                 → CourseListComponent
+  /course-teachers         → CourseTeacherListComponent
+  /student-results         → StudentResultEntryComponent
+  /year-levels             → YearLevelListComponent
+
+/payroll                   → AdminLayout
+  /run                     → PayrollRunComponent
+  /salary-structures       → SalaryStructureComponent
+  /payslips/:runId         → PayslipListComponent
+
+/payment/initiate          → PaymentInitiateComponent
+/notifications             → NotificationPanelComponent
+```
+
+---
+
+## 5. Module-by-Module API Mapping
+
+### Auth
+| Method | Endpoint | Request | Response |
+|---|---|---|---|
+| POST | `/api/auth/register` | `{ email, password }` | `AuthResponse` |
+| POST | `/api/auth/login` | `{ email, password }` | `AuthResponse` |
+| POST | `/api/auth/refresh` | `{ refreshToken }` | `AuthResponse` |
+
+### Admission
+| Method | Endpoint | Auth | Request | Response |
+|---|---|---|---|---|
+| POST | `/api/admission-circulars` | ADMIN, ADMISSION | `AdmissionCircularRequest` | `AdmissionCircularResponse` |
+| GET | `/api/admission-circulars` | Public | — | `Page<AdmissionCircularResponse>` |
+| GET | `/api/admission-circulars/:id` | Public | — | `AdmissionCircularResponse` |
+| GET | `/api/admission-circulars/faculty/:fid/session/:s` | Public | — | `List<AdmissionCircularResponse>` |
+| PUT | `/api/admission-circulars/:id` | ADMIN, ADMISSION | `AdmissionCircularRequest` | `AdmissionCircularResponse` |
+| DELETE | `/api/admission-circulars/:id` | ADMIN | — | void |
+| POST | `/api/applicants` | Auth | `ApplicantRequest` | `ApplicantResponse` |
+| GET | `/api/applicants/:id` | ADMIN, ADMISSION, Owner | — | `ApplicantResponse` |
+| GET | `/api/applicants/me` | Auth | — | `ApplicantResponse` |
+| GET | `/api/applicants/application/:num` | ADMIN, ADMISSION | — | `ApplicantResponse` |
+| GET | `/api/applicants/circular/:id` | ADMIN, ADMISSION | — | `Page<ApplicantResponse>` |
+| PUT | `/api/applicants/:id/department/:deptId` | ADMIN, ADMISSION, Owner | — | `ApplicantResponse` |
+| POST | `/api/applicants/:id/ssc-results` | Auth | `SscResultRequest` | `SscResultResponse` |
+| GET | `/api/applicants/:id/ssc-results` | Auth | — | `SscResultResponse` |
+| PUT | `/api/applicants/:id/ssc-results` | Auth | `SscResultRequest` | `SscResultResponse` |
+| PUT | `/api/applicants/:id/ssc-results/verify` | ADMIN, ADMISSION | — | `SscResultResponse` |
+| (Same pattern for HSC results) | | | | |
+| POST | `/api/applicant-documents` | Auth | `ApplicantDocumentRequest` | `ApplicantDocumentResponse` |
+| GET | `/api/applicant-documents/applicant/:id` | Auth | — | `List<ApplicantDocumentResponse>` |
+| PUT | `/api/applicant-documents/:id/verify` | ADMIN, ADMISSION | — | `ApplicantDocumentResponse` |
+| POST | `/api/merit-lists/generate/:circularId` | ADMIN, ADMISSION | — | `List<MeritListResponse>` |
+| POST | `/api/merit-lists/publish/:circularId` | ADMIN, ADMISSION | — | void |
+| GET | `/api/merit-lists/circular/:id` | Public | — | `List<MeritListResponse>` |
+| GET | `/api/merit-lists/circular/:id/department/:deptId` | Public | — | `List<MeritListResponse>` |
+| GET | `/api/merit-lists/applicant/:id` | Public | — | `MeritListResponse` |
+| POST | `/api/admit-cards/generate/:applicantId` | ADMIN, ADMISSION | — | `AdmitCardResponse` |
+| GET | `/api/admit-cards/applicant/:id` | Auth | — | `AdmitCardResponse` |
+
+### Faculty/Department/DocumentType (all public GET)
+| Method | Endpoint | Auth | Request |
+|---|---|---|---|
+| POST/PUT/DELETE | `/api/faculties/**` | ADMIN | `FacultyRequest` |
+| GET | `/api/faculties/**` | Public | — |
+| POST/PUT/DELETE | `/api/departments/**` | ADMIN | `DepartmentRequest` |
+| GET | `/api/departments/**` | Public | — |
+| POST/PUT/DELETE | `/api/document-types/**` | ADMIN | `DocumentTypeRequest` |
+| GET | `/api/document-types/**` | Public | — |
+
+### Student
+| Method | Endpoint | Auth |
+|---|---|---|
+| POST | `/api/students/enroll/:applicantId` | ADMIN, ADMISSION |
+| GET | `/api/students/:id` | ADMIN, REGISTRAR, Owner |
+| GET | `/api/students/user/:userId` | ADMIN, REGISTRAR, Owner |
+| GET | `/api/students/registration/:regNo` | ADMIN, REGISTRAR, Owner |
+| GET | `/api/students` | ADMIN, REGISTRAR |
+| PUT | `/api/students/:id/profile` | ADMIN, REGISTRAR, Owner |
+| DELETE | `/api/students/:id` | ADMIN |
+
+### HRM
+| Method | Endpoint | Auth |
+|---|---|---|
+| POST | `/api/employees` | HR, ADMIN |
+| GET | `/api/employees/:id` | HR, ADMIN, Owner |
+| GET | `/api/employees` | HR, ADMIN |
+| GET | `/api/employees/me` | Auth |
+| PUT | `/api/employees/:id` | HR, ADMIN |
+| DELETE | `/api/employees/:id` | ADMIN |
+| POST | `/api/attendance/check-in` | Auth |
+| POST | `/api/attendance/check-out` | Auth |
+| GET | `/api/attendance/employee/:id` | HR, ADMIN, Owner |
+| POST | `/api/leave-requests` | Auth |
+| GET | `/api/leave-requests/employee/:id` | Auth |
+| POST | `/api/leave-requests/:id/approve` | HR, ADMIN |
+| POST | `/api/leave-requests/:id/reject` | HR, ADMIN |
+| POST/GET | `/api/designations/**` | HR, ADMIN |
+| POST/GET | `/api/grades/**` | HR, ADMIN |
+| POST | `/api/promotions` | HR, ADMIN |
+| GET | `/api/promotions/employee/:id` | Auth |
+| POST | `/api/promotions/:id/apply` | HR, ADMIN |
+| POST | `/api/separations` | HR, ADMIN |
+| GET | `/api/separations/employee/:id` | Auth |
+| POST | `/api/separations/:id/approve` | HR, ADMIN |
+| POST/GET | `/api/appraisals/**` | HR, ADMIN |
+| POST/GET | `/api/job-postings/**` | HR, ADMIN (create), Public (view) |
+| POST | `/api/job-postings/:id/apply` | Auth |
+| GET | `/api/approval-workflows/:entityType/:entityId` | Auth |
+| POST | `/api/approval-workflows/step/action` | HR, ADMIN |
+
+### Academic
+| Method | Endpoint | Auth |
+|---|---|---|
+| POST/GET | `/api/academic-sessions/**` | ADMIN |
+| POST/GET | `/api/courses/**` | ADMIN, FACULTY |
+| GET | `/api/courses/year-level/:id` | Public |
+| GET | `/api/courses/department/:id` | Public |
+| POST/GET/DELETE | `/api/course-teachers/**` | ADMIN, FACULTY |
+| POST | `/api/student-results` | ADMIN, FACULTY |
+| GET | `/api/student-results/student/:id/session/:id` | Auth |
+| POST | `/api/student-results/publish/student/:id/session/:id` | ADMIN, FACULTY |
+| POST/GET | `/api/year-levels/**` | ADMIN, FACULTY |
+| GET | `/api/year-results/student/:id` | ADMIN, FACULTY, Student Owner |
+
+### Payroll
+| Method | Endpoint | Auth |
+|---|---|---|
+| POST | `/api/payroll/run` | PAYROLL, ADMIN |
+| GET | `/api/payroll/runs/:runId/payslips` | Auth |
+| GET | `/api/payroll/employee/:id/payslips` | Auth |
+| POST/GET | `/api/salary-structures/**` | PAYROLL, ADMIN |
+
+### Payment
+| Method | Endpoint | Auth |
+|---|---|---|
+| POST | `/api/payments/initiate` | Auth |
+| GET | `/api/payments/:transactionId` | ADMIN, PAYROLL, ADMISSION, Owner |
+
+### Notification
+| Method | Endpoint | Auth |
+|---|---|---|
+| GET | `/api/notifications` | Auth |
+| GET | `/api/notifications/unread-count` | Auth |
+| POST | `/api/notifications/:id/read` | Owner |
+
+### Audit
+| Method | Endpoint | Auth |
+|---|---|---|
+| GET | `/api/audit-logs` | ADMIN |
+
+---
+
+## 6. Implementation Phases
+
+### Phase 1 - Foundation (Estimated: Day 1-2)
+1. Scaffold Angular project, install deps (Bootstrap 5, crypto-js)
+2. Create all TypeScript interfaces/models matching every DTO
+3. Create all enums matching Java enums
+4. Implement `CryptoService` (AES encryption of passwords)
+5. Implement `AuthService`, `auth.interceptor.ts`, `error.interceptor.ts`
+6. Implement `authGuard`, `roleGuard`, `permissionGuard`
+7. Implement `HasRoleDirective`
+8. Create shared components: navbar, sidebar, pagination, loading-spinner, data-table, confirm-dialog
+
+### Phase 2 - Auth & Layout (Day 3)
+1. Login page with CryptoJS-encrypted password
+2. Register page
+3. Role-based routing after login (decode JWT → redirect)
+4. Admin layout with sidebar navigation
+5. Student layout
+6. Faculty layout
+7. JWT refresh token flow
+
+### Phase 3 - Admin Module (Day 4-5)
+1. Admin dashboard with summary cards
+2. Faculty CRUD (list/create/edit/delete with DataTable + pagination)
+3. Department CRUD (filtered by faculty)
+4. Document Type CRUD
+5. Grade CRUD
+6. Designation CRUD
+7. Academic Session management
+
+### Phase 4 - Admission Module (Day 6-8)
+1. Admission Circular list/create/edit (with date pickers, faculty dropdown)
+2. Applicant list with status badges
+3. Applicant detail view (profile, SSC/HSC results, documents, merit score)
+4. SSC/HSC result entry form
+5. Document upload & verification
+6. Merit list generation & publish
+7. Admit card generation
+
+### Phase 5 - Student Module (Day 9)
+1. Student dashboard
+2. Student profile (view/edit)
+3. Student results by session
+4. Year-wise results
+
+### Phase 6 - HRM Module (Day 10-13)
+1. Employee CRUD with designation/grade dropdowns
+2. Attendance check-in/check-out with date range filter
+3. Leave request list, approve/reject
+4. Promotion initiate & apply
+5. Separation initiate & approve
+6. Appraisal management
+7. Job posting CRUD + application tracking + interview scheduling
+8. Approval workflow view
+
+### Phase 7 - Academic Module (Day 14-15)
+1. Course CRUD by year-level and department
+2. Course-teacher assignment
+3. Student result entry form (bulk)
+4. Year-level management
+5. Year-result view for students
+
+### Phase 8 - Payroll & Payment (Day 16-17)
+1. Payroll run trigger (month/year selector)
+2. Payslip list per run and per employee
+3. Salary structure CRUD
+4. Payment initiation (SSLCommerz redirect flow)
+5. Payment status display
+
+### Phase 9 - Notifications & Polish (Day 18-19)
+1. Notification panel (bell icon with unread count badge)
+2. Mark as read
+3. Socket.IO integration for real-time notifications
+4. Audit log viewer (admin only)
+5. Toast notification service
+6. Loading states, empty states, error states
+7. Responsive design polish
+
+### Phase 10 - Final (Day 20)
+1. Route-level lazy loading verification
+2. Full auth flow testing (login → access → refresh → logout)
+3. Role-based menu visibility testing
+4. CryptoJS encryption verification
+5. Build optimization
+
+---
+
+## 7. CryptoJS Integration Detail
+
+```typescript
+// crypto.service.ts
+import * as CryptoJS from 'crypto-js';
+
+@Injectable({ providedIn: 'root' })
+export class CryptoService {
+  private readonly SECRET_KEY = 'ums-frontend-secret-2026';
+
+  encrypt(data: string): string {
+    return CryptoJS.AES.encrypt(data, this.SECRET_KEY).toString();
+  }
+
+  decrypt(ciphertext: string): string {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, this.SECRET_KEY);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  }
+}
+```
+
+**Usage in login:**
+```typescript
+const encryptedPassword = this.cryptoService.encrypt(this.loginForm.value.password);
+this.authService.login(email, encryptedPassword).subscribe(...)
+```
+
+---
+
+## Key Design Decisions
+
+1. **Lazy loading** — Each feature module uses `loadComponent`/`loadChildren` in routes
+2. **Bootstrap 5** — No Angular Material conflict; clean, responsive, widely known
+3. **JWT decode client-side** — Store in `AuthService`, expose `getRoles()`, `getEmail()`, `getUserId()`
+4. **Refresh token in localStorage** — Access token in memory only (lost on refresh, re-fetched)
+5. **Owner-based routes** — Backend's `@resourceSecurity.isOwner(#id)` already checks; frontend just needs role guards
+6. **All public GETs** (faculties, departments, circulars, document-types, merit-lists) — No auth required; used on landing pages
+7. **ApiResponse<T>** — Every service method unwraps `.data` from the response
+
+---
+
+Shall I start implementing this plan? I can begin with Phase 1 (scaffolding, models, services, guards) and work through sequentially.
