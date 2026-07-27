@@ -16,10 +16,12 @@ import com.smartuniversity.security.repository.RoleRepository;
 import com.smartuniversity.security.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -31,19 +33,42 @@ public class ApplicantService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ApplicantMapper applicantMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public ApplicantService(ApplicantRepository applicantRepository,
                             AdmissionCircularRepository circularRepository,
                             DepartmentRepository departmentRepository,
                             UserRepository userRepository,
                             RoleRepository roleRepository,
-                            ApplicantMapper applicantMapper) {
+                            ApplicantMapper applicantMapper,
+                            PasswordEncoder passwordEncoder) {
         this.applicantRepository = applicantRepository;
         this.circularRepository = circularRepository;
         this.departmentRepository = departmentRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.applicantMapper = applicantMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional
+    public Long registerGuest(ApplicantRequest request) {
+        String guestEmail = "guest-" + UUID.randomUUID().toString().substring(0, 8) + "@admission.ums";
+        String guestPassword = UUID.randomUUID().toString().substring(0, 16);
+
+        Role applicantRole = roleRepository.findByName("APPLICANT")
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "name", "APPLICANT"));
+
+        User guestUser = User.builder()
+                .email(guestEmail)
+                .password(passwordEncoder.encode(guestPassword))
+                .enabled(true)
+                .accountNonLocked(true)
+                .roles(Set.of(applicantRole))
+                .build();
+
+        userRepository.save(guestUser);
+        return guestUser.getId();
     }
 
     @Transactional
@@ -71,6 +96,9 @@ public class ApplicantService {
         applicant.setUser(user);
         applicant.setCircular(circular);
         applicant.setApplicationNumber("APP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        if (applicant.getStatus() == null) {
+            applicant.setStatus(com.smartuniversity.common.enums.AdmissionStatus.REGISTRATION_OPEN);
+        }
 
         if (request.getPreferredDepartmentId() != null) {
             Department dept = departmentRepository.findById(request.getPreferredDepartmentId())

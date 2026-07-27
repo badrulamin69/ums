@@ -1,0 +1,2986 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.smartuniversity:smart-university >----------------
+[INFO] Building Smart University 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.7:run (default-cli) > test-compile @ smart-university >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ smart-university ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ smart-university ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ smart-university ---
+[INFO] Copying 2 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ smart-university ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.0.7:run (default-cli) < test-compile @ smart-university <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.7:run (default-cli) @ smart-university ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-07-28T05:35:40.562+06:00  INFO 11212 --- [smart-university] [           main] c.s.SmartUniversityApplication           : Starting SmartUniversityApplication using Java 21.0.10 with PID 11212 (F:\ng-sp_project\ums\target\classes started by hp in F:\ng-sp_project\ums)
+2026-07-28T05:35:40.567+06:00  INFO 11212 --- [smart-university] [           main] c.s.SmartUniversityApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-07-28T05:35:42.742+06:00  INFO 11212 --- [smart-university] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-28T05:35:43.030+06:00  INFO 11212 --- [smart-university] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 277 ms. Found 43 JPA repository interfaces.
+2026-07-28T05:35:43.997+06:00  INFO 11212 --- [smart-university] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8085 (http)
+2026-07-28T05:35:44.017+06:00  INFO 11212 --- [smart-university] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-28T05:35:44.017+06:00  INFO 11212 --- [smart-university] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-28T05:35:44.152+06:00  INFO 11212 --- [smart-university] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3509 ms
+2026-07-28T05:35:44.447+06:00  INFO 11212 --- [smart-university] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-07-28T05:35:44.531+06:00  INFO 11212 --- [smart-university] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.19.Final
+2026-07-28T05:35:45.198+06:00  INFO 11212 --- [smart-university] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-28T05:35:45.238+06:00  INFO 11212 --- [smart-university] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-28T05:35:45.443+06:00  INFO 11212 --- [smart-university] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@63ed5dae
+2026-07-28T05:35:45.445+06:00  INFO 11212 --- [smart-university] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-28T05:35:45.502+06:00  WARN 11212 --- [smart-university] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-28T05:35:45.525+06:00  INFO 11212 --- [smart-university] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/smart_university?createDatabaseIfNotExist=true&sslMode=DISABLED&allowPublicKeyRetrieval=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.44
+	Default catalog/schema: smart_university/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-28T05:35:47.654+06:00  INFO 11212 --- [smart-university] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    alter table admission_circulars 
+       drop 
+       foreign key FK7l0g12fivnhson26q1ksakp41
+Hibernate: 
+    alter table admit_cards 
+       drop 
+       foreign key FKs76dqvp787g440vcudv30xnj5
+Hibernate: 
+    alter table applicant_documents 
+       drop 
+       foreign key FKalk36pkidjiti0lid91xbfk12
+Hibernate: 
+    alter table applicants 
+       drop 
+       foreign key FKm1gtnawphv7jhnxpr40352ahg
+Hibernate: 
+    alter table applicants 
+       drop 
+       foreign key FKmcjwwehk3btjpijnro31kd33o
+Hibernate: 
+    alter table applicants 
+       drop 
+       foreign key FKs48x9ywgx7l6mg1egokmys0gp
+Hibernate: 
+    alter table appraisals 
+       drop 
+       foreign key FKg8i8raa6mdmx3meqvu1d0mb3l
+Hibernate: 
+    alter table appraisals 
+       drop 
+       foreign key FKfwrga0h8bs34kmtb0blo4wvnu
+Hibernate: 
+    alter table approval_steps 
+       drop 
+       foreign key FKpe7uonacmw4g3aglso2ypaloa
+Hibernate: 
+    alter table approval_steps 
+       drop 
+       foreign key FKokr9wrg9c3q6l3mguosyqwh23
+Hibernate: 
+    alter table approval_workflows 
+       drop 
+       foreign key FKpoy2m5n7edkds4l47ir1dah31
+Hibernate: 
+    alter table attendances 
+       drop 
+       foreign key FK2mia0pcnmy2nddwedvfrt0w08
+Hibernate: 
+    alter table course_teachers 
+       drop 
+       foreign key FK9kd9vdywkoxu7ib2k5lltjpo4
+Hibernate: 
+    alter table course_teachers 
+       drop 
+       foreign key FK84v77efghiwpxgicxggm5rpdv
+Hibernate: 
+    alter table course_teachers 
+       drop 
+       foreign key FKnbwgdyvnaajmgvaoecywnx7f7
+Hibernate: 
+    alter table courses 
+       drop 
+       foreign key FK9xo6k0448e10fhde4awrxiiym
+Hibernate: 
+    alter table departments 
+       drop 
+       foreign key FK6xpnvjcfa3l9gnqqb3x8v28iv
+Hibernate: 
+    alter table employee_face_data 
+       drop 
+       foreign key FK117ogj8ymdguplbgrrnswi8fb
+Hibernate: 
+    alter table employees 
+       drop 
+       foreign key FKe4i9i8vu1j96m71g4v98kqirb
+Hibernate: 
+    alter table employees 
+       drop 
+       foreign key FKpuq5iee51npa3gies21htqsj
+Hibernate: 
+    alter table employees 
+       drop 
+       foreign key FK69x3vjuy1t5p18a5llb8h2fjx
+Hibernate: 
+    alter table hsc_results 
+       drop 
+       foreign key FK473l9aeu5kie9h6fb897xgu4a
+Hibernate: 
+    alter table interviews 
+       drop 
+       foreign key FK850hra87q7m9llxgpv9awgd8
+Hibernate: 
+    alter table job_applications 
+       drop 
+       foreign key FKfjwyy10f2yywhxflbf9trb6nb
+Hibernate: 
+    alter table leave_balances 
+       drop 
+       foreign key FKmvepkwsegu6bt3ps5rfh1dx92
+Hibernate: 
+    alter table leave_balances 
+       drop 
+       foreign key FK86791wotycqa54js45s9396wy
+Hibernate: 
+    alter table leave_requests 
+       drop 
+       foreign key FKrxff2xg1kffbjfh5maxwoqyhw
+Hibernate: 
+    alter table leave_requests 
+       drop 
+       foreign key FK26il0qrl79p6etqwn0ae6l43b
+Hibernate: 
+    alter table leave_requests 
+       drop 
+       foreign key FKmnd8tl6o82j56gema2u50vvuu
+Hibernate: 
+    alter table merit_lists 
+       drop 
+       foreign key FKksf18quobitc8r7pnsrwkwylb
+Hibernate: 
+    alter table merit_lists 
+       drop 
+       foreign key FKixn6qlcjgmfk6l876h3c04iil
+Hibernate: 
+    alter table merit_lists 
+       drop 
+       foreign key FKr3cgr69ikbgcwks7kbiejlp
+Hibernate: 
+    alter table payments 
+       drop 
+       foreign key FKj94hgy9v5fw1munb90tar2eje
+Hibernate: 
+    alter table payslips 
+       drop 
+       foreign key FKi2u90djkfkqooebb9b26gxqmi
+Hibernate: 
+    alter table payslips 
+       drop 
+       foreign key FKmaj3wje7q7n9vsjbjx91pmmrj
+Hibernate: 
+    alter table promotion_history 
+       drop 
+       foreign key FKjtux73gsdgc8bhu8opays69he
+Hibernate: 
+    alter table promotion_history 
+       drop 
+       foreign key FKehr0pan5jvfgxfrebjns2fky6
+Hibernate: 
+    alter table promotion_history 
+       drop 
+       foreign key FK1rsr3f5ayyc6f2tcuyqu1tsaf
+Hibernate: 
+    alter table promotion_history 
+       drop 
+       foreign key FKagbfwm7pxhcb55h33pkjtx0b3
+Hibernate: 
+    alter table promotion_history 
+       drop 
+       foreign key FKnpbu5qv8301cstfhf71est0kq
+Hibernate: 
+    alter table role_permissions 
+       drop 
+       foreign key FKn5fotdgk8d1xvo8nav9uv3muc
+Hibernate: 
+    alter table salary_structures 
+       drop 
+       foreign key FKo4d546x06a60iw1ycdvyb87cb
+Hibernate: 
+    alter table separations 
+       drop 
+       foreign key FKpf5aro64uyxromhges1w5gs7o
+Hibernate: 
+    alter table separations 
+       drop 
+       foreign key FKmqteml8rrmr3c73sip7rm5nbv
+Hibernate: 
+    alter table ssc_results 
+       drop 
+       foreign key FK5dimv5vr8629oh7n8t2wcrya5
+Hibernate: 
+    alter table student_attendances 
+       drop 
+       foreign key FK8o64c9gsmi8bnsla50gwb91vt
+Hibernate: 
+    alter table student_face_data 
+       drop 
+       foreign key FKee4k4l3t33203v05mo5mh3qee
+Hibernate: 
+    alter table student_results 
+       drop 
+       foreign key FKo6wv07w6cwvms8pa7iruc0n2e
+Hibernate: 
+    alter table student_results 
+       drop 
+       foreign key FK40dq7pytgqje0bq2vca8m0i8r
+Hibernate: 
+    alter table student_results 
+       drop 
+       foreign key FKnoudxmllorsxsq9hpysj3tbtd
+Hibernate: 
+    alter table students 
+       drop 
+       foreign key FKrxh0jjucq49lwfc73215523hl
+Hibernate: 
+    alter table students 
+       drop 
+       foreign key FKdt1cjx5ve5bdabmuuf3ibrwaq
+Hibernate: 
+    alter table user_roles 
+       drop 
+       foreign key FKh8ciramu9cc9q3qcqiv4ue8a6
+Hibernate: 
+    alter table user_roles 
+       drop 
+       foreign key FKhfh9dx7w3ubf1co1vdev94g3f
+Hibernate: 
+    alter table year_levels 
+       drop 
+       foreign key FK7gsqg2er130jh3klxskroa6ix
+Hibernate: 
+    alter table year_results 
+       drop 
+       foreign key FKha0lvaystdrkbhb7ml2abn20
+Hibernate: 
+    alter table year_results 
+       drop 
+       foreign key FKa1seke1oorqj359wupisoyvj5
+Hibernate: 
+    alter table year_results 
+       drop 
+       foreign key FKbuo4algerqy2nsl4xdrf1sw8w
+Hibernate: 
+    drop table if exists academic_sessions
+Hibernate: 
+    drop table if exists admission_circulars
+Hibernate: 
+    drop table if exists admit_cards
+Hibernate: 
+    drop table if exists applicant_documents
+Hibernate: 
+    drop table if exists applicants
+Hibernate: 
+    drop table if exists appraisals
+Hibernate: 
+    drop table if exists approval_steps
+Hibernate: 
+    drop table if exists approval_workflows
+Hibernate: 
+    drop table if exists attendances
+Hibernate: 
+    drop table if exists audit_logs
+Hibernate: 
+    drop table if exists course_teachers
+Hibernate: 
+    drop table if exists courses
+Hibernate: 
+    drop table if exists departments
+Hibernate: 
+    drop table if exists designations
+Hibernate: 
+    drop table if exists document_types
+Hibernate: 
+    drop table if exists employee_face_data
+Hibernate: 
+    drop table if exists employees
+Hibernate: 
+    drop table if exists faculties
+Hibernate: 
+    drop table if exists grades
+Hibernate: 
+    drop table if exists hsc_results
+Hibernate: 
+    drop table if exists interviews
+Hibernate: 
+    drop table if exists job_applications
+Hibernate: 
+    drop table if exists job_postings
+Hibernate: 
+    drop table if exists leave_balances
+Hibernate: 
+    drop table if exists leave_requests
+Hibernate: 
+    drop table if exists leave_types
+Hibernate: 
+    drop table if exists merit_lists
+Hibernate: 
+    drop table if exists notification_events
+Hibernate: 
+    drop table if exists payments
+Hibernate: 
+    drop table if exists payroll_runs
+Hibernate: 
+    drop table if exists payslips
+Hibernate: 
+    drop table if exists promotion_history
+Hibernate: 
+    drop table if exists role_permissions
+Hibernate: 
+    drop table if exists roles
+Hibernate: 
+    drop table if exists salary_structures
+Hibernate: 
+    drop table if exists separations
+Hibernate: 
+    drop table if exists ssc_results
+Hibernate: 
+    drop table if exists student_attendances
+Hibernate: 
+    drop table if exists student_face_data
+Hibernate: 
+    drop table if exists student_results
+Hibernate: 
+    drop table if exists students
+Hibernate: 
+    drop table if exists user_roles
+Hibernate: 
+    drop table if exists users
+Hibernate: 
+    drop table if exists year_levels
+Hibernate: 
+    drop table if exists year_results
+Hibernate: 
+    create table academic_sessions (
+        active bit not null,
+        end_year integer not null,
+        start_year integer not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        name varchar(20) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table admission_circulars (
+        active bit not null,
+        application_fee decimal(10,2) not null,
+        registration_end_date date not null,
+        registration_start_date date not null,
+        total_seats integer not null,
+        created_at datetime(6) not null,
+        faculty_id bigint not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        session varchar(20) not null,
+        title varchar(150) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table admit_cards (
+        downloaded bit not null,
+        applicant_id bigint not null,
+        created_at datetime(6) not null,
+        exam_date datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        admit_card_number varchar(50) not null,
+        exam_center varchar(255),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table applicant_documents (
+        verified bit not null,
+        applicant_id bigint not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        document_type varchar(50) not null,
+        file_url varchar(500) not null,
+        file_name varchar(255) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table applicants (
+        date_of_birth date not null,
+        email_verified bit not null,
+        merit_score float(53),
+        payment_completed bit not null,
+        circular_id bigint not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        preferred_department_id bigint,
+        updated_at datetime(6) not null,
+        user_id bigint not null,
+        application_number varchar(20),
+        phone varchar(20) not null,
+        first_name varchar(100) not null,
+        last_name varchar(100) not null,
+        middle_name varchar(100),
+        address varchar(500),
+        gender enum ('FEMALE','MALE','OTHER') not null,
+        status enum ('ADMITTED','DRAFT','PAYMENT_PENDING','PAYMENT_VERIFIED','REGISTRATION_CLOSED','REGISTRATION_OPEN','REJECTED','WAITLISTED') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table appraisals (
+        appraisal_date date not null,
+        review_year integer not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        id bigint not null auto_increment,
+        reviewer_id bigint,
+        updated_at datetime(6) not null,
+        comments varchar(1000),
+        rating enum ('EXCELLENT','GOOD','NEEDS_IMPROVEMENT','OUTSTANDING','SATISFACTORY','UNSATISFACTORY') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table approval_steps (
+        step_order integer not null,
+        approver_employee_id bigint,
+        created_at datetime(6) not null,
+        decided_at datetime(6),
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        workflow_id bigint not null,
+        approver_role varchar(50) not null,
+        comments varchar(500),
+        status enum ('APPROVED','CANCELLED','PENDING','REJECTED') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table approval_workflows (
+        created_at datetime(6) not null,
+        entity_id bigint not null,
+        id bigint not null auto_increment,
+        initiated_by bigint,
+        updated_at datetime(6) not null,
+        entity_type varchar(50) not null,
+        name varchar(50) not null,
+        comments varchar(500),
+        status enum ('APPROVED','CANCELLED','PENDING','REJECTED') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table attendances (
+        check_in_time time(0),
+        check_out_time time(0),
+        date date not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        status enum ('ABSENT','HOLIDAY','LATE','ON_LEAVE','PRESENT') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table audit_logs (
+        created_at datetime(6) not null,
+        entity_id bigint,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        action varchar(20) not null,
+        entity_type varchar(100),
+        performed_by varchar(100),
+        details varchar(2000),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table course_teachers (
+        academic_session_id bigint not null,
+        course_id bigint not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table courses (
+        active bit not null,
+        credit_hours float(53) not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        year_level_id bigint not null,
+        course_code varchar(20) not null,
+        name varchar(150) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table departments (
+        active bit not null,
+        created_at datetime(6) not null,
+        faculty_id bigint not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        code varchar(50),
+        name varchar(100) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table designations (
+        active bit not null,
+        level integer not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        name varchar(100) not null,
+        description varchar(500),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table document_types (
+        active bit not null,
+        required bit not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        name varchar(50) not null,
+        allowed_formats varchar(100),
+        description varchar(255),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table employee_face_data (
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        enrolled_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        face_encoding tinyblob not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table employees (
+        active bit not null,
+        date_of_birth date not null,
+        created_at datetime(6) not null,
+        designation_id bigint,
+        grade_id bigint,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        user_id bigint not null,
+        phone varchar(20) not null,
+        employee_id varchar(30) not null,
+        department varchar(100),
+        first_name varchar(100) not null,
+        last_name varchar(100) not null,
+        middle_name varchar(100),
+        employee_type enum ('ACADEMIC','ADMINISTRATIVE','CONTRACTUAL') not null,
+        gender enum ('FEMALE','MALE','OTHER') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table faculties (
+        active bit not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        code varchar(50),
+        name varchar(100) not null,
+        description varchar(500),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table grades (
+        active bit not null,
+        basic_salary decimal(38,2) not null,
+        house_allowance decimal(38,2) not null,
+        medical_allowance decimal(38,2) not null,
+        transport_allowance decimal(38,2) not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        name varchar(20) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table hsc_results (
+        exam_year integer not null,
+        gpa float(53) not null,
+        math_gpa float(53),
+        science_gpa float(53),
+        verified bit not null,
+        applicant_id bigint not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        registration_number varchar(30),
+        roll_number varchar(30) not null,
+        student_group varchar(30) not null,
+        board varchar(50) not null,
+        institution varchar(150),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table interviews (
+        completed bit not null,
+        score float(53),
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        job_application_id bigint not null,
+        scheduled_at datetime(6) not null,
+        updated_at datetime(6) not null,
+        notes varchar(500),
+        location varchar(255),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table job_applications (
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        job_posting_id bigint not null,
+        updated_at datetime(6) not null,
+        phone varchar(20),
+        applicant_name varchar(100) not null,
+        email varchar(100) not null,
+        resume_url varchar(500),
+        status enum ('INTERVIEWED','INTERVIEW_SCHEDULED','OFFERED','REJECTED','SUBMITTED','UNDER_REVIEW','WITHDRAWN') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table job_postings (
+        active bit not null,
+        closing_date date not null,
+        posting_date date not null,
+        vacancies integer not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        department varchar(100) not null,
+        title varchar(150) not null,
+        description varchar(2000),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table leave_balances (
+        total_days integer not null,
+        used_days integer not null,
+        year integer not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        id bigint not null auto_increment,
+        leave_type_id bigint not null,
+        updated_at datetime(6) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table leave_requests (
+        end_date date not null,
+        start_date date not null,
+        total_days integer not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        id bigint not null auto_increment,
+        leave_type_id bigint not null,
+        updated_at datetime(6) not null,
+        workflow_id bigint,
+        reason varchar(500),
+        status enum ('APPROVED','CANCELLED','PENDING','REJECTED') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table leave_types (
+        active bit not null,
+        default_days_per_year integer not null,
+        paid bit not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        name varchar(50) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table merit_lists (
+        merit_position integer not null,
+        merit_score float(53) not null,
+        published bit not null,
+        applicant_id bigint not null,
+        circular_id bigint not null,
+        created_at datetime(6) not null,
+        department_id bigint not null,
+        id bigint not null auto_increment,
+        published_at datetime(6),
+        updated_at datetime(6) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table notification_events (
+        is_read bit not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        read_at datetime(6),
+        updated_at datetime(6) not null,
+        user_id bigint not null,
+        title varchar(200) not null,
+        message varchar(2000) not null,
+        type enum ('ADMISSION_STATUS','DOCUMENT_VERIFICATION','GENERAL_NOTICE','INTERVIEW_SCHEDULED','LEAVE_APPROVED','LEAVE_REJECTED','PAYMENT_FAILED','PAYMENT_RECEIVED','PAYROLL_PROCESSED','PROMOTION_APPROVED','PROMOTION_REJECTED','RESULT_PUBLISHED') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table payments (
+        amount decimal(12,2) not null,
+        currency varchar(3) not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        paid_at datetime(6),
+        reference_entity_id bigint not null,
+        updated_at datetime(6) not null,
+        user_id bigint,
+        status varchar(30) not null,
+        reference_entity_type varchar(50) not null,
+        ssl_commerz_order_id varchar(100),
+        ssl_commerz_session_key varchar(100),
+        transaction_id varchar(100) not null,
+        payment_type enum ('ADMISSION_FEE','APPLICATION_FEE','SALARY_DISBURSEMENT','SEMESTER_FEE') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table payroll_runs (
+        completed bit not null,
+        run_date date not null,
+        total_employees integer not null,
+        year integer not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        month varchar(20) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table payslips (
+        basic_salary decimal(12,2) not null,
+        gross_salary decimal(12,2) not null,
+        house_allowance decimal(12,2) not null,
+        medical_allowance decimal(12,2) not null,
+        net_salary decimal(12,2) not null,
+        provident_fund_deduction decimal(12,2) not null,
+        tax_deduction decimal(12,2) not null,
+        transport_allowance decimal(12,2) not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        id bigint not null auto_increment,
+        payroll_run_id bigint not null,
+        updated_at datetime(6) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table promotion_history (
+        effective_date date not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        from_designation_id bigint,
+        from_grade_id bigint,
+        id bigint not null auto_increment,
+        to_designation_id bigint,
+        to_grade_id bigint,
+        updated_at datetime(6) not null,
+        remarks varchar(500),
+        type enum ('DEMOTION','PROMOTION') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table role_permissions (
+        role_id bigint not null,
+        permission enum ('ACADEMIC_READ','ACADEMIC_WRITE','ADMISSION_APPROVE','ADMISSION_READ','ADMISSION_WRITE','AUDIT_READ','HRM_APPROVE','HRM_READ','HRM_WRITE','NOTIFICATION_READ','NOTIFICATION_WRITE','PAYMENT_READ','PAYMENT_WRITE','PAYROLL_APPROVE','PAYROLL_READ','PAYROLL_WRITE','ROLE_DELETE','ROLE_READ','ROLE_WRITE','STUDENT_READ','STUDENT_WRITE','USER_DELETE','USER_READ','USER_WRITE')
+    ) engine=InnoDB
+Hibernate: 
+    create table roles (
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        name varchar(50) not null,
+        description varchar(255),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table salary_structures (
+        basic_salary decimal(12,2) not null,
+        house_allowance decimal(12,2) not null,
+        medical_allowance decimal(12,2) not null,
+        provident_fund_rate decimal(5,2) not null,
+        tax_rate decimal(5,2) not null,
+        transport_allowance decimal(12,2) not null,
+        created_at datetime(6) not null,
+        grade_id bigint not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table separations (
+        approved bit not null,
+        effective_date date not null,
+        created_at datetime(6) not null,
+        employee_id bigint not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        workflow_id bigint,
+        reason varchar(500),
+        type enum ('END_OF_CONTRACT','RESIGNATION','RETIREMENT','TERMINATION') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table ssc_results (
+        exam_year integer not null,
+        gpa float(53) not null,
+        math_gpa float(53),
+        science_gpa float(53),
+        verified bit not null,
+        applicant_id bigint not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        registration_number varchar(30),
+        roll_number varchar(30) not null,
+        student_group varchar(30) not null,
+        board varchar(50) not null,
+        institution varchar(150),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table student_attendances (
+        check_in_time time(0),
+        check_out_time time(0),
+        date date not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        student_id bigint not null,
+        updated_at datetime(6) not null,
+        status enum ('ABSENT','HOLIDAY','LATE','ON_LEAVE','PRESENT') not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table student_face_data (
+        created_at datetime(6) not null,
+        enrolled_at datetime(6) not null,
+        id bigint not null auto_increment,
+        student_id bigint not null,
+        updated_at datetime(6) not null,
+        face_encoding tinyblob not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table student_results (
+        credit_hours float(53) not null,
+        grade_point float(53) not null,
+        published bit not null,
+        letter_grade varchar(5),
+        academic_session_id bigint not null,
+        course_id bigint not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        student_id bigint not null,
+        updated_at datetime(6) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table students (
+        active bit not null,
+        cgpa float(53) not null,
+        applicant_id bigint,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        user_id bigint not null,
+        registration_number varchar(30) not null,
+        first_name varchar(100) not null,
+        last_name varchar(100) not null,
+        middle_name varchar(100),
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table user_roles (
+        role_id bigint not null,
+        user_id bigint not null,
+        primary key (role_id, user_id)
+    ) engine=InnoDB
+Hibernate: 
+    create table users (
+        account_non_locked bit not null,
+        enabled bit not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        email varchar(100) not null,
+        password varchar(255) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table year_levels (
+        year_number integer not null,
+        created_at datetime(6) not null,
+        department_id bigint not null,
+        id bigint not null auto_increment,
+        updated_at datetime(6) not null,
+        name varchar(100) not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    create table year_results (
+        gpa float(53) not null,
+        total_credit_hours float(53) not null,
+        total_grade_points float(53) not null,
+        academic_session_id bigint not null,
+        created_at datetime(6) not null,
+        id bigint not null auto_increment,
+        student_id bigint not null,
+        updated_at datetime(6) not null,
+        year_level_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+Hibernate: 
+    alter table academic_sessions 
+       add constraint UKj9y9qfyo0w72cx7cya8lbvr97 unique (name)
+Hibernate: 
+    alter table admit_cards 
+       add constraint UK7e1a41lqqlh9ca4lnseck87ti unique (applicant_id)
+Hibernate: 
+    alter table applicants 
+       add constraint UK8dcjpq7ywwkgrsen3kr8yfj57 unique (user_id)
+Hibernate: 
+    alter table attendances 
+       add constraint UK4u4q6w7su1akwvsishfyrj8ca unique (employee_id, date)
+Hibernate: 
+    alter table course_teachers 
+       add constraint UKq2egwr4qed9xkw6bs0t7if2is unique (course_id, employee_id, academic_session_id)
+Hibernate: 
+    alter table courses 
+       add constraint UKp02ts69sh53ptd62m3c67v0 unique (course_code)
+Hibernate: 
+    alter table designations 
+       add constraint UK9okejkx50y6e3udkhdib9xr70 unique (name)
+Hibernate: 
+    alter table document_types 
+       add constraint UKd3uw3lxi20y7tj8cm9p1ggtcy unique (name)
+Hibernate: 
+    alter table employee_face_data 
+       add constraint UKisonqk5bhycqrsl89af38b1aa unique (employee_id)
+Hibernate: 
+    alter table employees 
+       add constraint UKj2dmgsma6pont6kf7nic9elpd unique (user_id)
+Hibernate: 
+    alter table employees 
+       add constraint UKovvvp79dq21byf7svnuekb6iw unique (employee_id)
+Hibernate: 
+    alter table faculties 
+       add constraint UK4u63apqkwoe8yh153mwyq93f5 unique (name)
+Hibernate: 
+    alter table grades 
+       add constraint UKiy0ymcq1if9inn1kptglyvqp unique (name)
+Hibernate: 
+    alter table hsc_results 
+       add constraint UKthvh6c1sxv03wgdfudim4igko unique (applicant_id)
+Hibernate: 
+    alter table leave_balances 
+       add constraint UKbt0kj5tlqfwi0vny4dalj5b66 unique (employee_id, leave_type_id, year)
+Hibernate: 
+    alter table leave_types 
+       add constraint UKjk0ragqnw78kwwdopm49iea60 unique (name)
+Hibernate: 
+    alter table roles 
+       add constraint UKofx66keruapi6vyqpv6f2or37 unique (name)
+Hibernate: 
+    alter table salary_structures 
+       add constraint UKgrgy55s539icx2r8rcd95ujb8 unique (grade_id)
+Hibernate: 
+    alter table ssc_results 
+       add constraint UK4vol8mtporot3n6alby6pm30n unique (applicant_id)
+Hibernate: 
+    alter table student_attendances 
+       add constraint UKfpiknr9ilecd1pr23irqa7yy4 unique (student_id, date)
+Hibernate: 
+    alter table student_face_data 
+       add constraint UK6t7l7onjhdtckxbbp1nub8pbp unique (student_id)
+Hibernate: 
+    alter table student_results 
+       add constraint UKjksh08sph06iykws36vxt3lid unique (student_id, course_id, academic_session_id)
+Hibernate: 
+    alter table students 
+       add constraint UKhvwi3ngfe3i6us92h5ewnawb2 unique (applicant_id)
+Hibernate: 
+    alter table students 
+       add constraint UKg4fwvutq09fjdlb4bb0byp7t unique (user_id)
+Hibernate: 
+    alter table students 
+       add constraint UKkmee6ogkot83ohmeuid4c6omh unique (registration_number)
+Hibernate: 
+    alter table users 
+       add constraint UK6dotkott2kjsp8vw4d0m25fb7 unique (email)
+Hibernate: 
+    alter table year_results 
+       add constraint UK37mjq8vxa6w30pycu0unsbtb1 unique (student_id, year_level_id, academic_session_id)
+Hibernate: 
+    alter table admission_circulars 
+       add constraint FK7l0g12fivnhson26q1ksakp41 
+       foreign key (faculty_id) 
+       references faculties (id)
+Hibernate: 
+    alter table admit_cards 
+       add constraint FKs76dqvp787g440vcudv30xnj5 
+       foreign key (applicant_id) 
+       references applicants (id)
+Hibernate: 
+    alter table applicant_documents 
+       add constraint FKalk36pkidjiti0lid91xbfk12 
+       foreign key (applicant_id) 
+       references applicants (id)
+Hibernate: 
+    alter table applicants 
+       add constraint FKm1gtnawphv7jhnxpr40352ahg 
+       foreign key (circular_id) 
+       references admission_circulars (id)
+Hibernate: 
+    alter table applicants 
+       add constraint FKmcjwwehk3btjpijnro31kd33o 
+       foreign key (preferred_department_id) 
+       references departments (id)
+Hibernate: 
+    alter table applicants 
+       add constraint FKs48x9ywgx7l6mg1egokmys0gp 
+       foreign key (user_id) 
+       references users (id)
+Hibernate: 
+    alter table appraisals 
+       add constraint FKg8i8raa6mdmx3meqvu1d0mb3l 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table appraisals 
+       add constraint FKfwrga0h8bs34kmtb0blo4wvnu 
+       foreign key (reviewer_id) 
+       references employees (id)
+Hibernate: 
+    alter table approval_steps 
+       add constraint FKpe7uonacmw4g3aglso2ypaloa 
+       foreign key (approver_employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table approval_steps 
+       add constraint FKokr9wrg9c3q6l3mguosyqwh23 
+       foreign key (workflow_id) 
+       references approval_workflows (id)
+Hibernate: 
+    alter table approval_workflows 
+       add constraint FKpoy2m5n7edkds4l47ir1dah31 
+       foreign key (initiated_by) 
+       references employees (id)
+Hibernate: 
+    alter table attendances 
+       add constraint FK2mia0pcnmy2nddwedvfrt0w08 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table course_teachers 
+       add constraint FK9kd9vdywkoxu7ib2k5lltjpo4 
+       foreign key (academic_session_id) 
+       references academic_sessions (id)
+Hibernate: 
+    alter table course_teachers 
+       add constraint FK84v77efghiwpxgicxggm5rpdv 
+       foreign key (course_id) 
+       references courses (id)
+Hibernate: 
+    alter table course_teachers 
+       add constraint FKnbwgdyvnaajmgvaoecywnx7f7 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table courses 
+       add constraint FK9xo6k0448e10fhde4awrxiiym 
+       foreign key (year_level_id) 
+       references year_levels (id)
+Hibernate: 
+    alter table departments 
+       add constraint FK6xpnvjcfa3l9gnqqb3x8v28iv 
+       foreign key (faculty_id) 
+       references faculties (id)
+Hibernate: 
+    alter table employee_face_data 
+       add constraint FK117ogj8ymdguplbgrrnswi8fb 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table employees 
+       add constraint FKe4i9i8vu1j96m71g4v98kqirb 
+       foreign key (designation_id) 
+       references designations (id)
+Hibernate: 
+    alter table employees 
+       add constraint FKpuq5iee51npa3gies21htqsj 
+       foreign key (grade_id) 
+       references grades (id)
+Hibernate: 
+    alter table employees 
+       add constraint FK69x3vjuy1t5p18a5llb8h2fjx 
+       foreign key (user_id) 
+       references users (id)
+Hibernate: 
+    alter table hsc_results 
+       add constraint FK473l9aeu5kie9h6fb897xgu4a 
+       foreign key (applicant_id) 
+       references applicants (id)
+Hibernate: 
+    alter table interviews 
+       add constraint FK850hra87q7m9llxgpv9awgd8 
+       foreign key (job_application_id) 
+       references job_applications (id)
+Hibernate: 
+    alter table job_applications 
+       add constraint FKfjwyy10f2yywhxflbf9trb6nb 
+       foreign key (job_posting_id) 
+       references job_postings (id)
+Hibernate: 
+    alter table leave_balances 
+       add constraint FKmvepkwsegu6bt3ps5rfh1dx92 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table leave_balances 
+       add constraint FK86791wotycqa54js45s9396wy 
+       foreign key (leave_type_id) 
+       references leave_types (id)
+Hibernate: 
+    alter table leave_requests 
+       add constraint FKrxff2xg1kffbjfh5maxwoqyhw 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table leave_requests 
+       add constraint FK26il0qrl79p6etqwn0ae6l43b 
+       foreign key (leave_type_id) 
+       references leave_types (id)
+Hibernate: 
+    alter table leave_requests 
+       add constraint FKmnd8tl6o82j56gema2u50vvuu 
+       foreign key (workflow_id) 
+       references approval_workflows (id)
+Hibernate: 
+    alter table merit_lists 
+       add constraint FKksf18quobitc8r7pnsrwkwylb 
+       foreign key (applicant_id) 
+       references applicants (id)
+Hibernate: 
+    alter table merit_lists 
+       add constraint FKixn6qlcjgmfk6l876h3c04iil 
+       foreign key (circular_id) 
+       references admission_circulars (id)
+Hibernate: 
+    alter table merit_lists 
+       add constraint FKr3cgr69ikbgcwks7kbiejlp 
+       foreign key (department_id) 
+       references departments (id)
+Hibernate: 
+    alter table payments 
+       add constraint FKj94hgy9v5fw1munb90tar2eje 
+       foreign key (user_id) 
+       references users (id)
+Hibernate: 
+    alter table payslips 
+       add constraint FKi2u90djkfkqooebb9b26gxqmi 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table payslips 
+       add constraint FKmaj3wje7q7n9vsjbjx91pmmrj 
+       foreign key (payroll_run_id) 
+       references payroll_runs (id)
+Hibernate: 
+    alter table promotion_history 
+       add constraint FKjtux73gsdgc8bhu8opays69he 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table promotion_history 
+       add constraint FKehr0pan5jvfgxfrebjns2fky6 
+       foreign key (from_designation_id) 
+       references designations (id)
+Hibernate: 
+    alter table promotion_history 
+       add constraint FK1rsr3f5ayyc6f2tcuyqu1tsaf 
+       foreign key (from_grade_id) 
+       references grades (id)
+Hibernate: 
+    alter table promotion_history 
+       add constraint FKagbfwm7pxhcb55h33pkjtx0b3 
+       foreign key (to_designation_id) 
+       references designations (id)
+Hibernate: 
+    alter table promotion_history 
+       add constraint FKnpbu5qv8301cstfhf71est0kq 
+       foreign key (to_grade_id) 
+       references grades (id)
+Hibernate: 
+    alter table role_permissions 
+       add constraint FKn5fotdgk8d1xvo8nav9uv3muc 
+       foreign key (role_id) 
+       references roles (id)
+Hibernate: 
+    alter table salary_structures 
+       add constraint FKo4d546x06a60iw1ycdvyb87cb 
+       foreign key (grade_id) 
+       references grades (id)
+Hibernate: 
+    alter table separations 
+       add constraint FKpf5aro64uyxromhges1w5gs7o 
+       foreign key (employee_id) 
+       references employees (id)
+Hibernate: 
+    alter table separations 
+       add constraint FKmqteml8rrmr3c73sip7rm5nbv 
+       foreign key (workflow_id) 
+       references approval_workflows (id)
+Hibernate: 
+    alter table ssc_results 
+       add constraint FK5dimv5vr8629oh7n8t2wcrya5 
+       foreign key (applicant_id) 
+       references applicants (id)
+Hibernate: 
+    alter table student_attendances 
+       add constraint FK8o64c9gsmi8bnsla50gwb91vt 
+       foreign key (student_id) 
+       references students (id)
+Hibernate: 
+    alter table student_face_data 
+       add constraint FKee4k4l3t33203v05mo5mh3qee 
+       foreign key (student_id) 
+       references students (id)
+Hibernate: 
+    alter table student_results 
+       add constraint FKo6wv07w6cwvms8pa7iruc0n2e 
+       foreign key (academic_session_id) 
+       references academic_sessions (id)
+Hibernate: 
+    alter table student_results 
+       add constraint FK40dq7pytgqje0bq2vca8m0i8r 
+       foreign key (course_id) 
+       references courses (id)
+Hibernate: 
+    alter table student_results 
+       add constraint FKnoudxmllorsxsq9hpysj3tbtd 
+       foreign key (student_id) 
+       references students (id)
+Hibernate: 
+    alter table students 
+       add constraint FKrxh0jjucq49lwfc73215523hl 
+       foreign key (applicant_id) 
+       references applicants (id)
+Hibernate: 
+    alter table students 
+       add constraint FKdt1cjx5ve5bdabmuuf3ibrwaq 
+       foreign key (user_id) 
+       references users (id)
+Hibernate: 
+    alter table user_roles 
+       add constraint FKh8ciramu9cc9q3qcqiv4ue8a6 
+       foreign key (role_id) 
+       references roles (id)
+Hibernate: 
+    alter table user_roles 
+       add constraint FKhfh9dx7w3ubf1co1vdev94g3f 
+       foreign key (user_id) 
+       references users (id)
+Hibernate: 
+    alter table year_levels 
+       add constraint FK7gsqg2er130jh3klxskroa6ix 
+       foreign key (department_id) 
+       references departments (id)
+Hibernate: 
+    alter table year_results 
+       add constraint FKha0lvaystdrkbhb7ml2abn20 
+       foreign key (academic_session_id) 
+       references academic_sessions (id)
+Hibernate: 
+    alter table year_results 
+       add constraint FKa1seke1oorqj359wupisoyvj5 
+       foreign key (student_id) 
+       references students (id)
+Hibernate: 
+    alter table year_results 
+       add constraint FKbuo4algerqy2nsl4xdrf1sw8w 
+       foreign key (year_level_id) 
+       references year_levels (id)
+2026-07-28T05:35:56.239+06:00  INFO 11212 --- [smart-university] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-28T05:35:56.345+06:00  INFO 11212 --- [smart-university] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-28T05:36:00.039+06:00  INFO 11212 --- [smart-university] [           main] c.c.socketio.SocketIOServer              : Session store / pubsub factory used: MemoryStoreFactory (local session store only)
+2026-07-28T05:36:00.295+06:00  INFO 11212 --- [smart-university] [           main] c.s.notification.socket.SocketIOConfig   : Socket.IO server started on port 9090
+2026-07-28T05:36:00.295+06:00  INFO 11212 --- [smart-university] [ntLoopGroup-2-1] c.c.socketio.SocketIOServer              : SocketIO server started at port: 9090
+2026-07-28T05:36:00.542+06:00  INFO 11212 --- [smart-university] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-07-28T05:36:00.813+06:00  WARN 11212 --- [smart-university] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-28T05:36:01.874+06:00  INFO 11212 --- [smart-university] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8085 (http) with context path '/'
+2026-07-28T05:36:01.880+06:00  INFO 11212 --- [smart-university] [           main] c.s.SmartUniversityApplication           : Started SmartUniversityApplication in 21.945 seconds (process running for 22.74)
+2026-07-28T05:36:01.894+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Starting database seeding...
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.478+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: ADMIN
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.494+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: STUDENT
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.501+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: EMPLOYEE
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.509+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: FACULTY
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.514+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: HR
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.523+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: PAYROLL
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.528+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: ADMISSION
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.538+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: APPLICANT
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.543+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: REGISTRAR
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        roles
+        (created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?)
+2026-07-28T05:36:02.548+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created role: SUPER_ADMIN
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    limit
+        ?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        users
+        (account_non_locked, created_at, email, enabled, password, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:02.683+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created user: admin@smartuniversity.edu with roles: [ADMIN]
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    limit
+        ?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        users
+        (account_non_locked, created_at, email, enabled, password, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:02.789+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created user: superadmin@smartuniversity.edu with roles: [SUPER_ADMIN, ADMIN]
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    limit
+        ?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        users
+        (account_non_locked, created_at, email, enabled, password, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:02.891+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created user: hr@smartuniversity.edu with roles: [HR]
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    limit
+        ?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        users
+        (account_non_locked, created_at, email, enabled, password, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:02.991+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Created user: admission@smartuniversity.edu with roles: [ADMISSION]
+Hibernate: 
+    select
+        count(*) 
+    from
+        faculties f1_0
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faculties
+        (active, code, created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faculties
+        (active, code, created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faculties
+        (active, code, created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faculties
+        (active, code, created_at, description, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        departments
+        (active, code, created_at, faculty_id, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:03.074+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Seeded 4 faculties and their departments.
+Hibernate: 
+    select
+        count(*) 
+    from
+        designations d1_0
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        designations
+        (active, created_at, description, level, name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        grades
+        (active, basic_salary, created_at, house_allowance, medical_allowance, name, transport_allowance, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        grades
+        (active, basic_salary, created_at, house_allowance, medical_allowance, name, transport_allowance, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        grades
+        (active, basic_salary, created_at, house_allowance, medical_allowance, name, transport_allowance, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        grades
+        (active, basic_salary, created_at, house_allowance, medical_allowance, name, transport_allowance, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        grades
+        (active, basic_salary, created_at, house_allowance, medical_allowance, name, transport_allowance, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:03.138+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Seeded 9 designations and 5 grades.
+Hibernate: 
+    select
+        count(*) 
+    from
+        document_types dt1_0
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        document_types
+        (active, allowed_formats, created_at, description, name, required, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        document_types
+        (active, allowed_formats, created_at, description, name, required, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        document_types
+        (active, allowed_formats, created_at, description, name, required, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        document_types
+        (active, allowed_formats, created_at, description, name, required, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        document_types
+        (active, allowed_formats, created_at, description, name, required, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:03.161+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Seeded 5 document types.
+Hibernate: 
+    select
+        count(*) 
+    from
+        admission_circulars ac1_0
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.code=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.code=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        admission_circulars
+        (active, application_fee, created_at, faculty_id, registration_end_date, registration_start_date, session, title, total_seats, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        admission_circulars
+        (active, application_fee, created_at, faculty_id, registration_end_date, registration_start_date, session, title, total_seats, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        admission_circulars
+        (active, application_fee, created_at, faculty_id, registration_end_date, registration_start_date, session, title, total_seats, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:03.192+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Seeded 3 admission circulars.
+Hibernate: 
+    select
+        count(*) 
+    from
+        academic_sessions as1_0
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        academic_sessions
+        (active, created_at, end_year, name, start_year, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-07-28T05:36:03.204+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Seeded academic session: Spring 2026
+2026-07-28T05:36:03.204+06:00  INFO 11212 --- [smart-university] [           main] c.s.config.DataInitializer               : Database seeding complete.
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        role_permissions
+        (role_id, permission) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+2026-07-28T05:36:39.036+06:00  INFO 11212 --- [smart-university] [nio-8085-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-28T05:36:39.036+06:00  INFO 11212 --- [smart-university] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-28T05:36:39.038+06:00  INFO 11212 --- [smart-university] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    select
+        p1_0.role_id,
+        p1_0.permission 
+    from
+        role_permissions p1_0 
+    where
+        p1_0.role_id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        users
+        (account_non_locked, created_at, email, enabled, password, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    where
+        ac1_0.id=?
+Hibernate: 
+    select
+        a1_0.id,
+        a1_0.address,
+        a1_0.application_number,
+        a1_0.circular_id,
+        a1_0.created_at,
+        a1_0.date_of_birth,
+        a1_0.email_verified,
+        a1_0.first_name,
+        a1_0.gender,
+        a1_0.last_name,
+        a1_0.merit_score,
+        a1_0.middle_name,
+        a1_0.payment_completed,
+        a1_0.phone,
+        a1_0.preferred_department_id,
+        a1_0.status,
+        a1_0.updated_at,
+        a1_0.user_id 
+    from
+        applicants a1_0 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        applicants
+        (address, application_number, circular_id, created_at, date_of_birth, email_verified, first_name, gender, last_name, merit_score, middle_name, payment_completed, phone, preferred_department_id, status, updated_at, user_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?

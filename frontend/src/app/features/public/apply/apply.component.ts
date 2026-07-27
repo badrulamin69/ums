@@ -2,7 +2,6 @@ import { Component, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CrudService } from '../../../core/services/crud.service';
-import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 interface Circular {
@@ -11,6 +10,9 @@ interface Circular {
   applicationFee: number; totalSeats: number; active: boolean;
 }
 interface Department { id: number; name: string; code: string; facultyId: number; }
+interface DocumentUploadResponse { id: number; applicantId: number; documentType: string; fileName: string; fileUrl: string; verified: boolean; }
+interface SscResultResponse { id: number; applicantId: number; board: string; examYear: number; rollNumber: string; registrationNumber: string; group: string; institution: string; gpa: number; scienceGpa: number; mathGpa: number; verified: boolean; }
+interface HscResultResponse { id: number; applicantId: number; board: string; examYear: number; rollNumber: string; registrationNumber: string; group: string; institution: string; gpa: number; scienceGpa: number; mathGpa: number; verified: boolean; }
 
 @Component({
   selector: 'app-apply',
@@ -19,19 +21,7 @@ interface Department { id: number; name: string; code: string; facultyId: number
   template: `
     <div class="page">
       <div class="page-inner">
-        @if (!auth.isLoggedIn()) {
-          <div class="auth-required animate-fade-in-up">
-            <div class="auth-card">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.5"/></svg>
-              <h2>Sign In Required</h2>
-              <p>You need to sign in to apply for admission. If you don't have an account, create one first.</p>
-              <div class="auth-actions">
-                <a routerLink="/login" class="btn btn-gold">Sign In</a>
-                <a routerLink="/register" class="btn btn-ghost">Create Account</a>
-              </div>
-            </div>
-          </div>
-        } @else if (submitted()) {
+        @if (submitted()) {
           <div class="success-state animate-fade-in-up">
             <div class="success-card">
               <div class="success-icon">
@@ -103,8 +93,137 @@ interface Department { id: number; name: string; code: string; facultyId: number
                     </div>
                   </div>
                   <div class="form-group">
+                    <label class="form-label">National ID / Birth Certificate</label>
+                    <input type="text" class="form-control" [(ngModel)]="form.nationalId" name="nationalId" placeholder="NID or Birth Certificate number">
+                  </div>
+                  <div class="form-group">
                     <label class="form-label">Address</label>
                     <input type="text" class="form-control" [(ngModel)]="form.address" name="address" placeholder="Your address">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Profile Photo</label>
+                    <input type="file" class="form-control" (change)="onPhotoSelected($event)" accept=".jpg,.jpeg,.png">
+                    @if (photoPreview()) {
+                      <div class="photo-preview">
+                        <img [src]="photoPreview()" alt="Photo preview" class="preview-img">
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h3 class="section-title">SSC / O-Level Result</h3>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Board</label>
+                      <select class="form-select" [(ngModel)]="sscForm.board" name="sscBoard">
+                        <option value="">Select board</option>
+                        <option value="Dhaka">Dhaka</option>
+                        <option value="Comilla">Comilla</option>
+                        <option value="Chittagong">Chittagong</option>
+                        <option value="Jessore">Jessore</option>
+                        <option value="Rajshahi">Rajshahi</option>
+                        <option value="Barisal">Barisal</option>
+                        <option value="Sylhet">Sylhet</option>
+                        <option value="Dinajpur">Dinajpur</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Exam Year</label>
+                      <input type="number" class="form-control" [(ngModel)]="sscForm.examYear" name="sscExamYear" min="2000">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Roll Number</label>
+                      <input type="text" class="form-control" [(ngModel)]="sscForm.rollNumber" name="sscRollNumber">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Registration Number</label>
+                      <input type="text" class="form-control" [(ngModel)]="sscForm.registrationNumber" name="sscRegistrationNumber">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Group</label>
+                      <input type="text" class="form-control" [(ngModel)]="sscForm.group" name="sscGroup" placeholder="e.g. Science">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Institution</label>
+                      <input type="text" class="form-control" [(ngModel)]="sscForm.institution" name="sscInstitution">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">GPA</label>
+                      <input type="number" class="form-control" [(ngModel)]="sscForm.gpa" name="sscGpa" min="0" max="5" step="0.01">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Science GPA</label>
+                      <input type="number" class="form-control" [(ngModel)]="sscForm.scienceGpa" name="sscScienceGpa" min="0" max="5" step="0.01">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Math GPA</label>
+                      <input type="number" class="form-control" [(ngModel)]="sscForm.mathGpa" name="sscMathGpa" min="0" max="5" step="0.01">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h3 class="section-title">HSC / A-Level Result</h3>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Board</label>
+                      <select class="form-select" [(ngModel)]="hscForm.board" name="hscBoard">
+                        <option value="">Select board</option>
+                        <option value="Dhaka">Dhaka</option>
+                        <option value="Comilla">Comilla</option>
+                        <option value="Chittagong">Chittagong</option>
+                        <option value="Jessore">Jessore</option>
+                        <option value="Rajshahi">Rajshahi</option>
+                        <option value="Barisal">Barisal</option>
+                        <option value="Sylhet">Sylhet</option>
+                        <option value="Dinajpur">Dinajpur</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Exam Year</label>
+                      <input type="number" class="form-control" [(ngModel)]="hscForm.examYear" name="hscExamYear" min="2000">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Roll Number</label>
+                      <input type="text" class="form-control" [(ngModel)]="hscForm.rollNumber" name="hscRollNumber">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Registration Number</label>
+                      <input type="text" class="form-control" [(ngModel)]="hscForm.registrationNumber" name="hscRegistrationNumber">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Group</label>
+                      <input type="text" class="form-control" [(ngModel)]="hscForm.group" name="hscGroup" placeholder="e.g. Science">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Institution</label>
+                      <input type="text" class="form-control" [(ngModel)]="hscForm.institution" name="hscInstitution">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">GPA</label>
+                      <input type="number" class="form-control" [(ngModel)]="hscForm.gpa" name="hscGpa" min="0" max="5" step="0.01">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Science GPA</label>
+                      <input type="number" class="form-control" [(ngModel)]="hscForm.scienceGpa" name="hscScienceGpa" min="0" max="5" step="0.01">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Math GPA</label>
+                      <input type="number" class="form-control" [(ngModel)]="hscForm.mathGpa" name="hscMathGpa" min="0" max="5" step="0.01">
+                    </div>
                   </div>
                 </div>
 
@@ -151,12 +270,12 @@ interface Department { id: number; name: string; code: string; facultyId: number
     .page { padding: 3rem 2rem 5rem; }
     .page-inner { max-width: 1100px; margin: 0 auto; }
 
-    .auth-required, .success-state, .error-state {
+    .success-state, .error-state {
       display: flex;
       justify-content: center;
       padding: 4rem 0;
     }
-    .auth-card, .success-card {
+    .success-card {
       background: var(--color-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
@@ -165,23 +284,19 @@ interface Department { id: number; name: string; code: string; facultyId: number
       max-width: 420px;
       width: 100%;
     }
-    .auth-card svg, .success-icon svg {
-      color: var(--color-gold);
-      margin-bottom: 1.5rem;
-    }
     .success-icon svg { color: var(--color-success); }
-    .auth-card h2, .success-card h2, .error-state h2 {
+    .success-card h2, .error-state h2 {
       font-family: var(--font-display);
       font-size: var(--fs-h2);
       margin-bottom: 0.75rem;
     }
-    .auth-card p, .success-card p, .error-state p {
+    .success-card p, .error-state p {
       color: var(--color-text-secondary);
       font-size: var(--fs-small);
       line-height: 1.6;
       margin-bottom: 1.5rem;
     }
-    .auth-actions, .success-actions {
+    .success-actions {
       display: flex;
       gap: 0.75rem;
       justify-content: center;
@@ -296,6 +411,17 @@ interface Department { id: number; name: string; code: string; facultyId: number
     }
     .error-state .btn { margin-top: 0.5rem; }
 
+    .photo-preview {
+      margin-top: 0.5rem;
+    }
+    .preview-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+    }
+
     @media (max-width: 768px) {
       .apply-layout { grid-template-columns: 1fr; }
       .apply-sidebar { position: static; }
@@ -309,24 +435,38 @@ export class ApplyComponent implements OnInit {
   saving = signal(false);
   submitted = signal(false);
   circularId = 0;
+  applicantId: number | null = null;
+  photoFile = signal<File | null>(null);
+  photoPreview = signal<string | null>(null);
+  sscResult = signal<SscResultResponse | null>(null);
+  hscResult = signal<HscResultResponse | null>(null);
 
   form: any = {
     firstName: '', middleName: '', lastName: '',
     phone: '', gender: '', dateOfBirth: '',
-    address: '', circularId: 0, preferredDepartmentId: null,
+    address: '', nationalId: '', circularId: 0, preferredDepartmentId: null,
+  };
+
+  sscForm: any = {
+    board: '', examYear: new Date().getFullYear() - 5, rollNumber: '',
+    registrationNumber: '', group: '', institution: '',
+    gpa: 0, scienceGpa: 0, mathGpa: 0,
+  };
+
+  hscForm: any = {
+    board: '', examYear: new Date().getFullYear() - 2, rollNumber: '',
+    registrationNumber: '', group: '', institution: '',
+    gpa: 0, scienceGpa: 0, mathGpa: 0,
   };
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public auth: AuthService,
     private crud: CrudService,
     private toast: ToastService,
   ) {}
 
   ngOnInit(): void {
-    if (!this.auth.isLoggedIn()) return;
-
     this.circularId = Number(this.route.snapshot.paramMap.get('id'));
     this.form.circularId = this.circularId;
 
@@ -349,20 +489,105 @@ export class ApplyComponent implements OnInit {
            this.form.gender && this.form.dateOfBirth && this.form.circularId > 0;
   }
 
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.photoFile.set(file);
+      const reader = new FileReader();
+      reader.onload = () => this.photoPreview.set(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  }
+
   submit(): void {
     if (!this.isValid()) return;
     this.saving.set(true);
 
     this.crud.create<any, any>('applicants', this.form).subscribe({
-      next: () => {
-        this.toast.success('Application submitted successfully!');
-        this.submitted.set(true);
-        this.saving.set(false);
+      next: (res: any) => {
+        this.applicantId = res?.id ?? res?.data?.id;
+        this.toast.success('Application submitted!');
+        this.submitAdditionalData();
       },
       error: (err) => {
         this.saving.set(false);
         this.toast.error(err?.error?.message || 'Failed to submit application');
       },
     });
+  }
+
+  private submitAdditionalData(): void {
+    const id = this.applicantId;
+    if (!id) { this.saving.set(false); return; }
+
+    const tasks: Promise<void>[] = [];
+
+    if (this.photoFile()) {
+      tasks.push(this.uploadPhoto(id));
+    }
+
+    if (this.hasSscData()) {
+      tasks.push(this.submitSscResult(id));
+    }
+
+    if (this.hasHscData()) {
+      tasks.push(this.submitHscResult(id));
+    }
+
+    if (tasks.length === 0) {
+      this.saving.set(false);
+      this.submitted.set(true);
+      return;
+    }
+
+    Promise.all(tasks).then(() => {
+      this.saving.set(false);
+      this.submitted.set(true);
+    }).catch((err) => {
+      this.saving.set(false);
+      this.toast.error(err?.message || 'Some uploads failed');
+    });
+  }
+
+  private uploadPhoto(applicantId: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const file = this.photoFile();
+      if (!file) { resolve(); return; }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      this.crud.uploadFile<DocumentUploadResponse>('applicant-documents', formData).subscribe({
+        next: () => resolve(),
+        error: (err) => reject(err),
+      });
+    });
+  }
+
+  private submitSscResult(applicantId: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.crud.create<any, any>(`applicants/${applicantId}/ssc-results`, this.sscForm).subscribe({
+        next: () => resolve(),
+        error: (err) => reject(err),
+      });
+    });
+  }
+
+  private submitHscResult(applicantId: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.crud.create<any, any>(`applicants/${applicantId}/hsc-results`, this.hscForm).subscribe({
+        next: () => resolve(),
+        error: (err) => reject(err),
+      });
+    });
+  }
+
+  private hasSscData(): boolean {
+    return !!(this.sscForm.board || this.sscForm.rollNumber || this.sscForm.gpa);
+  }
+
+  private hasHscData(): boolean {
+    return !!(this.hscForm.board || this.hscForm.rollNumber || this.hscForm.gpa);
   }
 }

@@ -1,11 +1,13 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CrudService } from '../../../core/services/crud.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
 
 interface Applicant {
@@ -30,7 +32,7 @@ interface ExamResult { id: number; applicantId: number; board: string; examYear:
 @Component({
   selector: 'app-applicant-list',
   standalone: true,
-  imports: [FormsModule, DatePipe, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
+  imports: [FormsModule, DatePipe, RouterLink, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
   template: `
     <div class="page animate-fade-in-up">
       <app-page-header title="Applicants" subtitle="Review and manage admission applicants" />
@@ -71,54 +73,55 @@ interface ExamResult { id: number; applicantId: number; board: string; examYear:
 
             <div class="modal-body">
               @if (activeTab() === 'documents') {
-                <div class="upload-section">
-                  <h3 class="section-title">Upload New Document</h3>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label class="form-label">Document Type <span class="required">*</span></label>
-                      <select class="form-control" [(ngModel)]="uploadDocType">
-                        <option value="">Select type</option>
-                        @for (dt of documentTypes(); track dt.id) {
-                          <option [value]="dt.name">{{ dt.name }}</option>
-                        }
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">File <span class="required">*</span></label>
-                      <input type="file" class="form-control" (change)="onFileSelected($event)" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-                    </div>
-                  </div>
-                  <button class="btn btn-gold btn-sm" (click)="uploadDocument()" [disabled]="!uploadDocType || !selectedFile() || uploading()">
-                    @if (uploading()) { <span class="spinner-sm"></span> Uploading... } @else { Upload }
-                  </button>
-                </div>
+               @if (isAdmin()) {
+                 <div class="upload-section">
+                   <h3 class="section-title">Upload New Document</h3>
+                   <div class="form-row">
+                     <div class="form-group">
+                       <label class="form-label">Document Type <span class="required">*</span></label>
+                       <select class="form-control" [(ngModel)]="uploadDocType">
+                         <option value="">Select type</option>
+                         @for (dt of documentTypes(); track dt.id) {
+                           <option [value]="dt.name">{{ dt.name }}</option>
+                         }
+                       </select>
+                     </div>
+                     <div class="form-group">
+                       <label class="form-label">File <span class="required">*</span></label>
+                       <input type="file" class="form-control" (change)="onFileSelected($event)" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                     </div>
+                   </div>
+                   <button class="btn btn-gold btn-sm" (click)="uploadDocument()" [disabled]="!uploadDocType || !selectedFile() || uploading()">
+                     @if (uploading()) { <span class="spinner-sm"></span> Uploading... } @else { Upload }
+                   </button>
+                 </div>
 
-                <div class="documents-section">
-                  <h3 class="section-title">Uploaded Documents</h3>
-                  @if (documents().length > 0) {
-                    <table class="table">
-                      <thead><tr><th>Type</th><th>File Name</th><th>Status</th><th>Actions</th></tr></thead>
-                      <tbody>
-                        @for (doc of documents(); track doc.id) {
-                          <tr>
-                            <td>{{ doc.documentType }}</td>
-                            <td><a [href]="getFileUrl(doc.fileUrl)" target="_blank" class="file-link">{{ doc.fileName }}</a></td>
-                            <td><span class="badge" [class.badge-success]="doc.verified" [class.badge-warning]="!doc.verified">{{ doc.verified ? 'Verified' : 'Pending' }}</span></td>
-                            <td>
-                              @if (!doc.verified) { <button class="btn btn-ghost btn-sm" (click)="verifyDocument(doc.id)">Verify</button> }
-                              <button class="btn btn-ghost btn-sm text-danger" (click)="confirmDeleteDoc.set(doc)">Delete</button>
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  } @else {
-                    <div class="empty-state"><p>No documents uploaded yet.</p></div>
-                  }
-                </div>
-              }
+                 <div class="documents-section">
+                   <h3 class="section-title">Uploaded Documents</h3>
+                   @if (documents().length > 0) {
+                     <table class="table">
+                       <thead><tr><th>Type</th><th>File Name</th><th>Status</th><th>Actions</th></tr></thead>
+                       <tbody>
+                         @for (doc of documents(); track doc.id) {
+                           <tr>
+                             <td>{{ doc.documentType }}</td>
+                             <td><a [href]="getFileUrl(doc.fileUrl)" target="_blank" class="file-link">{{ doc.fileName }}</a></td>
+                             <td><span class="badge" [class.badge-success]="doc.verified" [class.badge-warning]="!doc.verified">{{ doc.verified ? 'Verified' : 'Pending' }}</span></td>
+                             <td>
+                               @if (!doc.verified) { <button class="btn btn-ghost btn-sm" (click)="verifyDocument(doc.id)">Verify</button> }
+                               <button class="btn btn-ghost btn-sm text-danger" (click)="confirmDeleteDoc.set(doc)">Delete</button>
+                             </td>
+                           </tr>
+                         }
+                       </tbody>
+                     </table>
+                   } @else {
+                     <div class="empty-state"><p>No documents uploaded yet.</p></div>
+                   }
+                 </div>
+               }
 
-              @if (activeTab() === 'ssc') {
+               @if (isAdmin() && activeTab() === 'ssc') {
                 <div class="result-section">
                   <h3 class="section-title">SSC Result {{ sscResult()?.verified ? '(Verified)' : '' }}</h3>
                   <div class="form-row">
@@ -149,9 +152,9 @@ interface ExamResult { id: number; applicantId: number; board: string; examYear:
                 </div>
               }
 
-              @if (activeTab() === 'hsc') {
-                <div class="result-section">
-                  <h3 class="section-title">HSC Result {{ hscResult()?.verified ? '(Verified)' : '' }}</h3>
+               @if (isAdmin() && activeTab() === 'hsc') {
+                 <div class="result-section">
+                   <h3 class="section-title">HSC Result {{ hscResult()?.verified ? '(Verified)' : '' }}</h3>
                   <div class="form-row">
                     <div class="form-group"><label class="form-label">Board *</label><input class="form-control" [(ngModel)]="hscForm.board" placeholder="e.g. Dhaka"></div>
                     <div class="form-group"><label class="form-label">Exam Year *</label><input type="number" class="form-control" [(ngModel)]="hscForm.examYear"></div>
@@ -180,8 +183,8 @@ interface ExamResult { id: number; applicantId: number; board: string; examYear:
                 </div>
               }
 
-              @if (activeTab() === 'admit') {
-                <div class="admit-section">
+               @if (isAdmin() && activeTab() === 'admit') {
+                 <div class="admit-section">
                   <h3 class="section-title">Admit Card</h3>
                   @if (admitCard()) {
                     <div class="card-info">
@@ -204,7 +207,7 @@ interface ExamResult { id: number; applicantId: number; board: string; examYear:
         </div>
       }
 
-      @if (confirmDeleteDoc()) {
+      @if (isAdmin() && confirmDeleteDoc()) {
         <app-confirm-dialog
           title="Delete Document"
           [message]="'Are you sure you want to delete ' + confirmDeleteDoc()!.fileName + '?'"
@@ -357,12 +360,14 @@ export class ApplicantListComponent implements OnInit {
   sscForm: any = { board: '', examYear: new Date().getFullYear() - 5, rollNumber: '', registrationNumber: '', group: '', institution: '', gpa: 0, scienceGpa: 0, mathGpa: 0 };
   hscForm: any = { board: '', examYear: new Date().getFullYear() - 2, rollNumber: '', registrationNumber: '', group: '', institution: '', gpa: 0, scienceGpa: 0, mathGpa: 0 };
   savingResult = signal(false);
+  isAdmin = this.auth.hasAnyRole(['ADMIN', 'ADMISSION']);
 
   private readonly fileBaseUrl = environment.apiUrl.replace('/api', '/files');
 
   constructor(
     private crud: CrudService,
     private toast: ToastService,
+    public auth: AuthService,
   ) {}
 
   ngOnInit(): void {

@@ -46,6 +46,11 @@ public class SecurityConfig {
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/faculties/**", "/api/departments/**",
                         "/api/admission-circulars/**", "/api/document-types/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/applicants").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/applicants/*/photo").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/applicant-documents").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/applicants/*/ssc-results").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/applicants/*/hsc-results").permitAll()
                 .requestMatchers("/api/payments/callback").permitAll()
                 .requestMatchers("/files/**").permitAll()
                 .anyRequest().authenticated()

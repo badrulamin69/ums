@@ -32,7 +32,6 @@ export const routes: Routes = [
   },
   {
     path: 'apply/:id',
-    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/public/apply/apply.component').then((m) => m.ApplyComponent),
   },
@@ -104,17 +103,17 @@ export const routes: Routes = [
           import('./features/admission/circulars/circular-list.component').then((m) => m.CircularListComponent),
       },
       {
-        path: 'applicants',
-        loadComponent: () =>
-          import('./features/admission/applicants/applicant-list.component').then((m) => m.ApplicantListComponent),
-      },
-      {
         path: 'merit-lists',
         loadComponent: () =>
           import('./features/admission/merit-list/merit-list.component').then((m) => m.MeritListPageComponent),
       },
       { path: '', redirectTo: 'circulars', pathMatch: 'full' },
     ],
+  },
+  {
+    path: 'admission/applicants',
+    loadComponent: () =>
+      import('./features/admission/applicants/applicant-list.component').then((m) => m.ApplicantListComponent),
   },
   {
     path: 'student',
