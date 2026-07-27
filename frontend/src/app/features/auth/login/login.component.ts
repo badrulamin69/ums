@@ -2,7 +2,6 @@ import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
-import { CryptoService } from '../../../core/services/crypto.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
@@ -275,7 +274,6 @@ export class LoginComponent {
 
   constructor(
     private auth: AuthService,
-    private crypto: CryptoService,
     private toast: ToastService,
   ) {
     if (this.auth.isLoggedIn()) {
@@ -287,9 +285,8 @@ export class LoginComponent {
     if (!this.email || !this.password) return;
 
     this.loading.set(true);
-    const encryptedPassword = this.crypto.encrypt(this.password);
 
-    this.auth.login({ email: this.email, password: encryptedPassword }).subscribe({
+    this.auth.login({ email: this.email, password: this.password }).subscribe({
       next: (res) => {
         this.loading.set(false);
         if (res.success) {

@@ -1,11 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, RegisterRequest, AuthResponse, DecodedToken } from '../models/auth.model';
 import { ApiResponse } from '../models/api-response.model';
-import { NotificationSocketService } from './notification-socket.service';
 
 const ACCESS_TOKEN_KEY = 'ums_access_token';
 const REFRESH_TOKEN_KEY = 'ums_refresh_token';
@@ -30,7 +29,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private socketService: NotificationSocketService,
+    private injector: Injector,
   ) {}
 
   login(request: LoginRequest): Observable<ApiResponse<AuthResponse>> {
@@ -73,7 +72,7 @@ export class AuthService {
     this.isLoggedIn.set(false);
     this.currentUserEmail.set(null);
     this.currentUserRoles.set([]);
-    this.socketService.disconnect();
+    this.disconnectSocket();
     this.router.navigate(['/login']);
   }
 
@@ -127,7 +126,19 @@ export class AuthService {
     this.isLoggedIn.set(true);
     this.currentUserEmail.set(response.email);
     this.currentUserRoles.set(this.decodeTokenRoles());
-    this.socketService.connect();
+    this.connectSocket();
+  }
+
+  private connectSocket(): void {
+    import('./notification-socket.service').then((m) => {
+      this.injector.get(m.NotificationSocketService).connect();
+    });
+  }
+
+  private disconnectSocket(): void {
+    import('./notification-socket.service').then((m) => {
+      this.injector.get(m.NotificationSocketService).disconnect();
+    });
   }
 
   private hasValidToken(): boolean {
