@@ -5,6 +5,7 @@ import { DataTableComponent, TableColumn } from '../../../shared/components/data
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CrudService } from '../../../core/services/crud.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 interface Separation {
   id: number;
@@ -26,7 +27,7 @@ interface SeparationRequest {
 @Component({
   selector: 'app-separation-list',
   standalone: true,
-  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
+  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent, NgbDropdownModule],
   template: `
     <div class="page animate-fade-in-up">
       <app-page-header title="Separations" subtitle="Manage employee separations and exits">
@@ -71,12 +72,12 @@ interface SeparationRequest {
                     {{ form.employeeId ? getEmployeeName(form.employeeId) : 'Select employee...' }}
                   </button>
                   @if (employees().length > 0) {
-                    <div class="dropdown-menu" ngbDropdown>
-                      @for (employee of employees(); track employee.id) {
-                        <button class="dropdown-item" ngbDropdownItem (click)="selectEmployee(employee.id)">
-                          {{ employee.name }}
-                        </button>
-                      }
+                    <div class="dropdown-menu">
+                        @for (employee of employees(); track employee.id) {
+                          <button class="dropdown-item" ngbDropdownItem (click)="selectEmployee(employee.id)">
+                            {{ employee.firstName }} {{ employee.lastName }}
+                          </button>
+                        }
                     </div>
                   }
                 </div>
@@ -249,7 +250,7 @@ export class SeparationListComponent implements OnInit {
 
   getEmployeeName(employeeId: number): string {
     const employee = this.employees().find(e => e.id === employeeId);
-    return employee ? employee.name : 'Unknown';
+    return employee ? `${employee.firstName} ${employee.lastName}` : 'Unknown';
   }
 
   isValid(): boolean {
@@ -313,19 +314,4 @@ export class SeparationListComponent implements OnInit {
       },
     });
   }
-
-  approveSeparation(id: number): void {
-    this.crud.customPost(`separations/${id}/approve`, {}).subscribe({
-      next: () => {
-        this.toast.success('Separation approved');
-        this.loadPage(this.currentPage());
-      },
-      error: () => this.toast.error('Failed to approve separation'),
-    });
-  }
-
-  columnsWithActions: TableColumn[] = [
-    ...this.columns,
-    { key: 'approve', label: 'Actions', width: '80px', align: 'center' },
-  ];
 }

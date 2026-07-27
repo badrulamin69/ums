@@ -6,6 +6,7 @@ import { CrudService } from '../../../core/services/crud.service';
 interface Student {
   id: number; userId: number; registrationNumber: string; firstName: string;
   middleName: string; lastName: string; cgpa: number; active: boolean;
+  name?: string;
 }
 
 @Component({
@@ -34,7 +35,7 @@ interface Student {
 export class StudentListComponent implements OnInit {
   columns: TableColumn[] = [
     { key: 'registrationNumber', label: 'Reg. No.', sortable: true, width: '140px' },
-    { key: 'firstName', label: 'Name', sortable: true },
+    { key: 'name', label: 'Name', sortable: true },
     { key: 'cgpa', label: 'CGPA', width: '80px', align: 'center' },
     { key: 'active', label: 'Status', width: '100px', align: 'center' },
   ];
@@ -50,7 +51,17 @@ export class StudentListComponent implements OnInit {
   loadPage(page: number): void {
     this.loading.set(true);
     this.crud.list<Student>('students', page, 10).subscribe({
-      next: (d) => { this.rows.set(d.content); this.currentPage.set(d.number); this.totalPages.set(d.totalPages); this.totalElements.set(d.totalElements); this.loading.set(false); },
+      next: (d) => {
+        const students = (d.content || []).map(s => ({
+          ...s,
+          name: [s.firstName, s.middleName, s.lastName].filter(Boolean).join(' '),
+        }));
+        this.rows.set(students);
+        this.currentPage.set(d.number);
+        this.totalPages.set(d.totalPages);
+        this.totalElements.set(d.totalElements);
+        this.loading.set(false);
+      },
       error: () => this.loading.set(false),
     });
   }

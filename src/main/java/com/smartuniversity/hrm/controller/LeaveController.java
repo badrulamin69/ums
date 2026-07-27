@@ -1,9 +1,15 @@
 package com.smartuniversity.hrm.controller;
 
 import com.smartuniversity.common.ApiResponse;
+import com.smartuniversity.common.enums.LeaveStatus;
 import com.smartuniversity.hrm.dto.*;
+import com.smartuniversity.hrm.entity.LeaveType;
 import com.smartuniversity.hrm.service.LeaveService;
+import com.smartuniversity.hrm.repository.LeaveTypeRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,9 +22,25 @@ import java.util.List;
 public class LeaveController {
 
     private final LeaveService leaveService;
+    private final LeaveTypeRepository leaveTypeRepository;
 
-    public LeaveController(LeaveService leaveService) {
+    public LeaveController(LeaveService leaveService, LeaveTypeRepository leaveTypeRepository) {
         this.leaveService = leaveService;
+        this.leaveTypeRepository = leaveTypeRepository;
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<LeaveRequestResponse>>> list(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(ApiResponse.success(
+                leaveService.list(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")), status)));
+    }
+
+    @GetMapping("/leave-types")
+    public ResponseEntity<ApiResponse<List<LeaveType>>> listLeaveTypes() {
+        return ResponseEntity.ok(ApiResponse.success(leaveTypeRepository.findByActiveTrue()));
     }
 
     @PostMapping

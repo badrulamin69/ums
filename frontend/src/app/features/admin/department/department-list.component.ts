@@ -81,6 +81,12 @@ interface DepartmentRequest {
             </div>
 
             <div class="modal-footer">
+              @if (editing()) {
+                <button type="button" class="btn btn-danger" (click)="confirmDelete.set(editing()); closeModal()">
+                  Delete
+                </button>
+              }
+              <div class="footer-spacer"></div>
               <button type="button" class="btn btn-ghost" (click)="closeModal()">Cancel</button>
               <button type="submit" class="btn btn-gold" [disabled]="!isValid() || saving()">
                 @if (saving()) { <span class="spinner-sm"></span> Saving... } @else { {{ editing() ? 'Update' : 'Create' }} }
@@ -111,7 +117,9 @@ interface DepartmentRequest {
     .form-group { display: flex; flex-direction: column; }
     .form-label { margin-bottom: 0.375rem; }
     .required { color: var(--color-danger); }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 1rem; margin-top: 0.5rem; }
+    .modal-footer { display: flex; align-items: center; gap: 0.75rem; padding-top: 1rem; margin-top: 0.5rem; }
+    .footer-spacer { flex: 1; }
+    .btn-danger { background: var(--color-danger); color: white; &:hover { background: #dc2626; } }
     .spinner-sm { width: 14px; height: 14px; border: 2px solid transparent; border-top-color: currentColor; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
   `],
 })

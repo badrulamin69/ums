@@ -6,6 +6,8 @@ import com.smartuniversity.common.exception.ResourceNotFoundException;
 import com.smartuniversity.hrm.dto.*;
 import com.smartuniversity.hrm.entity.*;
 import com.smartuniversity.hrm.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,17 @@ public class LeaveService {
         this.leaveTypeRepository = leaveTypeRepository;
         this.leaveBalanceRepository = leaveBalanceRepository;
         this.employeeRepository = employeeRepository;
+    }
+
+    public Page<LeaveRequestResponse> list(Pageable pageable, String status) {
+        Page<LeaveRequest> page;
+        if (status != null && !status.isBlank()) {
+            LeaveStatus leaveStatus = LeaveStatus.valueOf(status.toUpperCase());
+            page = leaveRequestRepository.findByStatus(leaveStatus, pageable);
+        } else {
+            page = leaveRequestRepository.findAll(pageable);
+        }
+        return page.map(this::toResponse);
     }
 
     @Transactional

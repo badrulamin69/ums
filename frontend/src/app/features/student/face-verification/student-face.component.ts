@@ -179,7 +179,8 @@ export class StudentFaceComponent {
           this.enrollCapture?.setProcessing(false);
         }
       },
-      error: () => {
+      error: (err) => {
+        this.toast.error(err?.error?.message || 'Face enrollment failed');
         this.enrollCapture?.setProcessing(false);
       },
     });
@@ -198,7 +199,8 @@ export class StudentFaceComponent {
         }
         this.checkInCapture?.setProcessing(false);
       },
-      error: () => {
+      error: (err) => {
+        this.toast.error(err?.error?.message || 'Face verification failed');
         this.checkInCapture?.setProcessing(false);
       },
     });

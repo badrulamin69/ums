@@ -2,7 +2,6 @@ import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CrudService } from '../../../core/services/crud.service';
 import { ToastService } from '../../../core/services/toast.service';
 
@@ -34,7 +33,7 @@ interface ApprovalStepActionRequest {
 @Component({
   selector: 'app-approval-workflow-list',
   standalone: true,
-  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
+  imports: [FormsModule, PageHeaderComponent, DataTableComponent],
   template: `
     <div class="page animate-fade-in-up">
       <app-page-header title="Approval Workflows" subtitle="Manage entity approval workflows and steps">

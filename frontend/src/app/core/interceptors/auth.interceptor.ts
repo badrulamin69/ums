@@ -1,9 +1,10 @@
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Observable, switchMap, throwError, catchError } from 'rxjs';
+import { Observable, switchMap, throwError, catchError, Subject, take } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 let isRefreshing = false;
+const refreshTokenSubject = new Subject<string>();
 
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
@@ -24,22 +25,34 @@ export const authInterceptor: HttpInterceptorFn = (
 
   return next(req).pipe(
     catchError((error) => {
-      if (error.status === 401 && !isRefreshing) {
+      if (error.status === 401) {
+        if (isRefreshing) {
+          return refreshTokenSubject.pipe(
+            take(1),
+            switchMap((newToken) => {
+              const newReq = req.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } });
+              return next(newReq);
+            }),
+          );
+        }
+
         isRefreshing = true;
         return auth.refreshToken().pipe(
           switchMap((res) => {
             isRefreshing = false;
             if (res.success) {
-              const newReq = req.clone({
-                setHeaders: { Authorization: `Bearer ${res.data.accessToken}` },
-              });
+              const newToken = res.data.accessToken;
+              refreshTokenSubject.next(newToken);
+              const newReq = req.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } });
               return next(newReq);
             }
+            refreshTokenSubject.error(new Error('Refresh failed'));
             auth.logout();
             return throwError(() => error);
           }),
           catchError((refreshError) => {
             isRefreshing = false;
+            refreshTokenSubject.error(refreshError);
             auth.logout();
             return throwError(() => refreshError);
           }),

@@ -11,11 +11,16 @@ export class CrudService {
 
   constructor(private http: HttpClient) {}
 
-  list<T>(endpoint: string, page = 0, size = 10, sort?: string): Observable<Page<T>> {
+  list<T>(endpoint: string, page = 0, size = 10, sort?: string, extraParams?: Record<string, string>): Observable<Page<T>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
     if (sort) params = params.set('sort', sort);
+    if (extraParams) {
+      for (const [key, value] of Object.entries(extraParams)) {
+        if (value) params = params.set(key, value);
+      }
+    }
 
     return this.http
       .get<ApiResponse<Page<T>>>(`${this.base}/${endpoint}`, { params })

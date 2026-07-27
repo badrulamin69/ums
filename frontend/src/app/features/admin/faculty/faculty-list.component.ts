@@ -70,6 +70,12 @@ interface FacultyRequest {
             </div>
 
             <div class="modal-footer">
+              @if (editing()) {
+                <button type="button" class="btn btn-danger" (click)="confirmDelete.set(editing()); closeModal()">
+                  Delete
+                </button>
+              }
+              <div class="footer-spacer"></div>
               <button type="button" class="btn btn-ghost" (click)="closeModal()">Cancel</button>
               <button type="submit" class="btn btn-gold" [disabled]="!form.name || saving()">
                 @if (saving()) { <span class="spinner-sm"></span> Saving... } @else { {{ editing() ? 'Update' : 'Create' }} }
@@ -119,8 +125,13 @@ interface FacultyRequest {
     .required { color: var(--color-danger); }
     textarea.form-control { resize: vertical; min-height: 80px; }
     .modal-footer {
-      display: flex; justify-content: flex-end; gap: 0.75rem;
+      display: flex; align-items: center; gap: 0.75rem;
       padding-top: 1rem; margin-top: 0.5rem;
+    }
+    .footer-spacer { flex: 1; }
+    .btn-danger {
+      background: var(--color-danger); color: white;
+      &:hover { background: #dc2626; }
     }
     .spinner-sm {
       width: 14px; height: 14px; border: 2px solid transparent;

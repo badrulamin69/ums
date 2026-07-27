@@ -96,7 +96,7 @@ interface YearLevel {
                     {{ getYearLevelName(form.yearLevelId) }} {{ form.yearLevelId ? '–' : '' }}
                   </button>
                     @if (yearLevels().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (year of yearLevels(); track year.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectYearLevel(year.id)">
                             Year {{ year.yearNumber }} - {{ year.departmentName }}

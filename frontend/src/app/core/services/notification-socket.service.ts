@@ -1,8 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { ToastService } from './toast.service';
+import { ApiResponse } from '../models/api-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationSocketService implements OnDestroy {
@@ -13,6 +15,7 @@ export class NotificationSocketService implements OnDestroy {
   constructor(
     private auth: AuthService,
     private toast: ToastService,
+    private http: HttpClient,
   ) {}
 
   connect(): void {
@@ -20,6 +23,8 @@ export class NotificationSocketService implements OnDestroy {
 
     const token = this.auth.getAccessToken();
     if (!token) return;
+
+    this.fetchUnreadCount();
 
     this.socket = io(environment.socketUrl, {
       auth: { token },
@@ -54,6 +59,20 @@ export class NotificationSocketService implements OnDestroy {
 
   markRead(): void {
     this.unreadCount = Math.max(0, this.unreadCount - 1);
+  }
+
+  private fetchUnreadCount(): void {
+    this.http
+      .get<ApiResponse<{ totalElements: number }>>(`${environment.apiUrl}/notifications`, {
+        params: { page: '0', size: '1', read: 'false' },
+      })
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.unreadCount = res.data.totalElements;
+          }
+        },
+      });
   }
 
   ngOnDestroy(): void {

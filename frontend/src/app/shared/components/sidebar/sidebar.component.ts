@@ -247,6 +247,36 @@ export class SidebarComponent {
       roles: ['ADMIN', 'HR'],
     },
     {
+      label: 'Promotions',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 15V3m0 0l-3 3m3-3l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      route: '/hrm/promotions',
+      roles: ['ADMIN', 'HR'],
+    },
+    {
+      label: 'Separations',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12m0 0l3-3m-3 3l-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      route: '/hrm/separations',
+      roles: ['ADMIN', 'HR'],
+    },
+    {
+      label: 'Appraisals',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 10.5l3 3 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2.25" y="2.25" width="13.5" height="13.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>',
+      route: '/hrm/appraisals',
+      roles: ['ADMIN', 'HR'],
+    },
+    {
+      label: 'Job Postings',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2.25 7.5l6.75-3.75L15.75 7.5M3.75 8.25v6m10.5-6v6M2.25 14.25h13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      route: '/hrm/job-postings',
+      roles: ['ADMIN', 'HR'],
+    },
+    {
+      label: 'Approval Workflows',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2.25 3h13.5M2.25 6.75h13.5M2.25 10.5h9M2.25 14.25h5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+      route: '/hrm/approval-workflows',
+      roles: ['ADMIN', 'HR'],
+    },
+    {
       label: 'Face Verification',
       icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.75c0-2.485 2.686-4.5 6-4.5s6 2.015 6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="13.5" cy="4.5" r="1.5" stroke="currentColor" stroke-width="1"/></svg>',
       route: '/hrm/face',
@@ -265,9 +295,21 @@ export class SidebarComponent {
       roles: ['ADMIN', 'FACULTY'],
     },
     {
+      label: 'Course Teachers',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="7.5" cy="6" r="2.25" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.75c0-2.485 2.015-4.5 4.5-4.5s4.5 2.015 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M13.5 7.5l1.5 1.5 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      route: '/academic/course-teachers',
+      roles: ['ADMIN', 'FACULTY'],
+    },
+    {
       label: 'Payroll',
       icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1.5v15M5.25 4.5h4.5a2.25 2.25 0 010 4.5h-4.5m0 0h5.25a2.25 2.25 0 010 4.5H5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       route: '/payroll/run',
+      roles: ['ADMIN', 'PAYROLL'],
+    },
+    {
+      label: 'Salary Structures',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 7.5h12M7.5 7.5v7.5" stroke="currentColor" stroke-width="1.5"/></svg>',
+      route: '/payroll/salary-structures',
       roles: ['ADMIN', 'PAYROLL'],
     },
     {
@@ -283,9 +325,27 @@ export class SidebarComponent {
       roles: ['STUDENT'],
     },
     {
+      label: 'My Profile',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.75c0-2.485 2.686-4.5 6-4.5s6 2.015 6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+      route: '/student/profile',
+      roles: ['STUDENT'],
+    },
+    {
+      label: 'My Results',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 10.5l3 3 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2.25" y="2.25" width="13.5" height="13.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>',
+      route: '/student/results',
+      roles: ['STUDENT'],
+    },
+    {
       label: 'Face Verification',
       icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.75c0-2.485 2.686-4.5 6-4.5s6 2.015 6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="13.5" cy="4.5" r="1.5" stroke="currentColor" stroke-width="1"/></svg>',
       route: '/student/face',
+      roles: ['STUDENT'],
+    },
+    {
+      label: 'Attendance',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="2.25" width="12" height="13.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M12 1.5v3M3 7.5h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+      route: '/student/attendance',
       roles: ['STUDENT'],
     },
   ];

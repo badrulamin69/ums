@@ -5,6 +5,7 @@ import { DataTableComponent, TableColumn } from '../../../shared/components/data
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CrudService } from '../../../core/services/crud.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 interface Promotion {
   id: number;
@@ -33,7 +34,7 @@ interface PromotionRequest {
 @Component({
   selector: 'app-promotion-list',
   standalone: true,
-  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
+  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent, NgbDropdownModule],
   template: `
     <div class="page animate-fade-in-up">
       <app-page-header title="Promotions" subtitle="Manage employee promotions and demotions">
@@ -78,10 +79,10 @@ interface PromotionRequest {
                     {{ form.employeeId ? getEmployeeName(form.employeeId) : 'Select employee...' }}
                   </button>
                     @if (employees().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (employee of employees(); track employee.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectEmployee(employee.id)">
-                            {{ employee.name }}
+                            {{ employee.firstName }} {{ employee.lastName }}
                           </button>
                         }
                       </div>
@@ -97,7 +98,7 @@ interface PromotionRequest {
                       {{ form.fromDesignationId ? getDesignationName(form.fromDesignationId) : 'Select designation...' }}
                     </button>
                     @if (designations().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (designation of designations(); track designation.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectFromDesignation(designation.id)">
                             {{ designation.name }}
@@ -114,7 +115,7 @@ interface PromotionRequest {
                       {{ form.toDesignationId ? getDesignationName(form.toDesignationId) : 'Select designation...' }}
                     </button>
                     @if (designations().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (designation of designations(); track designation.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectToDesignation(designation.id)">
                             {{ designation.name }}
@@ -134,7 +135,7 @@ interface PromotionRequest {
                       {{ form.fromGradeId ? getGradeName(form.fromGradeId) : 'Select grade...' }}
                     </button>
                     @if (grades().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (grade of grades(); track grade.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectFromGrade(grade.id)">
                             {{ grade.name }}
@@ -151,7 +152,7 @@ interface PromotionRequest {
                       {{ form.toGradeId ? getGradeName(form.toGradeId) : 'Select grade...' }}
                     </button>
                     @if (grades().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (grade of grades(); track grade.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectToGrade(grade.id)">
                             {{ grade.name }}
@@ -352,7 +353,7 @@ export class PromotionListComponent implements OnInit {
 
   getEmployeeName(employeeId: number): string {
     const employee = this.employees().find(e => e.id === employeeId);
-    return employee ? employee.name : 'Unknown';
+    return employee ? `${employee.firstName} ${employee.lastName}` : 'Unknown';
   }
 
   getDesignationName(designationId: number): string {

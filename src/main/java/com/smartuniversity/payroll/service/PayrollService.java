@@ -11,6 +11,8 @@ import com.smartuniversity.payroll.entity.SalaryStructure;
 import com.smartuniversity.payroll.repository.PayrollRunRepository;
 import com.smartuniversity.payroll.repository.PayslipRepository;
 import com.smartuniversity.payroll.repository.SalaryStructureRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,10 @@ public class PayrollService {
         this.payslipRepository = payslipRepository;
         this.salaryStructureRepository = salaryStructureRepository;
         this.employeeRepository = employeeRepository;
+    }
+
+    public Page<PayrollRun> getAllRuns(Pageable pageable) {
+        return payrollRunRepository.findAll(pageable);
     }
 
     @Transactional

@@ -1,4 +1,4 @@
-import { Component, output, signal, OnDestroy } from '@angular/core';
+import { Component, output, signal, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-face-capture',
@@ -180,7 +180,8 @@ import { Component, output, signal, OnDestroy } from '@angular/core';
     }
   `],
 })
-export class FaceCaptureComponent implements OnDestroy {
+export class FaceCaptureComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('videoElement') videoRef!: ElementRef<HTMLVideoElement>;
   captured = output<string>();
 
   capturedImage = signal<string | null>(null);
@@ -204,7 +205,7 @@ export class FaceCaptureComponent implements OnDestroy {
       this.stream = await navigator.mediaDevices.getUserMedia({
         video: { width: 320, height: 240, facingMode: 'user' },
       });
-      const video = document.querySelector('video');
+      const video = this.videoRef?.nativeElement;
       if (video) {
         this.videoEl = video;
         video.srcObject = this.stream;

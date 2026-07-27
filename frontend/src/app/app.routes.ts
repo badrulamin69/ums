@@ -110,6 +110,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/student/face-verification/student-face.component').then((m) => m.StudentFaceComponent),
       },
+      {
+        path: 'results',
+        loadComponent: () =>
+          import('./features/student/results/student-results-view.component').then((m) => m.StudentResultsViewComponent),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/student/profile/student-profile.component').then((m) => m.StudentProfileComponent),
+      },
+      {
+        path: 'attendance',
+        loadComponent: () =>
+          import('./features/student/attendance/student-attendance.component').then((m) => m.StudentAttendanceComponent),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
@@ -130,6 +145,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/academic/student-results/student-result-list.component').then((m) => m.StudentResultListComponent),
       },
+      {
+        path: 'course-teachers',
+        loadComponent: () =>
+          import('./features/academic/course-teachers/course-teacher-list.component').then((m) => m.CourseTeacherListComponent),
+      },
       { path: '', redirectTo: 'courses', pathMatch: 'full' },
     ],
   },
@@ -146,6 +166,11 @@ export const routes: Routes = [
           import('./features/hrm/employees/employee-list.component').then((m) => m.EmployeeListComponent),
       },
       {
+        path: 'employees/:id',
+        loadComponent: () =>
+          import('./features/hrm/employees/employee-detail.component').then((m) => m.EmployeeDetailComponent),
+      },
+      {
         path: 'attendance',
         loadComponent: () =>
           import('./features/hrm/attendance/attendance.component').then((m) => m.AttendanceComponent),
@@ -159,6 +184,31 @@ export const routes: Routes = [
         path: 'face',
         loadComponent: () =>
           import('./features/hrm/face-verification/employee-face.component').then((m) => m.EmployeeFaceComponent),
+      },
+      {
+        path: 'promotions',
+        loadComponent: () =>
+          import('./features/hrm/promotions/promotion-list.component').then((m) => m.PromotionListComponent),
+      },
+      {
+        path: 'separations',
+        loadComponent: () =>
+          import('./features/hrm/separations/separation-list.component').then((m) => m.SeparationListComponent),
+      },
+      {
+        path: 'job-postings',
+        loadComponent: () =>
+          import('./features/hrm/job-postings/job-posting-list.component').then((m) => m.JobPostingListComponent),
+      },
+      {
+        path: 'appraisals',
+        loadComponent: () =>
+          import('./features/hrm/appraisals/appraisal-list.component').then((m) => m.AppraisalListComponent),
+      },
+      {
+        path: 'approval-workflows',
+        loadComponent: () =>
+          import('./features/hrm/approval-workflow/approval-workflow-list.component').then((m) => m.ApprovalWorkflowListComponent),
       },
       { path: '', redirectTo: 'employees', pathMatch: 'full' },
     ],
@@ -182,6 +232,12 @@ export const routes: Routes = [
       },
       { path: '', redirectTo: 'run', pathMatch: 'full' },
     ],
+  },
+  {
+    path: 'notifications',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/admin/notifications/notifications-page.component').then((m) => m.NotificationsPageComponent),
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },

@@ -2,6 +2,7 @@ import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CrudService } from '../../../core/services/crud.service';
 import { ToastService } from '../../../core/services/toast.service';
 
@@ -10,7 +11,7 @@ interface Session { id: number; name: string; startDate: string; endDate: string
 @Component({
   selector: 'app-academic-session-list',
   standalone: true,
-  imports: [FormsModule, PageHeaderComponent, DataTableComponent],
+  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
   template: `
     <app-page-header title="Academic Sessions" subtitle="Manage academic year sessions">
       <button class="btn btn-gold" (click)="openModal()">
@@ -30,10 +31,28 @@ interface Session { id: number; name: string; startDate: string; endDate: string
               <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-control" [(ngModel)]="form.startDate" name="startDate"></div>
               <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-control" [(ngModel)]="form.endDate" name="endDate"></div>
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-ghost" (click)="closeModal()">Cancel</button><button type="submit" class="btn btn-gold" [disabled]="!form.name || saving()">{{ saving() ? 'Saving...' : (editing() ? 'Update' : 'Create') }}</button></div>
+            <div class="modal-footer">
+              @if (editing()) {
+                <button type="button" class="btn btn-danger" (click)="confirmDelete.set(editing()); closeModal()">Delete</button>
+              }
+              <div class="footer-spacer"></div>
+              <button type="button" class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-gold" [disabled]="!form.name || saving()">{{ saving() ? 'Saving...' : (editing() ? 'Update' : 'Create') }}</button>
+            </div>
           </form>
         </div>
       </div>
+    }
+
+    @if (confirmDelete()) {
+      <app-confirm-dialog
+        title="Delete Session"
+        [message]="'Are you sure you want to delete ' + confirmDelete()!.name + '?'"
+        confirmLabel="Delete"
+        type="danger"
+        (confirm)="doDelete()"
+        (cancel)="confirmDelete.set(null)"
+      />
     }
   `,
   styles: [`
@@ -46,7 +65,9 @@ interface Session { id: number; name: string; startDate: string; endDate: string
     .form-group { display: flex; flex-direction: column; }
     .form-label { margin-bottom: 0.375rem; }
     .req { color: var(--color-danger); }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 1rem; }
+    .modal-footer { display: flex; align-items: center; gap: 0.75rem; padding-top: 1rem; }
+    .footer-spacer { flex: 1; }
+    .btn-danger { background: var(--color-danger); color: white; border-radius: var(--radius-sm); padding: 0.5rem 1.25rem; font-size: var(--fs-small); font-weight: var(--fw-semibold); border: none; cursor: pointer; &:hover { background: #dc2626; } }
   `],
 })
 export class AcademicSessionListComponent implements OnInit {
@@ -64,6 +85,7 @@ export class AcademicSessionListComponent implements OnInit {
   showModal = signal(false);
   editing = signal<Session | null>(null);
   saving = signal(false);
+  confirmDelete = signal<Session | null>(null);
   form = { name: '', startDate: '', endDate: '' };
 
   constructor(private crud: CrudService, private toast: ToastService) {}
@@ -91,6 +113,14 @@ export class AcademicSessionListComponent implements OnInit {
     obs.subscribe({
       next: () => { this.toast.success(this.editing() ? 'Updated' : 'Created'); this.closeModal(); this.loadPage(this.currentPage()); this.saving.set(false); },
       error: () => this.saving.set(false),
+    });
+  }
+
+  doDelete(): void {
+    const item = this.confirmDelete();
+    if (!item) return;
+    this.crud.delete('academic-sessions', item.id).subscribe({
+      next: () => { this.toast.success('Deleted'); this.confirmDelete.set(null); this.loadPage(this.currentPage()); },
     });
   }
 }

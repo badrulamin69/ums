@@ -2,6 +2,7 @@ import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CrudService } from '../../../core/services/crud.service';
 import { ToastService } from '../../../core/services/toast.service';
 
@@ -10,7 +11,7 @@ interface Grade { id: number; name: string; level: number; description: string; 
 @Component({
   selector: 'app-grade-list',
   standalone: true,
-  imports: [FormsModule, PageHeaderComponent, DataTableComponent],
+  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
   template: `
     <app-page-header title="Grades" subtitle="Employee grade structures">
       <button class="btn btn-gold" (click)="openModal()">
@@ -28,10 +29,28 @@ interface Grade { id: number; name: string; level: number; description: string; 
             <div class="form-group"><label class="form-label">Grade Name <span class="req">*</span></label><input type="text" class="form-control" [(ngModel)]="form.name" name="name" required placeholder="e.g. Grade 5"></div>
             <div class="form-group"><label class="form-label">Level</label><input type="number" class="form-control" [(ngModel)]="form.level" name="level" placeholder="1"></div>
             <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" [(ngModel)]="form.description" name="description" rows="3"></textarea></div>
-            <div class="modal-footer"><button type="button" class="btn btn-ghost" (click)="closeModal()">Cancel</button><button type="submit" class="btn btn-gold" [disabled]="!form.name || saving()">{{ saving() ? 'Saving...' : (editing() ? 'Update' : 'Create') }}</button></div>
+            <div class="modal-footer">
+              @if (editing()) {
+                <button type="button" class="btn btn-danger" (click)="confirmDelete.set(editing()); closeModal()">Delete</button>
+              }
+              <div class="footer-spacer"></div>
+              <button type="button" class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+              <button type="submit" class="btn btn-gold" [disabled]="!form.name || saving()">{{ saving() ? 'Saving...' : (editing() ? 'Update' : 'Create') }}</button>
+            </div>
           </form>
         </div>
       </div>
+    }
+
+    @if (confirmDelete()) {
+      <app-confirm-dialog
+        title="Delete Grade"
+        [message]="'Are you sure you want to delete ' + confirmDelete()!.name + '?'"
+        confirmLabel="Delete"
+        type="danger"
+        (confirm)="doDelete()"
+        (cancel)="confirmDelete.set(null)"
+      />
     }
   `,
   styles: [`
@@ -44,7 +63,9 @@ interface Grade { id: number; name: string; level: number; description: string; 
     .form-label { margin-bottom: 0.375rem; }
     .req { color: var(--color-danger); }
     textarea.form-control { resize: vertical; }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 1rem; }
+    .modal-footer { display: flex; align-items: center; gap: 0.75rem; padding-top: 1rem; }
+    .footer-spacer { flex: 1; }
+    .btn-danger { background: var(--color-danger); color: white; border-radius: var(--radius-sm); padding: 0.5rem 1.25rem; font-size: var(--fs-small); font-weight: var(--fw-semibold); border: none; cursor: pointer; &:hover { background: #dc2626; } }
   `],
 })
 export class GradeListComponent implements OnInit {
@@ -62,6 +83,7 @@ export class GradeListComponent implements OnInit {
   showModal = signal(false);
   editing = signal<Grade | null>(null);
   saving = signal(false);
+  confirmDelete = signal<Grade | null>(null);
   form = { name: '', level: 1, description: '' };
 
   constructor(private crud: CrudService, private toast: ToastService) {}
@@ -89,6 +111,14 @@ export class GradeListComponent implements OnInit {
     obs.subscribe({
       next: () => { this.toast.success(this.editing() ? 'Updated' : 'Created'); this.closeModal(); this.loadPage(this.currentPage()); this.saving.set(false); },
       error: () => this.saving.set(false),
+    });
+  }
+
+  doDelete(): void {
+    const item = this.confirmDelete();
+    if (!item) return;
+    this.crud.delete('grades', item.id).subscribe({
+      next: () => { this.toast.success('Deleted'); this.confirmDelete.set(null); this.loadPage(this.currentPage()); },
     });
   }
 }

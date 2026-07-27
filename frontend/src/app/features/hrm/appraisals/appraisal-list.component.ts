@@ -5,6 +5,7 @@ import { DataTableComponent, TableColumn } from '../../../shared/components/data
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CrudService } from '../../../core/services/crud.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 interface Appraisal {
   id: number;
@@ -30,7 +31,7 @@ interface AppraisalRequest {
 @Component({
   selector: 'app-appraisal-list',
   standalone: true,
-  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent],
+  imports: [FormsModule, PageHeaderComponent, DataTableComponent, ConfirmDialogComponent, NgbDropdownModule],
   template: `
     <div class="page animate-fade-in-up">
       <app-page-header title="Appraisals" subtitle="Manage employee performance appraisals">
@@ -75,12 +76,12 @@ interface AppraisalRequest {
                     {{ form.employeeId ? getEmployeeName(form.employeeId) : 'Select employee...' }}
                   </button>
                   @if (employees().length > 0) {
-                    <div class="dropdown-menu" ngbDropdown>
-                      @for (employee of employees(); track employee.id) {
-                        <button class="dropdown-item" ngbDropdownItem (click)="selectEmployee(employee.id)">
-                          {{ employee.name }}
-                        </button>
-                      }
+                    <div class="dropdown-menu">
+                        @for (employee of employees(); track employee.id) {
+                          <button class="dropdown-item" ngbDropdownItem (click)="selectEmployee(employee.id)">
+                            {{ employee.firstName }} {{ employee.lastName }}
+                          </button>
+                        }
                     </div>
                   }
                 </div>
@@ -93,7 +94,7 @@ interface AppraisalRequest {
                 </div>
                 <div class="form-group">
                   <label class="form-label">Review Year <span class="required">*</span></label>
-                  <input type="number" class="form-control" [(ngModel)]="form.reviewYear" name="reviewYear" required [min]="2000" [max]="2026">
+                  <input type="number" class="form-control" [(ngModel)]="form.reviewYear" name="reviewYear" required [min]="2000" [max]="currentYear">
                 </div>
               </div>
 
@@ -117,10 +118,10 @@ interface AppraisalRequest {
                       {{ form.reviewerId ? getEmployeeName(form.reviewerId) : 'Select reviewer...' }}
                     </button>
                     @if (employees().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (employee of employees(); track employee.id) {
-                          <button class="dropdown-item" ngbDropdownItem (click)="selectEmployee(employee.id)">
-                            {{ employee.name }}
+                          <button class="dropdown-item" ngbDropdownItem (click)="selectReviewer(employee.id)">
+                            {{ employee.firstName }} {{ employee.lastName }}
                           </button>
                         }
                       </div>
@@ -218,6 +219,7 @@ interface AppraisalRequest {
   `],
 })
 export class AppraisalListComponent implements OnInit {
+  currentYear = new Date().getFullYear();
   columns: TableColumn[] = [
     { key: 'employeeName', label: 'Employee', sortable: true },
     { key: 'appraisalDate', label: 'Date', width: '120px', align: 'center' },
@@ -242,7 +244,7 @@ export class AppraisalListComponent implements OnInit {
   form: AppraisalRequest = {
     employeeId: 0,
     appraisalDate: '',
-    reviewYear: 2026,
+    reviewYear: new Date().getFullYear(),
     rating: '',
     comments: '',
     reviewerId: 0,
@@ -286,12 +288,12 @@ export class AppraisalListComponent implements OnInit {
 
   getEmployeeName(employeeId: number): string {
     const employee = this.employees().find(e => e.id === employeeId);
-    return employee ? employee.name : 'Unknown';
+    return employee ? `${employee.firstName} ${employee.lastName}` : 'Unknown';
   }
 
   isValid(): boolean {
     return !!(this.form.employeeId && this.form.appraisalDate && this.form.reviewYear &&
-             this.form.rating && this.form.reviewYear >= 2000 && this.form.reviewYear <= 2026);
+             this.form.rating && this.form.reviewYear >= 2000 && this.form.reviewYear <= this.currentYear);
   }
 
   openModal(appraisal?: Appraisal): void {
@@ -310,7 +312,7 @@ export class AppraisalListComponent implements OnInit {
       this.form = {
         employeeId: 0,
         appraisalDate: '',
-        reviewYear: 2026,
+        reviewYear: this.currentYear,
         rating: '',
         comments: '',
         reviewerId: 0,

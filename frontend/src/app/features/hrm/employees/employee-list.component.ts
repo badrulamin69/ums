@@ -124,7 +124,7 @@ export class EmployeeListComponent implements OnInit {
   openModal(item?: Employee): void {
     if (item) {
       this.editing.set(item);
-      this.form = { userId: item.userId, firstName: item.firstName, middleName: item.middleName, lastName: item.lastName, phone: item.phone, gender: item.gender, dateOfBirth: '', employeeType: item.employeeType, designationId: item.designationId || 0, gradeId: 0, department: item.department };
+      this.form = { userId: item.userId, firstName: item.firstName, middleName: item.middleName, lastName: item.lastName, phone: item.phone, gender: item.gender, dateOfBirth: (item as any).dateOfBirth || '', employeeType: item.employeeType, designationId: item.designationId || 0, department: item.department };
     } else {
       this.editing.set(null);
       this.form = { userId: 0, firstName: '', middleName: '', lastName: '', phone: '', gender: '', dateOfBirth: '', employeeType: '', designationId: 0, gradeId: 0, department: '' };

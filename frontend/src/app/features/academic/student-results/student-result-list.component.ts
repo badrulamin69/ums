@@ -86,7 +86,7 @@ interface AcademicSession {
                       {{ selectedStudent() ? getStudentName(selectedStudent()!) : 'Select a student...' }}
                     </button>
                   @if (students().length > 0) {
-                    <div class="dropdown-menu" ngbDropdown>
+                    <div class="dropdown-menu">
                       @for (student of students(); track student.id) {
                         <button class="dropdown-item" ngbDropdownItem (click)="selectStudent(student.id)">
                           {{ student.name }} - {{ student.enrollmentNumber }}
@@ -106,7 +106,7 @@ interface AcademicSession {
                       {{ selectedSession() ? getSessionName(selectedSession()!) : 'Select a session...' }}
                     </button>
                     @if (academicSessions().length > 0 && selectedStudent()) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (session of filteredSessions(); track session.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectSession(session.id)">
                             {{ session.name }} ({{ session.startDate }} - {{ session.endDate }})
@@ -122,6 +122,9 @@ interface AcademicSession {
                 @if (selectedStudent() && selectedSession()) {
                   <button class="btn btn-gold" (click)="loadPage(0)" [disabled]="loading()">
                     {{ loading() ? 'Loading...' : 'Load Results' }}
+                  </button>
+                  <button class="btn btn-ghost" (click)="publishResults()" [disabled]="rows().length === 0">
+                    Publish Results
                   </button>
                 }
               </div>
@@ -150,7 +153,7 @@ interface AcademicSession {
                     {{ form.studentId ? getStudentName(form.studentId) : 'Select student...' }}
                   </button>
                     @if (students().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (student of students(); track student.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectStudentModal(student.id)">
                             {{ student.name }} - {{ student.enrollmentNumber }}
@@ -171,7 +174,7 @@ interface AcademicSession {
                       {{ form.courseId ? getCourseName(form.courseId) : 'Select course...' }}
                     </button>
                     @if (courses().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (course of courses(); track course.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectCourseModal(course.id)">
                             {{ course.courseCode }} - {{ course.name }}
@@ -190,7 +193,7 @@ interface AcademicSession {
                       {{ form.academicSessionId ? getSessionName(form.academicSessionId) : 'Select session...' }}
                     </button>
                     @if (academicSessions().length > 0) {
-                      <div class="dropdown-menu" ngbDropdown>
+                      <div class="dropdown-menu">
                         @for (session of academicSessions(); track session.id) {
                           <button class="dropdown-item" ngbDropdownItem (click)="selectSessionModal(session.id)">
                             {{ session.name }} ({{ session.startDate }} - {{ session.endDate }})
@@ -531,12 +534,6 @@ export class StudentResultListComponent implements OnInit {
         }
       },
     });
-  }
-
-  // Added missing method used in template
-  selectYearLevel(yearLevelId: number): void {
-    this.form.yearLevelId = yearLevelId;
-    this.yearError.set(false);
   }
 
   loadPage(page: number): void {

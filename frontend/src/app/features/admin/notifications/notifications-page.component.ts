@@ -1,5 +1,6 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -116,21 +117,28 @@ export class NotificationsPageComponent implements OnInit {
     this.markingAll.set(true);
     const unreadIds = this.rows().filter(row => !row.read).map(row => row.id);
 
-    const promises = unreadIds.map(id =>
-      this.crud.customPost(`notifications/${id}/read`, {}).toPromise()
+    if (unreadIds.length === 0) {
+      this.showMarkAllDialog.set(false);
+      this.markingAll.set(false);
+      return;
+    }
+
+    const requests = unreadIds.map(id =>
+      this.crud.customPost(`notifications/${id}/read`, {})
     );
 
-    Promise.all(promises)
-      .then(() => {
+    forkJoin(requests).subscribe({
+      next: () => {
         this.toast.success('All notifications marked as read');
         this.loadPage(this.currentPage());
-      })
-      .catch(() => {
+      },
+      error: () => {
         this.toast.error('Failed to mark notifications as read');
-      })
-      .finally(() => {
+      },
+      complete: () => {
         this.showMarkAllDialog.set(false);
         this.markingAll.set(false);
-      });
+      },
+    });
   }
 }

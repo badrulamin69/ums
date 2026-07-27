@@ -11,6 +11,10 @@ export const errorInterceptor: HttpInterceptorFn = (
 
   return next(req).pipe(
     catchError((error) => {
+      if (error.status === 401) {
+        return throwError(() => error);
+      }
+
       let message = 'An unexpected error occurred';
 
       if (error.error?.message) {

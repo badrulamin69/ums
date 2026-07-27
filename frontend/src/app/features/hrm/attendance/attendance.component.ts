@@ -78,14 +78,34 @@ interface AttendanceResponse {
 export class AttendanceComponent implements OnInit {
   records = signal<AttendanceResponse[]>([]);
   checking = signal(false);
+  private employeeId: number | null = null;
 
   constructor(private crud: CrudService, private toast: ToastService) {}
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.crud.getById<any>('employees', 'me').subscribe({
+      next: (employee) => {
+        this.employeeId = employee?.id ?? null;
+        if (this.employeeId) this.loadRecords(this.employeeId);
+      },
+      error: () => {},
+    });
+  }
+
+  loadRecords(employeeId: number): void {
+    this.crud.getById<AttendanceResponse[]>('attendance/employee', employeeId).subscribe({
+      next: (data) => this.records.set(data || []),
+      error: () => this.records.set([]),
+    });
+  }
 
   checkIn(): void {
     this.checking.set(true);
     this.crud.customPost<any, AttendanceResponse>('attendance/check-in', { date: new Date().toISOString().split('T')[0] }).subscribe({
-      next: () => { this.toast.success('Checked in successfully'); this.checking.set(false); },
+      next: () => {
+        this.toast.success('Checked in successfully');
+        this.checking.set(false);
+        if (this.employeeId) this.loadRecords(this.employeeId);
+      },
       error: () => this.checking.set(false),
     });
   }
@@ -93,7 +113,11 @@ export class AttendanceComponent implements OnInit {
   checkOut(): void {
     this.checking.set(true);
     this.crud.customPost<any, AttendanceResponse>('attendance/check-out', { date: new Date().toISOString().split('T')[0] }).subscribe({
-      next: () => { this.toast.success('Checked out successfully'); this.checking.set(false); },
+      next: () => {
+        this.toast.success('Checked out successfully');
+        this.checking.set(false);
+        if (this.employeeId) this.loadRecords(this.employeeId);
+      },
       error: () => this.checking.set(false),
     });
   }

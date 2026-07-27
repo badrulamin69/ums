@@ -202,7 +202,8 @@ export class EmployeeFaceComponent {
           this.enrollCapture?.setProcessing(false);
         }
       },
-      error: () => {
+      error: (err) => {
+        this.toast.error(err?.error?.message || 'Failed to enroll face');
         this.enrollCapture?.setProcessing(false);
       },
     });

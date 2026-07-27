@@ -1,12 +1,13 @@
 import { Component, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationSocketService } from '../../../core/services/notification-socket.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, NgbDropdownModule],
   template: `
     <nav class="navbar">
       <div class="navbar-left">
@@ -28,15 +29,15 @@ import { NotificationSocketService } from '../../../core/services/notification-s
           }
         </div>
 
-        <div class="user-menu dropdown">
-          <button class="user-button dropdown-toggle" data-bs-toggle="dropdown">
+        <div class="user-menu dropdown" ngbDropdown>
+          <button class="user-button dropdown-toggle" ngbDropdownToggle>
             <div class="user-avatar">{{ userInitial }}</div>
             <span class="user-email">{{ auth.currentUserEmail() }}</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end">
+          <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
             <li><span class="dropdown-item-text text-secondary">{{ primaryRole }}</span></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+            <li><a class="dropdown-item" routerLink="/student/profile">Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><button class="dropdown-item text-danger" (click)="auth.logout()">Sign Out</button></li>
           </ul>

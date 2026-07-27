@@ -55,11 +55,11 @@ export interface TableColumn {
               </tr>
             </thead>
             <tbody>
-              @for (row of rows(); track row; let i = $index) {
-                <tr (click)="onRowClick(row)" [class.clickable]="hasRowClick()">
+              @for (row of rows(); track getTrackValue(row); let i = $index) {
+                <tr (click)="onRowClick(row)" [class.clickable]="true">
                   @for (col of columns(); track col.key) {
                     <td [class]="col.cellClass || ''" [style.text-align]="col.align || 'left'">
-                      <ng-container *ngTemplateOutlet="cellTemplate; context: { $implicit: col.key, row: row, column: col }"></ng-container>
+                      <ng-container *ngTemplateOutlet="cellTemplate; context: { $implicit: getCellValue(row, col.key), col: col, row: row, value: getCellValue(row, col.key) }"></ng-container>
                     </td>
                   }
                 </tr>
@@ -92,7 +92,7 @@ export interface TableColumn {
       }
     </div>
     <ng-template #cellTemplate let-col="col" let-row="row" let-value="value">
-      {{ row[value] }}
+      {{ value }}
     </ng-template>
   `,
   styles: [`
@@ -242,6 +242,7 @@ export class DataTableComponent<T> {
   loading = input(false);
   emptyTitle = input('No data found');
   emptySubtitle = input('There are no records to display yet.');
+  trackBy = input<string>('');
 
   sort = output<{ key: string; dir: 'asc' | 'desc' }>();
   pageChange = output<number>();
@@ -251,8 +252,6 @@ export class DataTableComponent<T> {
   sortDir = signal<'asc' | 'desc'>('asc');
 
   visiblePages = signal<number[]>([]);
-
-  hasRowClick = signal(true);
 
   constructor() {
     effect(() => {
@@ -276,6 +275,15 @@ export class DataTableComponent<T> {
       this.sortDir.set('asc');
     }
     this.sort.emit({ key: this.sortKey(), dir: this.sortDir() });
+  }
+
+  getTrackValue(row: T): any {
+    const key = this.trackBy();
+    return key ? (row as any)[key] : row;
+  }
+
+  getCellValue(row: T, key: string): any {
+    return (row as any)[key];
   }
 
   onRowClick(row: T): void {

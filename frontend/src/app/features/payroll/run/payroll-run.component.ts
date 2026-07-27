@@ -18,14 +18,18 @@ interface PayrollRun { id: number; month: string; year: number; completed: boole
           <label class="form-label">Month</label>
           <select class="form-control" [(ngModel)]="selectedMonth">
             <option value="">Select month</option>
-            <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+            @for (month of months; track month.value) {
+              <option [value]="month.value">{{ month.label }}</option>
+            }
           </select>
         </div>
         <div class="selector-group">
           <label class="form-label">Year</label>
           <select class="form-control" [(ngModel)]="selectedYear">
-            <option value="">Select year</option>
-            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            <option [ngValue]="0">Select year</option>
+            @for (year of years; track year) {
+              <option [ngValue]="year">{{ year }}</option>
+            }
           </select>
         </div>
         <button class="btn btn-gold" (click)="executePayroll()" [disabled]="!selectedMonth || !selectedYear || running()">
@@ -93,10 +97,10 @@ export class PayrollRunComponent implements OnInit {
     { value: '10', label: 'October' }, { value: '11', label: 'November' }, { value: '12', label: 'December' },
   ];
 
-  years = [2024, 2025, 2026];
+  years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
 
   selectedMonth = '';
-  selectedYear = 0;
+  selectedYear = new Date().getFullYear();
 
   rows = signal<PayrollRun[]>([]);
   loading = signal(false);
@@ -118,15 +122,15 @@ export class PayrollRunComponent implements OnInit {
     if (!this.selectedMonth || !this.selectedYear) return;
 
     this.running.set(true);
-    this.crud.customPost('payroll/runs', { month: this.selectedMonth, year: this.selectedYear }).subscribe({
+    this.crud.customPost<any, any>(`payroll/run-v2`, { month: this.selectedMonth, year: this.selectedYear }).subscribe({
       next: () => {
         this.toast.success(`Payroll executed for ${this.getMonthName(this.selectedMonth)} ${this.selectedYear}`);
         this.running.set(false);
         this.loadPage(0);
       },
-      error: () => {
+      error: (err) => {
         this.running.set(false);
-        this.toast.error('Failed to execute payroll');
+        this.toast.error(err?.error?.message || 'Failed to execute payroll');
       },
     });
   }

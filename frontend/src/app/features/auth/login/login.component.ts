@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { CryptoService } from '../../../core/services/crypto.service';
@@ -277,7 +277,6 @@ export class LoginComponent {
     private auth: AuthService,
     private crypto: CryptoService,
     private toast: ToastService,
-    private router: Router,
   ) {
     if (this.auth.isLoggedIn()) {
       this.auth.redirectAfterLogin();

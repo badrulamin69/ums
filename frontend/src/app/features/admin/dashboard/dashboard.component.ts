@@ -1,10 +1,13 @@
 import { Component, signal, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { CrudService } from '../../../core/services/crud.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  imports: [RouterLink],
   template: `
     <div class="page animate-fade-in-up">
       <div class="page-header">
@@ -193,36 +196,24 @@ export class DashboardComponent {
   }
 
   loadDashboardStats(): void {
-    this.crud.listAll('students').subscribe({
-      next: (students) => {
-        this.stats[0].value = students ? students.length.toString() : '0';
+    forkJoin({
+      students: this.crud.list('students', 0, 1),
+      employees: this.crud.list('employees', 0, 1),
+      circulars: this.crud.list<{ active: boolean }>('admission-circulars', 0, 1, undefined, { active: 'true' }),
+      pendingLeaves: this.crud.list<{ status: string }>('leave-requests', 0, 1, undefined, { status: 'PENDING' }),
+    }).subscribe({
+      next: (results) => {
+        this.stats[0].value = results.students.totalElements.toString();
+        this.stats[1].value = results.employees.totalElements.toString();
+        this.stats[2].value = results.circulars.totalElements.toString();
+        this.stats[3].value = results.pendingLeaves.totalElements.toString();
       },
-      error: () => this.stats[0].value = '0',
-    });
-
-    this.crud.listAll('employees').subscribe({
-      next: (employees) => {
-        this.stats[1].value = employees ? employees.length.toString() : '0';
+      error: () => {
+        this.stats[0].value = '0';
+        this.stats[1].value = '0';
+        this.stats[2].value = '0';
+        this.stats[3].value = '0';
       },
-      error: () => this.stats[1].value = '0',
-    });
-
-    this.crud.listAll('admission-circulars').subscribe({
-      next: (circulars) => {
-        const circularsList = circulars || [];
-        const active = circularsList.filter(c => c && c.active).length;
-        this.stats[2].value = active.toString();
-      },
-      error: () => this.stats[2].value = '0',
-    });
-
-    this.crud.listAll('leave-requests').subscribe({
-      next: (leaveRequests) => {
-        const leaveRequestsList = leaveRequests || [];
-        const pending = leaveRequestsList.filter(r => r && r.status === 'PENDING').length;
-        this.stats[3].value = pending.toString();
-      },
-      error: () => this.stats[3].value = '0',
     });
   }
 }

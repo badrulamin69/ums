@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { CryptoService } from '../../../core/services/crypto.service';
@@ -70,7 +70,10 @@ import { ToastService } from '../../../core/services/toast.service';
                 </button>
               </div>
               <div class="password-strength">
-                <div class="strength-bar" [class]="'strength-' + passwordStrength"></div>
+                <div class="strength-bar"
+                     [class.strength-weak]="passwordStrength === 'weak'"
+                     [class.strength-medium]="passwordStrength === 'medium'"
+                     [class.strength-strong]="passwordStrength === 'strong'"></div>
               </div>
             </div>
 
@@ -317,7 +320,6 @@ export class RegisterComponent {
     private auth: AuthService,
     private crypto: CryptoService,
     private toast: ToastService,
-    private router: Router,
   ) {}
 
   get passwordStrength(): 'weak' | 'medium' | 'strong' {
