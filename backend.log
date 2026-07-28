@@ -2984,3 +2984,947 @@ Hibernate:
         roles r1_0 
     where
         r1_0.name=?
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+2026-07-28T05:47:42.314+06:00  WARN 11212 --- [smart-university] [nio-8085-exec-3] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    where
+        ac1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        d1_0.id,
+        d1_0.active,
+        d1_0.code,
+        d1_0.created_at,
+        d1_0.faculty_id,
+        d1_0.name,
+        d1_0.updated_at 
+    from
+        departments d1_0 
+    where
+        d1_0.faculty_id=? 
+        and d1_0.active=true
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        ac1_0.id,
+        ac1_0.active,
+        ac1_0.application_fee,
+        ac1_0.created_at,
+        ac1_0.faculty_id,
+        ac1_0.registration_end_date,
+        ac1_0.registration_start_date,
+        ac1_0.session,
+        ac1_0.title,
+        ac1_0.total_seats,
+        ac1_0.updated_at 
+    from
+        admission_circulars ac1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.active,
+        f1_0.code,
+        f1_0.created_at,
+        f1_0.description,
+        f1_0.name,
+        f1_0.updated_at 
+    from
+        faculties f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    limit
+        ?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.created_at,
+        r1_0.description,
+        r1_0.name,
+        r1_0.updated_at 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    select
+        p1_0.role_id,
+        p1_0.permission 
+    from
+        role_permissions p1_0 
+    where
+        p1_0.role_id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, entity_id, entity_type, performed_by, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        users
+        (account_non_locked, created_at, email, enabled, password, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        ne1_0.id,
+        ne1_0.created_at,
+        ne1_0.message,
+        ne1_0.is_read,
+        ne1_0.read_at,
+        ne1_0.title,
+        ne1_0.type,
+        ne1_0.updated_at,
+        ne1_0.user_id 
+    from
+        notification_events ne1_0 
+    where
+        ne1_0.user_id=? 
+    order by
+        ne1_0.created_at desc 
+    limit
+        ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.applicant_id,
+        s1_0.cgpa,
+        s1_0.created_at,
+        s1_0.first_name,
+        s1_0.last_name,
+        s1_0.middle_name,
+        s1_0.registration_number,
+        s1_0.updated_at,
+        s1_0.user_id 
+    from
+        students s1_0 
+    where
+        s1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.applicant_id,
+        s1_0.cgpa,
+        s1_0.created_at,
+        s1_0.first_name,
+        s1_0.last_name,
+        s1_0.middle_name,
+        s1_0.registration_number,
+        s1_0.updated_at,
+        s1_0.user_id 
+    from
+        students s1_0 
+    where
+        s1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        as1_0.id,
+        as1_0.active,
+        as1_0.created_at,
+        as1_0.end_year,
+        as1_0.name,
+        as1_0.start_year,
+        as1_0.updated_at 
+    from
+        academic_sessions as1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        sr1_0.id,
+        sr1_0.academic_session_id,
+        sr1_0.course_id,
+        sr1_0.created_at,
+        sr1_0.credit_hours,
+        sr1_0.grade_point,
+        sr1_0.letter_grade,
+        sr1_0.published,
+        sr1_0.student_id,
+        sr1_0.updated_at 
+    from
+        student_results sr1_0 
+    where
+        sr1_0.student_id=? 
+        and sr1_0.academic_session_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        sfd1_0.id,
+        sfd1_0.created_at,
+        sfd1_0.enrolled_at,
+        sfd1_0.face_encoding,
+        sfd1_0.student_id,
+        sfd1_0.updated_at 
+    from
+        student_face_data sfd1_0 
+    left join
+        students s1_0 
+            on s1_0.id=sfd1_0.student_id 
+    left join
+        users u1_0 
+            on u1_0.id=s1_0.user_id 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        sa1_0.id,
+        sa1_0.check_in_time,
+        sa1_0.check_out_time,
+        sa1_0.created_at,
+        sa1_0.date,
+        sa1_0.status,
+        sa1_0.student_id,
+        sa1_0.updated_at 
+    from
+        student_attendances sa1_0 
+    where
+        sa1_0.student_id=? 
+        and sa1_0.date between ? and ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.account_non_locked,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.created_at,
+        r1_1.description,
+        r1_1.name,
+        p1_0.role_id,
+        p1_0.permission,
+        r1_1.updated_at 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    left join
+        role_permissions p1_0 
+            on r1_1.id=p1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.applicant_id,
+        s1_0.cgpa,
+        s1_0.created_at,
+        s1_0.first_name,
+        s1_0.last_name,
+        s1_0.middle_name,
+        s1_0.registration_number,
+        s1_0.updated_at,
+        s1_0.user_id 
+    from
+        students s1_0 
+    where
+        s1_0.user_id=?
+^CTerminate batch job (Y/N)? 
