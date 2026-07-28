@@ -26,14 +26,19 @@ export const routes: Routes = [
       import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: 'register',
-    loadComponent: () =>
-      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
-  },
-  {
     path: 'apply/:id',
     loadComponent: () =>
       import('./features/public/apply/apply.component').then((m) => m.ApplyComponent),
+  },
+  {
+    path: 'verify-email-sent',
+    loadComponent: () =>
+      import('./features/public/verify-email/verify-email-sent.component').then((m) => m.VerifyEmailSentComponent),
+  },
+  {
+    path: 'verify-email',
+    loadComponent: () =>
+      import('./features/public/verify-email/verify-email.component').then((m) => m.VerifyEmailComponent),
   },
   {
     path: 'admin',
@@ -118,7 +123,7 @@ export const routes: Routes = [
   {
     path: 'student',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['STUDENT'] },
+    data: { roles: ['STUDENT', 'APPLICANT'] },
     loadComponent: () =>
       import('./layouts/student-layout/student-layout.component').then((m) => m.StudentLayoutComponent),
     children: [
@@ -146,6 +151,11 @@ export const routes: Routes = [
         path: 'attendance',
         loadComponent: () =>
           import('./features/student/attendance/student-attendance.component').then((m) => m.StudentAttendanceComponent),
+      },
+      {
+        path: 'payment-result',
+        loadComponent: () =>
+          import('./features/student/payment-result/payment-result.component').then((m) => m.PaymentResultComponent),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

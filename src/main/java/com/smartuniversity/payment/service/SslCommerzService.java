@@ -7,6 +7,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +27,9 @@ public class SslCommerzService {
     @Value("${sslcommerz.sandbox:true}")
     private boolean sandbox;
 
+    @Value("${app.backend-url:http://localhost:8085}")
+    private String backendUrl;
+
     private final RestTemplate restTemplate;
 
     public SslCommerzService(RestTemplate restTemplate) {
@@ -33,18 +39,18 @@ public class SslCommerzService {
     public Map<String, Object> initiatePayment(String transactionId, String amount, String currency,
                                                 String customerName, String customerEmail, String customerPhone) {
         String url = sandbox
-                ? "https://sandbox.sslcommerz.com/gwprocess/v3/process.php"
-                : "https://securepay.sslcommerz.com/gwprocess/v3/process.php";
+                ? "https://sandbox.sslcommerz.com/gwprocess/v4/api.php"
+                : "https://securepay.sslcommerz.com/gwprocess/v4/api.php";
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("store_id", storeId);
         params.put("store_passwd", storePassword);
         params.put("total_amount", amount);
         params.put("currency", currency);
         params.put("tran_id", transactionId);
-        params.put("success_url", "http://localhost:8085/api/payments/callback?transactionId=" + transactionId + "&status=SUCCESS");
-        params.put("fail_url", "http://localhost:8085/api/payments/callback?transactionId=" + transactionId + "&status=FAILED");
-        params.put("cancel_url", "http://localhost:8085/api/payments/callback?transactionId=" + transactionId + "&status=CANCELLED");
+        params.put("success_url", backendUrl + "/api/payments/callback?transactionId=" + transactionId + "&status=SUCCESS");
+        params.put("fail_url", backendUrl + "/api/payments/callback?transactionId=" + transactionId + "&status=FAILED");
+        params.put("cancel_url", backendUrl + "/api/payments/callback?transactionId=" + transactionId + "&status=CANCELLED");
         params.put("emi_option", "0");
         params.put("cus_name", customerName);
         params.put("cus_email", customerEmail);
@@ -57,11 +63,20 @@ public class SslCommerzService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            HttpEntity<Map<String, String>> request = new HttpEntity<>(params, headers);
+
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                formData.add(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
             if (response.getBody() != null) {
-                log.info("SSLCommerz response for {}: {}", transactionId, response.getBody().get("status"));
+                log.info("SSLCommerz v4 response for {}: status={}, hasGatewayUrl={}",
+                        transactionId,
+                        response.getBody().get("status"),
+                        response.getBody().get("redirectGatewayURL") != null);
                 return response.getBody();
             }
         } catch (Exception e) {
@@ -76,8 +91,8 @@ public class SslCommerzService {
 
     public boolean validateSignature(String valId, String amount, String currency) {
         String url = sandbox
-                ? "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php"
-                : "https://securepay.sslcommerz.com/validator/api/validationserverAPI.php";
+                ? "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?v=1"
+                : "https://securepay.sslcommerz.com/validator/api/validationserverAPI.php?v=1";
 
         Map<String, String> params = new HashMap<>();
         params.put("val_id", valId);
@@ -89,7 +104,13 @@ public class SslCommerzService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            HttpEntity<Map<String, String>> request = new HttpEntity<>(params, headers);
+
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                formData.add(entry.getKey(), entry.getValue());
+            }
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
             if (response.getBody() != null) {

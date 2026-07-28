@@ -73,6 +73,13 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", request.getEmail()));
+
+        if (!user.isEmailVerified()) {
+            throw new BadRequestException("Please verify your email before logging in");
+        }
+
         String accessToken = tokenProvider.generateAccessToken(authentication);
         String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
@@ -106,5 +113,18 @@ public class AuthService {
                 .tokenType("Bearer")
                 .email(email)
                 .build();
+    }
+
+    @Transactional
+    public void verifyEmail(String token) {
+        if (!tokenProvider.validateToken(token)) {
+            throw new BadRequestException("Invalid or expired verification token");
+        }
+
+        String email = tokenProvider.getEmailFromToken(token);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        user.setEmailVerified(true);
+        userRepository.save(user);
     }
 }

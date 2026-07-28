@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ApplicantMapper {
 
+    @Mapping(target = "email", expression = "java(applicant.getUser() != null ? applicant.getUser().getEmail() : null)")
     @Mapping(target = "circularId", source = "circular.id")
     @Mapping(target = "circularTitle", source = "circular.title")
     @Mapping(target = "preferredDepartmentId", expression = "java(applicant.getPreferredDepartment() != null ? applicant.getPreferredDepartment().getId() : null)")

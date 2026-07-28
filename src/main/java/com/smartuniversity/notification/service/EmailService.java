@@ -51,6 +51,13 @@ public class EmailService {
     }
 
     @Async
+    public void sendAdmitCardEmail(String to, String admitCardNumber) {
+        sendEmail(to, "Smart University - Admit Card Generated",
+                "Your admit card has been generated successfully.\n\nAdmit Card Number: " + admitCardNumber +
+                "\n\nPlease login to your dashboard to view and download it.");
+    }
+
+    @Async
     public void sendAdmissionStatusEmail(String to, String status, String circularTitle) {
         sendEmail(to, "Smart University - Admission Status Update",
                 "Your application for " + circularTitle + " has been updated to: " + status);

@@ -16,6 +16,7 @@ import java.time.LocalDate;
 public class ApplicantResponse {
 
     private Long id;
+    private String email;
     private String firstName;
     private String middleName;
     private String lastName;

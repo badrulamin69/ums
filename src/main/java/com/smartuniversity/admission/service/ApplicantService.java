@@ -10,8 +10,10 @@ import com.smartuniversity.admission.repository.ApplicantRepository;
 import com.smartuniversity.admission.repository.DepartmentRepository;
 import com.smartuniversity.common.exception.BadRequestException;
 import com.smartuniversity.common.exception.ResourceNotFoundException;
+import com.smartuniversity.notification.service.EmailService;
 import com.smartuniversity.security.entity.Role;
 import com.smartuniversity.security.entity.User;
+import com.smartuniversity.security.jwt.JwtTokenProvider;
 import com.smartuniversity.security.repository.RoleRepository;
 import com.smartuniversity.security.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -22,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class ApplicantService {
@@ -34,6 +35,8 @@ public class ApplicantService {
     private final RoleRepository roleRepository;
     private final ApplicantMapper applicantMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private final JwtTokenProvider tokenProvider;
 
     public ApplicantService(ApplicantRepository applicantRepository,
                             AdmissionCircularRepository circularRepository,
@@ -41,7 +44,9 @@ public class ApplicantService {
                             UserRepository userRepository,
                             RoleRepository roleRepository,
                             ApplicantMapper applicantMapper,
-                            PasswordEncoder passwordEncoder) {
+                            PasswordEncoder passwordEncoder,
+                            EmailService emailService,
+                            JwtTokenProvider tokenProvider) {
         this.applicantRepository = applicantRepository;
         this.circularRepository = circularRepository;
         this.departmentRepository = departmentRepository;
@@ -49,25 +54,32 @@ public class ApplicantService {
         this.roleRepository = roleRepository;
         this.applicantMapper = applicantMapper;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+        this.tokenProvider = tokenProvider;
     }
 
     @Transactional
     public Long registerGuest(ApplicantRequest request) {
-        String guestEmail = "guest-" + UUID.randomUUID().toString().substring(0, 8) + "@admission.ums";
-        String guestPassword = UUID.randomUUID().toString().substring(0, 16);
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email is already registered");
+        }
 
         Role applicantRole = roleRepository.findByName("APPLICANT")
                 .orElseThrow(() -> new ResourceNotFoundException("Role", "name", "APPLICANT"));
 
         User guestUser = User.builder()
-                .email(guestEmail)
-                .password(passwordEncoder.encode(guestPassword))
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .enabled(true)
                 .accountNonLocked(true)
                 .roles(Set.of(applicantRole))
                 .build();
 
-        userRepository.save(guestUser);
+        guestUser = userRepository.save(guestUser);
+
+        String verificationToken = tokenProvider.generateAccessToken(guestUser.getEmail());
+        emailService.sendVerificationEmail(guestUser.getEmail(), verificationToken);
+
         return guestUser.getId();
     }
 
@@ -95,7 +107,7 @@ public class ApplicantService {
         Applicant applicant = applicantMapper.toEntity(request);
         applicant.setUser(user);
         applicant.setCircular(circular);
-        applicant.setApplicationNumber("APP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        applicant.setApplicationNumber("APP-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         if (applicant.getStatus() == null) {
             applicant.setStatus(com.smartuniversity.common.enums.AdmissionStatus.REGISTRATION_OPEN);
         }

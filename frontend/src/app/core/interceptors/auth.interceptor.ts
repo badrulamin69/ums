@@ -13,7 +13,9 @@ export const authInterceptor: HttpInterceptorFn = (
   const auth = inject(AuthService);
   const token = auth.getAccessToken();
 
-  if (req.url.includes('/auth/login') || req.url.includes('/auth/register') || req.url.includes('/auth/refresh')) {
+  const skipAuth = ['/auth/login', '/auth/register', '/auth/refresh'].some(p => req.url.includes(p));
+  const isPublicApplicantPost = req.url.includes('/api/applicants') && req.method === 'POST';
+  if (skipAuth || isPublicApplicantPost) {
     return next(req);
   }
 

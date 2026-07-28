@@ -21,20 +21,7 @@ interface HscResultResponse { id: number; applicantId: number; board: string; ex
   template: `
     <div class="page">
       <div class="page-inner">
-        @if (submitted()) {
-          <div class="success-state animate-fade-in-up">
-            <div class="success-card">
-              <div class="success-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="currentColor" stroke-width="1.5"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="1.5"/></svg>
-              </div>
-              <h2>Application Submitted</h2>
-              <p>Your application has been submitted successfully. You will receive your application number shortly.</p>
-              <div class="success-actions">
-                <a routerLink="/" class="btn btn-gold">Back to Home</a>
-              </div>
-            </div>
-          </div>
-        } @else if (circular()) {
+        @if (circular()) {
           <div class="apply-layout animate-fade-in-up">
             <div class="apply-sidebar">
               <a routerLink="/circulars" class="back-link">
@@ -57,6 +44,20 @@ interface HscResultResponse { id: number; applicantId: number; board: string; ex
             <div class="apply-form-card">
               <h2 class="form-title">Application Form</h2>
               <form class="apply-form" (ngSubmit)="submit()">
+                <div class="form-section">
+                  <h3 class="section-title">Account Credentials</h3>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Email <span class="req">*</span></label>
+                      <input type="email" class="form-control" [(ngModel)]="form.email" name="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Password <span class="req">*</span></label>
+                      <input type="password" class="form-control" [(ngModel)]="form.password" name="password" required placeholder="Min 6 characters">
+                    </div>
+                  </div>
+                </div>
+
                 <div class="form-section">
                   <h3 class="section-title">Personal Information</h3>
                   <div class="form-row">
@@ -241,6 +242,9 @@ interface HscResultResponse { id: number; applicantId: number; board: string; ex
                 </div>
 
                 <div class="form-footer">
+                  @if (!isValid()) {
+                    <span class="validation-hint">Fill all required fields (*) to submit</span>
+                  }
                   <button type="submit" class="btn btn-gold" [disabled]="!isValid() || saving()">
                     @if (saving()) {
                       <span class="spinner-sm"></span> Submitting...
@@ -397,9 +401,14 @@ interface HscResultResponse { id: number; applicantId: number; board: string; ex
     .req { color: var(--color-danger); }
     .form-footer {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
       padding-top: 1rem;
       border-top: 1px solid var(--color-border);
+    }
+    .validation-hint {
+      font-size: var(--fs-small);
+      color: var(--color-danger);
     }
     .spinner-sm {
       width: 16px;
@@ -410,6 +419,7 @@ interface HscResultResponse { id: number; applicantId: number; board: string; ex
       animation: spin 0.6s linear infinite;
     }
     .error-state .btn { margin-top: 0.5rem; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .photo-preview {
       margin-top: 0.5rem;
@@ -442,6 +452,7 @@ export class ApplyComponent implements OnInit {
   hscResult = signal<HscResultResponse | null>(null);
 
   form: any = {
+    email: '', password: '',
     firstName: '', middleName: '', lastName: '',
     phone: '', gender: '', dateOfBirth: '',
     address: '', nationalId: '', circularId: 0, preferredDepartmentId: null,
@@ -485,7 +496,8 @@ export class ApplyComponent implements OnInit {
   }
 
   isValid(): boolean {
-    return this.form.firstName && this.form.lastName && this.form.phone &&
+    return this.form.email && this.form.password && this.form.password.length >= 6 &&
+           this.form.firstName && this.form.lastName && this.form.phone &&
            this.form.gender && this.form.dateOfBirth && this.form.circularId > 0;
   }
 
@@ -501,7 +513,10 @@ export class ApplyComponent implements OnInit {
   }
 
   submit(): void {
-    if (!this.isValid()) return;
+    if (!this.isValid()) {
+      this.toast.error('Please fill in all required fields (email, password, name, phone, gender, date of birth)');
+      return;
+    }
     this.saving.set(true);
 
     this.crud.create<any, any>('applicants', this.form).subscribe({
@@ -537,13 +552,13 @@ export class ApplyComponent implements OnInit {
 
     if (tasks.length === 0) {
       this.saving.set(false);
-      this.submitted.set(true);
+      this.router.navigate(['/verify-email-sent']);
       return;
     }
 
     Promise.all(tasks).then(() => {
       this.saving.set(false);
-      this.submitted.set(true);
+      this.router.navigate(['/verify-email-sent']);
     }).catch((err) => {
       this.saving.set(false);
       this.toast.error(err?.message || 'Some uploads failed');
@@ -557,6 +572,8 @@ export class ApplyComponent implements OnInit {
 
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('applicantId', applicantId.toString());
+      formData.append('documentType', 'PHOTO');
 
       this.crud.uploadFile<DocumentUploadResponse>('applicant-documents', formData).subscribe({
         next: () => resolve(),
@@ -584,10 +601,10 @@ export class ApplyComponent implements OnInit {
   }
 
   private hasSscData(): boolean {
-    return !!(this.sscForm.board || this.sscForm.rollNumber || this.sscForm.gpa);
+    return !!(this.sscForm.board && this.sscForm.rollNumber && this.sscForm.gpa);
   }
 
   private hasHscData(): boolean {
-    return !!(this.hscForm.board || this.hscForm.rollNumber || this.hscForm.gpa);
+    return !!(this.hscForm.board && this.hscForm.rollNumber && this.hscForm.gpa);
   }
 }

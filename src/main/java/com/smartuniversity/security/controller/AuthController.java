@@ -36,4 +36,10 @@ public class AuthController {
         AuthResponse response = authService.refresh(request);
         return ResponseEntity.ok(ApiResponse.success("Token refreshed", response));
     }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<ApiResponse<String>> verifyEmail(@RequestParam String token) {
+        authService.verifyEmail(token);
+        return ResponseEntity.ok(ApiResponse.success("Email verified successfully", "verified"));
+    }
 }

@@ -82,7 +82,6 @@ import { ToastService } from '../../../core/services/toast.service';
           </form>
 
           <div class="auth-footer animate-fade-in-up stagger-4">
-            <p>Don't have an account? <a routerLink="/register">Create one</a></p>
           </div>
         </div>
 
@@ -294,8 +293,9 @@ export class LoginComponent {
           this.auth.redirectAfterLogin();
         }
       },
-      error: () => {
+      error: (err) => {
         this.loading.set(false);
+        this.toast.error(err?.error?.message || 'Login failed');
       },
     });
   }
