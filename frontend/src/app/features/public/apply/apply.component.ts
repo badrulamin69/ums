@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CrudService } from '../../../core/services/crud.service';
@@ -469,6 +470,7 @@ export class ApplyComponent implements OnInit {
     registrationNumber: '', group: '', institution: '',
     gpa: 0, scienceGpa: 0, mathGpa: 0,
   };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -481,12 +483,12 @@ export class ApplyComponent implements OnInit {
     this.circularId = Number(this.route.snapshot.paramMap.get('id'));
     this.form.circularId = this.circularId;
 
-    this.crud.getById<Circular>('admission-circulars', this.circularId).subscribe({
+    this.crud.getById<Circular>('admission-circulars', this.circularId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (c) => {
         this.circular.set(c);
         this.loading.set(false);
         if (c.facultyId) {
-          this.crud.listAll<Department>(`departments/faculty/${c.facultyId}`).subscribe({
+          this.crud.listAll<Department>(`departments/faculty/${c.facultyId}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (d) => this.departments.set(d),
           });
         }
@@ -519,7 +521,7 @@ export class ApplyComponent implements OnInit {
     }
     this.saving.set(true);
 
-    this.crud.create<any, any>('applicants', this.form).subscribe({
+    this.crud.create<any, any>('applicants', this.form).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.applicantId = res?.id ?? res?.data?.id;
         this.toast.success('Application submitted!');
@@ -575,7 +577,7 @@ export class ApplyComponent implements OnInit {
       formData.append('applicantId', applicantId.toString());
       formData.append('documentType', 'PHOTO');
 
-      this.crud.uploadFile<DocumentUploadResponse>('applicant-documents', formData).subscribe({
+      this.crud.uploadFile<DocumentUploadResponse>('applicant-documents', formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => resolve(),
         error: (err) => reject(err),
       });
@@ -584,7 +586,7 @@ export class ApplyComponent implements OnInit {
 
   private submitSscResult(applicantId: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.crud.create<any, any>(`applicants/${applicantId}/ssc-results`, this.sscForm).subscribe({
+      this.crud.create<any, any>(`applicants/${applicantId}/ssc-results`, this.sscForm).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => resolve(),
         error: (err) => reject(err),
       });
@@ -593,7 +595,7 @@ export class ApplyComponent implements OnInit {
 
   private submitHscResult(applicantId: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.crud.create<any, any>(`applicants/${applicantId}/hsc-results`, this.hscForm).subscribe({
+      this.crud.create<any, any>(`applicants/${applicantId}/hsc-results`, this.hscForm).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => resolve(),
         error: (err) => reject(err),
       });

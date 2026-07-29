@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CrudService } from '../../../core/services/crud.service';
@@ -111,7 +112,8 @@ interface PaymentInitiateResponse {
                 } @else if (applicantProfile()!.paymentCompleted) {
                   <div class="payment-done">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#22c55e" stroke-width="1.5"/><path d="M6 10l2.5 2.5L14 7" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Payment completed. Your admit card has been generated.</span>
+                    <span>Payment completed.</span>
+                    <a routerLink="/student/admit-card" class="admit-card-link">View Admit Card</a>
                   </div>
                 } @else if (!applicantProfile()!.emailVerified) {
                   <div class="payment-blocked">
@@ -155,6 +157,12 @@ interface PaymentInitiateResponse {
                   <span>View Results</span>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                 </a>
+                @if (applicantProfile()!.paymentCompleted) {
+                  <a class="quick-action" routerLink="/student/admit-card">
+                    <span>Admit Card</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </a>
+                }
               </div>
             </div>
           </div>
@@ -211,6 +219,13 @@ interface PaymentInitiateResponse {
     .payment-done {
       display: flex; align-items: center; gap: 0.5rem;
       color: #22c55e; font-size: var(--fs-small); font-weight: var(--fw-medium);
+    }
+    .admit-card-link {
+      color: var(--color-gold);
+      font-weight: var(--fw-semibold);
+      text-decoration: none;
+      margin-left: 0.25rem;
+      &:hover { text-decoration: underline; }
     }
     .payment-blocked {
       color: var(--color-text-muted); font-size: var(--fs-small);
@@ -281,6 +296,7 @@ interface PaymentInitiateResponse {
 export class StudentDashboardComponent implements OnInit {
   applicantProfile = signal<ApplicantProfile | null>(null);
   processingPayment = signal(false);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     public auth: AuthService,
@@ -293,7 +309,7 @@ export class StudentDashboardComponent implements OnInit {
   }
 
   loadApplicantProfile(): void {
-    this.crud.customGet<ApplicantProfile>('applicants/me').subscribe({
+    this.crud.customGet<ApplicantProfile>('applicants/me').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.applicantProfile.set(data),
       error: () => this.toast.error('Failed to load profile'),
     });
@@ -309,7 +325,7 @@ export class StudentDashboardComponent implements OnInit {
       referenceEntityType: 'APPLICANT',
       referenceEntityId: profile.id,
       amount: 500,
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.processingPayment.set(false);
         if (res.sslCommerzGatewayUrl) {

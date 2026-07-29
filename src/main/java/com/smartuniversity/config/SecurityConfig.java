@@ -63,13 +63,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
-                frontendUrl,
-                "https://sandbox.sslcommerz.com",
-                "https://securepay.sslcommerz.com"
-        ));
+        config.addAllowedOriginPattern(frontendUrl);
+        config.addAllowedOriginPattern("https://sandbox.sslcommerz.com");
+        config.addAllowedOriginPattern("https://securepay.sslcommerz.com");
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+        config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Content-Disposition"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);

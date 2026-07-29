@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -190,6 +191,7 @@ export class JobPostingListComponent implements OnInit {
   confirmDelete = signal<JobPosting | null>(null);
 
   form: JobPostingRequest = { title: '', description: '', department: '', vacancies: 1, postingDate: '', closingDate: '' };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -202,7 +204,7 @@ export class JobPostingListComponent implements OnInit {
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<JobPosting>('job-postings', page, 10).subscribe({
+    this.crud.list<JobPosting>('job-postings', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -249,7 +251,7 @@ export class JobPostingListComponent implements OnInit {
       ? this.crud.update<JobPostingRequest>('job-postings', this.editing()!.id, this.form)
       : this.crud.create<JobPostingRequest>('job-postings', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Job posting updated' : 'Job posting created');
         this.closeModal();
@@ -264,7 +266,7 @@ export class JobPostingListComponent implements OnInit {
     const posting = this.confirmDelete();
     if (!posting) return;
 
-    this.crud.delete('job-postings', posting.id).subscribe({
+    this.crud.delete('job-postings', posting.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Job posting deactivated');
         this.confirmDelete.set(null);

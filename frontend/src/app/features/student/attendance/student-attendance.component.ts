@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { CrudService } from '../../../core/services/crud.service';
@@ -118,6 +119,7 @@ export class StudentAttendanceComponent implements OnInit {
 
   presentCount = signal(0);
   lateCount = signal(0);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -145,7 +147,7 @@ export class StudentAttendanceComponent implements OnInit {
     if (this.startDate) params += `&start=${this.startDate}`;
     if (this.endDate) params += `&end=${this.endDate}`;
 
-    this.crud.listAll<AttendanceRecord>(`student/attendance?${params}`).subscribe({
+    this.crud.listAll<AttendanceRecord>(`student/attendance?${params}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.records.set(data || []);
         this.presentCount.set((data || []).filter(r => r.status === 'PRESENT').length);

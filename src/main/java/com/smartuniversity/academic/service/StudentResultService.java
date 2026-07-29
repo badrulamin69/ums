@@ -8,6 +8,8 @@ import com.smartuniversity.common.exception.BadRequestException;
 import com.smartuniversity.common.exception.ResourceNotFoundException;
 import com.smartuniversity.student.entity.Student;
 import com.smartuniversity.student.repository.StudentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,11 @@ public class StudentResultService {
         this.resultMapper = resultMapper;
     }
 
+    @Transactional(readOnly = true)
+    public Page<StudentResultResponse> getAll(Pageable pageable) {
+        return resultRepository.findAll(pageable).map(resultMapper::toResponse);
+    }
+
     @Transactional
     public StudentResultResponse enterResult(StudentResultRequest request) {
         Student student = studentRepository.findById(request.getStudentId())
@@ -64,6 +71,7 @@ public class StudentResultService {
         return resultMapper.toResponse(result);
     }
 
+    @Transactional(readOnly = true)
     public List<StudentResultResponse> getByStudentAndSession(Long studentId, Long sessionId) {
         return resultRepository.findByStudentIdAndAcademicSessionId(studentId, sessionId).stream()
                 .map(resultMapper::toResponse)

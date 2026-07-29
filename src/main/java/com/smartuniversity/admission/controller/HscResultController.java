@@ -4,6 +4,7 @@ import com.smartuniversity.admission.dto.HscResultRequest;
 import com.smartuniversity.admission.dto.HscResultResponse;
 import com.smartuniversity.admission.service.HscResultService;
 import com.smartuniversity.common.ApiResponse;
+import com.smartuniversity.common.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,11 @@ public class HscResultController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<HscResultResponse>> getByApplicantId(@PathVariable Long applicantId) {
-        return ResponseEntity.ok(ApiResponse.success(hscResultService.getByApplicantId(applicantId)));
+        try {
+            return ResponseEntity.ok(ApiResponse.success(hscResultService.getByApplicantId(applicantId)));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.ok(ApiResponse.success(null));
+        }
     }
 
     @PutMapping

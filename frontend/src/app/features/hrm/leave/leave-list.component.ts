@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -227,18 +228,19 @@ export class LeaveListComponent implements OnInit {
   confirmAction = signal<{ record: LeaveRequest; action: 'approve' | 'reject' } | null>(null);
 
   visiblePages = signal<number[]>([]);
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.loadPage(0);
-    this.crud.listAll<Employee>('employees/active').subscribe({ next: (d) => this.employees.set(d) });
-    this.crud.listAll<LeaveType>('leave-requests/leave-types').subscribe({ next: (d) => this.leaveTypes.set(d) });
+    this.crud.listAll<Employee>('employees/active').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (d) => this.employees.set(d) });
+    this.crud.listAll<LeaveType>('leave-requests/leave-types').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (d) => this.leaveTypes.set(d) });
   }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<LeaveRequest>('leave-requests', page, 10, undefined, this.statusFilter ? { status: this.statusFilter } : undefined).subscribe({
+    this.crud.list<LeaveRequest>('leave-requests', page, 10, undefined, this.statusFilter ? { status: this.statusFilter } : undefined).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => {
         this.rows.set(d.content);
         this.currentPage.set(d.number);
@@ -272,7 +274,7 @@ export class LeaveListComponent implements OnInit {
   save(): void {
     if (!this.isValid()) return;
     this.saving.set(true);
-    this.crud.create<LeaveRequest>('leave-requests', this.form).subscribe({
+    this.crud.create<LeaveRequest>('leave-requests', this.form).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success('Leave request submitted'); this.closeModal(); this.loadPage(this.currentPage()); this.saving.set(false); },
       error: (err) => { this.toast.error(err?.error?.message || 'Failed to submit'); this.saving.set(false); },
     });
@@ -287,7 +289,7 @@ export class LeaveListComponent implements OnInit {
     const endpoint = action.action === 'approve'
       ? `leave-requests/${action.record.id}/approve`
       : `leave-requests/${action.record.id}/reject`;
-    this.crud.customPost(endpoint, {}).subscribe({
+    this.crud.customPost(endpoint, {}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success(action.action === 'approve' ? 'Leave approved' : 'Leave rejected'); this.confirmAction.set(null); this.loadPage(this.currentPage()); },
       error: (err) => { this.toast.error(err?.error?.message || 'Failed'); this.confirmAction.set(null); },
     });

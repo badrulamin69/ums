@@ -1,4 +1,5 @@
-import { Component, ViewChild, signal } from '@angular/core';
+import { Component, ViewChild, signal , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FaceCaptureComponent } from '../../../shared/components/face-capture/face-capture.component';
 import { FaceService } from '../../../core/services/face.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -151,6 +152,8 @@ export class StudentFaceComponent {
   resultMessage = signal<string | null>(null);
   resultSuccess = signal(false);
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private faceService: FaceService,
     private toast: ToastService,
@@ -159,7 +162,7 @@ export class StudentFaceComponent {
   }
 
   loadStatus() {
-    this.faceService.getStudentFaceStatus().subscribe({
+    this.faceService.getStudentFaceStatus().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success) {
           this.isEnrolled.set(res.data.enrolled);
@@ -169,7 +172,7 @@ export class StudentFaceComponent {
   }
 
   onEnroll(base64: string) {
-    this.faceService.enrollStudentSelf(base64).subscribe({
+    this.faceService.enrollStudentSelf(base64).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success) {
           this.toast.success('Face enrolled successfully!');
@@ -187,11 +190,11 @@ export class StudentFaceComponent {
   }
 
   onCheckIn(base64: string) {
-    this.faceService.verifyStudentCheckIn(base64).subscribe({
+    this.faceService.verifyStudentCheckIn(base64).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success && res.data.matched) {
           this.toast.success(`Attendance marked! Welcome, ${res.data.studentName}`);
-          this.resultMessage.set(`Checked in — ${res.data.studentName} (confidence: ${(res.data.confidence * 100).toFixed(1)}%)`);
+          this.resultMessage.set(`Checked in � ${res.data.studentName} (confidence: ${(res.data.confidence * 100).toFixed(1)}%)`);
           this.resultSuccess.set(true);
         } else {
           this.resultMessage.set(res.data?.message || 'Face not recognized');

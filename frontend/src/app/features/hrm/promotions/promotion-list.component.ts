@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -300,6 +301,7 @@ export class PromotionListComponent implements OnInit {
     effectiveDate: '',
     remarks: '',
   };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -312,14 +314,14 @@ export class PromotionListComponent implements OnInit {
   }
 
   loadInitialData(): void {
-    this.crud.listAll('employees').subscribe({ next: (data) => this.employees.set(data || []) });
-    this.crud.listAll('designations').subscribe({ next: (data) => this.designations.set(data || []) });
-    this.crud.listAll('grades').subscribe({ next: (data) => this.grades.set(data || []) });
+    this.crud.listAll('employees').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (data) => this.employees.set(data || []) });
+    this.crud.listAll('designations').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (data) => this.designations.set(data || []) });
+    this.crud.listAll('grades').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (data) => this.grades.set(data || []) });
   }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Promotion>('promotions', page, 10).subscribe({
+    this.crud.list<Promotion>('promotions', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -412,7 +414,7 @@ export class PromotionListComponent implements OnInit {
       ? this.crud.update<PromotionRequest>('promotions', this.editing()!.id, this.form)
       : this.crud.create<PromotionRequest>('promotions', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Promotion updated' : 'Promotion initiated');
         this.closeModal();
@@ -427,7 +429,7 @@ export class PromotionListComponent implements OnInit {
     const promotion = this.confirmDelete();
     if (!promotion) return;
 
-    this.crud.delete('promotions', promotion.id).subscribe({
+    this.crud.delete('promotions', promotion.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Promotion deleted');
         this.confirmDelete.set(null);

@@ -44,6 +44,7 @@ public class LeaveController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HR')")
     public ResponseEntity<ApiResponse<LeaveRequestResponse>> request(@Valid @RequestBody LeaveRequestDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Leave requested", leaveService.request(dto)));

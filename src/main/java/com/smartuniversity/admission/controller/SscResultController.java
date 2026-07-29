@@ -4,6 +4,7 @@ import com.smartuniversity.admission.dto.SscResultRequest;
 import com.smartuniversity.admission.dto.SscResultResponse;
 import com.smartuniversity.admission.service.SscResultService;
 import com.smartuniversity.common.ApiResponse;
+import com.smartuniversity.common.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,11 @@ public class SscResultController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<SscResultResponse>> getByApplicantId(@PathVariable Long applicantId) {
-        return ResponseEntity.ok(ApiResponse.success(sscResultService.getByApplicantId(applicantId)));
+        try {
+            return ResponseEntity.ok(ApiResponse.success(sscResultService.getByApplicantId(applicantId)));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.ok(ApiResponse.success(null));
+        }
     }
 
     @PutMapping

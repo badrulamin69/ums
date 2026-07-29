@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -180,19 +181,20 @@ export class CourseTeacherListComponent implements OnInit {
   sessions = signal<AcademicSession[]>([]);
   form: any = { courseId: 0, employeeId: 0, academicSessionId: 0 };
   confirmDelete = signal<CourseTeacher | null>(null);
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.loadPage(0);
-    this.crud.listAll<Course>('courses').subscribe({ next: (d) => this.courses.set(d) });
-    this.crud.listAll<Employee>('employees/active').subscribe({ next: (d) => this.employees.set(d) });
-    this.crud.listAll<AcademicSession>('academic-sessions').subscribe({ next: (d) => this.sessions.set(d) });
+    this.crud.listAll<Course>('courses').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (d) => this.courses.set(d) });
+    this.crud.listAll<Employee>('employees/active').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (d) => this.employees.set(d) });
+    this.crud.listAll<AcademicSession>('academic-sessions').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (d) => this.sessions.set(d) });
   }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<CourseTeacher>('course-teachers', page, 10).subscribe({
+    this.crud.list<CourseTeacher>('course-teachers', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => {
         this.rows.set(d.content);
         this.currentPage.set(d.number);
@@ -226,7 +228,7 @@ export class CourseTeacherListComponent implements OnInit {
   save(): void {
     if (!this.isValid()) return;
     this.saving.set(true);
-    this.crud.create<CourseTeacher>('course-teachers', this.form).subscribe({
+    this.crud.create<CourseTeacher>('course-teachers', this.form).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success('Teacher assigned'); this.closeModal(); this.loadPage(this.currentPage()); this.saving.set(false); },
       error: (err) => { this.toast.error(err?.error?.message || 'Failed'); this.saving.set(false); },
     });
@@ -235,7 +237,7 @@ export class CourseTeacherListComponent implements OnInit {
   doDelete(): void {
     const item = this.confirmDelete();
     if (!item) return;
-    this.crud.delete('course-teachers', item.id).subscribe({
+    this.crud.delete('course-teachers', item.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success('Assignment removed'); this.confirmDelete.set(null); this.loadPage(this.currentPage()); },
       error: () => this.confirmDelete.set(null),
     });

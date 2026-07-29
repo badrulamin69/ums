@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -70,6 +71,7 @@ export class ApprovalWorkflowListComponent implements OnInit {
   currentPage = signal(0);
   totalPages = signal(1);
   totalElements = signal(0);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -82,7 +84,7 @@ export class ApprovalWorkflowListComponent implements OnInit {
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<ApprovalWorkflow>('approval-workflows', page, 10).subscribe({
+    this.crud.list<ApprovalWorkflow>('approval-workflows', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.workflows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -95,7 +97,7 @@ export class ApprovalWorkflowListComponent implements OnInit {
   }
 
   processApprovalStep(request: ApprovalStepActionRequest): void {
-    this.crud.customPost('approval-workflows/step/action', request).subscribe({
+    this.crud.customPost('approval-workflows/step/action', request).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Approval step processed');
         this.loadPage(this.currentPage());

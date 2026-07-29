@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -103,17 +104,18 @@ export class EmployeeListComponent implements OnInit {
   editing = signal<Employee | null>(null);
   saving = signal(false);
   form: any = { userId: 0, firstName: '', middleName: '', lastName: '', phone: '', gender: '', dateOfBirth: '', employeeType: '', designationId: 0, gradeId: 0, department: '' };
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService, private toast: ToastService) {}
 
   ngOnInit(): void {
-    this.crud.listAll<Designation>('designations').subscribe({ next: (d) => this.designations.set(d) });
+    this.crud.listAll<Designation>('designations').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (d) => this.designations.set(d) });
     this.loadPage(0);
   }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Employee>('employees', page, 10).subscribe({
+    this.crud.list<Employee>('employees', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => { this.rows.set(d.content); this.currentPage.set(d.number); this.totalPages.set(d.totalPages); this.totalElements.set(d.totalElements); this.loading.set(false); },
       error: () => this.loading.set(false),
     });
@@ -137,7 +139,7 @@ export class EmployeeListComponent implements OnInit {
     if (!this.isValid()) return;
     this.saving.set(true);
     const obs = this.editing() ? this.crud.update('employees', this.editing()!.id, this.form) : this.crud.create('employees', this.form);
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success(this.editing() ? 'Updated' : 'Created'); this.closeModal(); this.loadPage(this.currentPage()); this.saving.set(false); },
       error: () => this.saving.set(false),
     });

@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { CrudService } from '../../../core/services/crud.service';
@@ -90,10 +91,11 @@ export class AttendanceComponent implements OnInit {
   checking = signal(false);
   noEmployee = signal(false);
   private employeeId: number | null = null;
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService, private toast: ToastService) {}
   ngOnInit(): void {
-    this.crud.getById<any>('employees', 'me').subscribe({
+    this.crud.getById<any>('employees', 'me').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (employee) => {
         this.employeeId = employee?.id ?? null;
         if (this.employeeId) {
@@ -110,7 +112,7 @@ export class AttendanceComponent implements OnInit {
     const today = new Date();
     const start = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
     const end = today.toISOString().split('T')[0];
-    this.crud.customGet<AttendanceResponse[]>(`attendance/employee/${employeeId}?start=${start}&end=${end}`).subscribe({
+    this.crud.customGet<AttendanceResponse[]>(`attendance/employee/${employeeId}?start=${start}&end=${end}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.records.set(data || []),
       error: () => this.records.set([]),
     });
@@ -119,7 +121,7 @@ export class AttendanceComponent implements OnInit {
   checkIn(): void {
     if (!this.employeeId) { this.toast.error('No employee profile linked to your account'); return; }
     this.checking.set(true);
-    this.crud.customPost<any, AttendanceResponse>('attendance/check-in', { employeeId: this.employeeId }).subscribe({
+    this.crud.customPost<any, AttendanceResponse>('attendance/check-in', { employeeId: this.employeeId }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Checked in successfully');
         this.checking.set(false);
@@ -132,7 +134,7 @@ export class AttendanceComponent implements OnInit {
   checkOut(): void {
     if (!this.employeeId) { this.toast.error('No employee profile linked to your account'); return; }
     this.checking.set(true);
-    this.crud.customPost<any, AttendanceResponse>('attendance/check-out', { employeeId: this.employeeId }).subscribe({
+    this.crud.customPost<any, AttendanceResponse>('attendance/check-out', { employeeId: this.employeeId }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Checked out successfully');
         this.checking.set(false);

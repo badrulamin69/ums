@@ -6,7 +6,9 @@ import com.smartuniversity.payment.service.PaymentService;
 import com.smartuniversity.security.entity.User;
 import com.smartuniversity.security.repository.UserRepository;
 import com.smartuniversity.common.exception.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,9 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final UserRepository userRepository;
+
+    @Value("${app.frontend-url:http://localhost:4200}")
+    private String frontendUrl;
 
     public PaymentController(PaymentService paymentService, UserRepository userRepository) {
         this.paymentService = paymentService;
@@ -42,13 +47,31 @@ public class PaymentController {
         return ResponseEntity.ok(ApiResponse.success(paymentService.getByTransactionId(transactionId)));
     }
 
-    @PostMapping("/callback")
-    public ResponseEntity<ApiResponse<PaymentResponse>> handleCallback(
+    @GetMapping("/callback")
+    public void handleCallbackGet(
             @RequestParam String transactionId, @RequestParam String status,
+            @RequestParam(required = false) String val_id,
+            @RequestParam(required = false) String amount,
+            @RequestParam(required = false) String currency,
+            @RequestParam(required = false) String tran_id,
+            HttpServletResponse response) throws Exception {
+        String effectiveTranId = transactionId != null ? transactionId : tran_id;
+        paymentService.handleCallback(effectiveTranId, status, val_id, amount, currency);
+        paymentService.onPaymentCompleted(effectiveTranId);
+        response.sendRedirect(frontendUrl + "/student/payment-result?transactionId=" + effectiveTranId + "&status=" + status);
+    }
+
+    @PostMapping("/callback")
+    public void handleCallbackPost(
+            @RequestParam String transactionId, @RequestParam String status,
+            @RequestParam(required = false) String val_id,
             @RequestParam(required = false) String valId,
             @RequestParam(required = false) String amount,
-            @RequestParam(required = false) String currency) {
-        return ResponseEntity.ok(ApiResponse.success("Payment status updated",
-                paymentService.handleCallback(transactionId, status, valId, amount, currency)));
+            @RequestParam(required = false) String currency,
+            HttpServletResponse response) throws Exception {
+        String effectiveValId = val_id != null ? val_id : valId;
+        paymentService.handleCallback(transactionId, status, effectiveValId, amount, currency);
+        paymentService.onPaymentCompleted(transactionId);
+        response.sendRedirect(frontendUrl + "/student/payment-result?transactionId=" + transactionId + "&status=" + status);
     }
 }

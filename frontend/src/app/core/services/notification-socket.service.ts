@@ -34,7 +34,6 @@ export class NotificationSocketService implements OnDestroy {
     });
 
     this.socket.on('connect', () => {
-      console.log('[Socket] Connected');
       this.alreadyWarned = false;
     });
 

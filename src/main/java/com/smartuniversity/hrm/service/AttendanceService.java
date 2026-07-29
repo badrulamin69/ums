@@ -4,6 +4,8 @@ import com.smartuniversity.common.exception.ResourceNotFoundException;
 import com.smartuniversity.hrm.dto.*;
 import com.smartuniversity.hrm.entity.*;
 import com.smartuniversity.hrm.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,11 @@ public class AttendanceService {
     public AttendanceService(AttendanceRepository attendanceRepository, EmployeeRepository employeeRepository) {
         this.attendanceRepository = attendanceRepository;
         this.employeeRepository = employeeRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AttendanceResponse> getAll(Pageable pageable) {
+        return attendanceRepository.findAll(pageable).map(this::toResponse);
     }
 
     @Transactional
@@ -82,6 +89,7 @@ public class AttendanceService {
         return toResponse(attendance);
     }
 
+    @Transactional(readOnly = true)
     public List<AttendanceResponse> getByEmployeeAndDateRange(Long employeeId, LocalDate start, LocalDate end) {
         return attendanceRepository.findByEmployeeIdAndDateBetween(employeeId, start, end).stream()
                 .map(this::toResponse)

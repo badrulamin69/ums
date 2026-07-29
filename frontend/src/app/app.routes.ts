@@ -157,6 +157,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/student/payment-result/payment-result.component').then((m) => m.PaymentResultComponent),
       },
+      {
+        path: 'admit-card',
+        loadComponent: () =>
+          import('./features/student/admit-card/student-admit-card.component').then((m) => m.StudentAdmitCardComponent),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

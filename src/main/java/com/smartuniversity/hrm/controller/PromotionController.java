@@ -4,6 +4,8 @@ import com.smartuniversity.common.ApiResponse;
 import com.smartuniversity.hrm.dto.*;
 import com.smartuniversity.hrm.service.PromotionService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,12 @@ public class PromotionController {
 
     public PromotionController(PromotionService promotionService) {
         this.promotionService = promotionService;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('HR') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Page<PromotionResponse>>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(promotionService.getAll(pageable)));
     }
 
     @PostMapping

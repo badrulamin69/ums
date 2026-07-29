@@ -136,6 +136,10 @@ public class ApplicantService {
         return applicantMapper.toResponse(applicant);
     }
 
+    public Page<ApplicantResponse> list(Pageable pageable) {
+        return applicantRepository.findAll(pageable).map(applicantMapper::toResponse);
+    }
+
     public ApplicantResponse getByUserId(Long userId) {
         Applicant applicant = applicantRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Applicant", "userId", userId));
@@ -159,6 +163,27 @@ public class ApplicantService {
         Department dept = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Department", "id", departmentId));
         applicant.setPreferredDepartment(dept);
+        applicant = applicantRepository.save(applicant);
+        return applicantMapper.toResponse(applicant);
+    }
+
+    @Transactional
+    public ApplicantResponse updateProfile(Long userId, ApplicantProfileUpdateRequest request) {
+        Applicant applicant = applicantRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Applicant", "userId", userId));
+
+        if (request.getPhone() != null) {
+            applicant.setPhone(request.getPhone());
+        }
+        if (request.getAddress() != null) {
+            applicant.setAddress(request.getAddress());
+        }
+        if (request.getPreferredDepartmentId() != null) {
+            Department dept = departmentRepository.findById(request.getPreferredDepartmentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Department", "id", request.getPreferredDepartmentId()));
+            applicant.setPreferredDepartment(dept);
+        }
+
         applicant = applicantRepository.save(applicant);
         return applicantMapper.toResponse(applicant);
     }

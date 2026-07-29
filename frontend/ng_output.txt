@@ -1,0 +1,177 @@
+> Building...
+√ Building...
+Initial chunk files | Names                           |  Raw size
+styles.css          | styles                          | 288.64 kB | 
+scripts.js          | scripts                         | 107.73 kB | 
+main.js             | main                            |  26.04 kB | 
+chunk-JKIAXC6H.js   | -                               |   5.66 kB | 
+chunk-EVSPGG2W.js   | -                               |   1.64 kB | 
+chunk-VY3DZGIK.js   | -                               |   1.43 kB | 
+chunk-FQEXCAWA.js   | -                               | 275 bytes | 
+polyfills.js        | polyfills                       |  95 bytes | 
+
+                    | Initial total                   | 431.51 kB
+
+Lazy chunk files    | Names                           |  Raw size
+chunk-7RAJL57E.js   | applicant-list-component        | 101.94 kB | 
+chunk-3IXSMAGQ.js   | apply-component                 |  72.67 kB | 
+chunk-TXAWEPPW.js   | student-result-list-component   |  58.48 kB | 
+chunk-AS5NKTMT.js   | leave-list-component            |  47.12 kB | 
+chunk-HI3GGZV2.js   | promotion-list-component        |  45.97 kB | 
+chunk-JZ2VDYSE.js   | -                               |  43.59 kB | 
+chunk-64TOV6JN.js   | appraisal-list-component        |  38.32 kB | 
+chunk-J5A6SPO6.js   | course-teacher-list-component   |  38.22 kB | 
+chunk-HRSD3FMQ.js   | student-dashboard-component     |  37.81 kB | 
+chunk-TAWUZWAH.js   | student-profile-component       |  37.73 kB | 
+chunk-PUNW2SLP.js   | salary-structure-list-component |  37.19 kB | 
+chunk-FROASAZ5.js   | student-admit-card-component    |  33.30 kB | 
+chunk-7INYALTK.js   | course-list-component           |  33.16 kB | 
+chunk-RF7YBE4O.js   | separation-list-component       |  32.93 kB | 
+chunk-EXQHB4WN.js   | employee-list-component         |  31.41 kB | 
+...and 38 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [5.922 seconds] - 2026-07-29T01:57:52.762Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names | Raw size
+main.js             | main  | 26.06 kB | 
+
+Application bundle generation complete. [2.789 seconds] - 2026-07-29T01:59:06.606Z
+
+Page reload sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [0.496 seconds] - 2026-07-29T02:01:52.612Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [0.280 seconds] - 2026-07-29T02:02:17.410Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names                           |  Raw size
+styles.css          | styles                          | 288.64 kB | 
+scripts.js          | scripts                         | 107.73 kB | 
+main.js             | main                            |  26.06 kB | 
+chunk-JKIAXC6H.js   | -                               |   5.66 kB | 
+chunk-EVSPGG2W.js   | -                               |   1.64 kB | 
+chunk-VY3DZGIK.js   | -                               |   1.43 kB | 
+chunk-FQEXCAWA.js   | -                               | 275 bytes | 
+polyfills.js        | polyfills                       |  95 bytes | 
+
+                    | Initial total                   | 431.53 kB
+
+Lazy chunk files    | Names                           |  Raw size
+chunk-7RAJL57E.js   | applicant-list-component        | 101.94 kB | 
+chunk-3IXSMAGQ.js   | apply-component                 |  72.67 kB | 
+chunk-TXAWEPPW.js   | student-result-list-component   |  58.48 kB | 
+chunk-AS5NKTMT.js   | leave-list-component            |  47.12 kB | 
+chunk-HI3GGZV2.js   | promotion-list-component        |  45.97 kB | 
+chunk-JZ2VDYSE.js   | -                               |  43.59 kB | 
+chunk-64TOV6JN.js   | appraisal-list-component        |  38.32 kB | 
+chunk-J5A6SPO6.js   | course-teacher-list-component   |  38.22 kB | 
+chunk-HRSD3FMQ.js   | student-dashboard-component     |  37.81 kB | 
+chunk-TAWUZWAH.js   | student-profile-component       |  37.73 kB | 
+chunk-PUNW2SLP.js   | salary-structure-list-component |  37.19 kB | 
+chunk-FROASAZ5.js   | student-admit-card-component    |  33.30 kB | 
+chunk-7INYALTK.js   | course-list-component           |  33.16 kB | 
+chunk-RF7YBE4O.js   | separation-list-component       |  32.93 kB | 
+chunk-EXQHB4WN.js   | employee-list-component         |  31.41 kB | 
+...and 38 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [0.477 seconds] - 2026-07-29T02:02:22.944Z
+
+Page reload sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names               | Raw size
+main.js             | main                | 26.06 kB | 
+
+Lazy chunk files    | Names               | Raw size
+chunk-YKHQBY6D.js   | dashboard-component | 16.53 kB | 
+
+Application bundle generation complete. [0.408 seconds] - 2026-07-29T02:02:31.741Z
+
+Page reload sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names | Raw size
+main.js             | main  | 26.04 kB | 
+
+Application bundle generation complete. [0.253 seconds] - 2026-07-29T02:02:43.260Z
+
+Page reload sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [4.119 seconds] - 2026-07-29T02:24:24.874Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [2.570 seconds] - 2026-07-29T02:24:27.470Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [0.780 seconds] - 2026-07-29T02:25:20.408Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [2.162 seconds] - 2026-07-29T02:25:32.853Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [2.374 seconds] - 2026-07-29T02:25:58.377Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [1.170 seconds] - 2026-07-29T02:26:10.664Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [0.308 seconds] - 2026-07-29T02:26:11.006Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Application bundle generation failed. [2.092 seconds] - 2026-07-29T02:26:39.889Z
+
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names                           |  Raw size
+styles.css          | styles                          | 288.64 kB | 
+scripts.js          | scripts                         | 107.73 kB | 
+main.js             | main                            |  26.04 kB | 
+chunk-HBCYLRXD.js   | -                               |   5.66 kB | 
+chunk-EVSPGG2W.js   | -                               |   1.64 kB | 
+chunk-VY3DZGIK.js   | -                               |   1.43 kB | 
+chunk-FQEXCAWA.js   | -                               | 275 bytes | 
+polyfills.js        | polyfills                       |  95 bytes | 
+
+                    | Initial total                   | 431.51 kB
+
+Lazy chunk files    | Names                           |  Raw size
+chunk-UD74BDZK.js   | applicant-list-component        | 102.78 kB | 
+chunk-H7NVXCI5.js   | apply-component                 |  73.04 kB | 
+chunk-GEB4ITMB.js   | student-result-list-component   |  58.90 kB | 
+chunk-IY7ILLQ3.js   | leave-list-component            |  47.45 kB | 
+chunk-JVX7TYAK.js   | promotion-list-component        |  46.34 kB | 
+chunk-2RGNVGWM.js   | -                               |  43.59 kB | 
+chunk-2BGVTVY2.js   | appraisal-list-component        |  38.61 kB | 
+chunk-B22KEEMO.js   | course-teacher-list-component   |  38.59 kB | 
+chunk-MBWJXAL4.js   | student-profile-component       |  38.02 kB | 
+chunk-56YQRKKB.js   | student-dashboard-component     |  38.02 kB | 
+chunk-F4GDBE66.js   | salary-structure-list-component |  37.43 kB | 
+chunk-SN43YWDF.js   | student-admit-card-component    |  33.46 kB | 
+chunk-7S35YMDK.js   | course-list-component           |  33.45 kB | 
+chunk-BM45UORM.js   | separation-list-component       |  33.22 kB | 
+chunk-3JAV6ISN.js   | employee-list-component         |  31.66 kB | 
+...and 38 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [3.220 seconds] - 2026-07-29T02:27:10.498Z
+
+Page reload sent to client(s).
+[2m8:27:14 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33m@angular/core/rxjs-interop[32m[39m
+[2m8:27:14 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m

@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -215,6 +216,7 @@ export class SeparationListComponent implements OnInit {
     effectiveDate: '',
     reason: '',
   };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -227,12 +229,12 @@ export class SeparationListComponent implements OnInit {
   }
 
   loadInitialData(): void {
-    this.crud.listAll('employees').subscribe({ next: (data) => this.employees.set(data || []) });
+    this.crud.listAll('employees').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (data) => this.employees.set(data || []) });
   }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Separation>('separations', page, 10).subscribe({
+    this.crud.list<Separation>('separations', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -291,7 +293,7 @@ export class SeparationListComponent implements OnInit {
       ? this.crud.update<SeparationRequest>('separations', this.editing()!.id, this.form)
       : this.crud.create<SeparationRequest>('separations', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Separation updated' : 'Separation initiated');
         this.closeModal();
@@ -306,7 +308,7 @@ export class SeparationListComponent implements OnInit {
     const separation = this.confirmDelete();
     if (!separation) return;
 
-    this.crud.delete('separations', separation.id).subscribe({
+    this.crud.delete('separations', separation.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Separation deleted');
         this.confirmDelete.set(null);

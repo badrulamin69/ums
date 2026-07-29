@@ -1,4 +1,5 @@
-import { Component, signal, OnInit, computed } from '@angular/core';
+import { Component, signal, OnInit, computed , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -93,7 +94,7 @@ interface YearLevel {
                 <label class="form-label">Year Level <span class="required">*</span></label>
                 <div class="dropdown-select" ngbDropdown>
                   <button class="form-control" ngbDropdownToggle [class.has-value]="form.yearLevelId">
-                    {{ getYearLevelName(form.yearLevelId) }} {{ form.yearLevelId ? 'â€“' : '' }}
+                    {{ getYearLevelName(form.yearLevelId) }} {{ form.yearLevelId ? '–' : '' }}
                   </button>
                     @if (yearLevels().length > 0) {
                       <div class="dropdown-menu">
@@ -222,6 +223,7 @@ export class CourseListComponent implements OnInit {
   confirmDelete = signal<Course | null>(null);
 
   form: CourseRequest = { courseCode: '', name: '', creditHours: 1, yearLevelId: 0 };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -234,7 +236,7 @@ export class CourseListComponent implements OnInit {
   }
 
   loadYearLevels(): void {
-    this.crud.listAll<YearLevel>('year-levels').subscribe({
+    this.crud.listAll<YearLevel>('year-levels').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (levels) => this.yearLevels.set(levels || []),
       error: () => this.yearLevels.set([]),
     });
@@ -242,7 +244,7 @@ export class CourseListComponent implements OnInit {
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Course>('courses', page, 10).subscribe({
+    this.crud.list<Course>('courses', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         const rows = data.content.map(c => ({
           ...c,
@@ -301,7 +303,7 @@ export class CourseListComponent implements OnInit {
       ? this.crud.update<CourseRequest>('courses', this.editing()!.id, this.form)
       : this.crud.create<CourseRequest>('courses', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Course updated' : 'Course created');
         this.closeModal();
@@ -316,7 +318,7 @@ export class CourseListComponent implements OnInit {
     const course = this.confirmDelete();
     if (!course) return;
 
-    this.crud.delete('courses', course.id).subscribe({
+    this.crud.delete('courses', course.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Course deactivated');
         this.confirmDelete.set(null);

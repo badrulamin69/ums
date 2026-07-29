@@ -13,6 +13,8 @@ import com.smartuniversity.admission.repository.MeritListRepository;
 import com.smartuniversity.common.enums.AdmissionStatus;
 import com.smartuniversity.common.exception.BadRequestException;
 import com.smartuniversity.common.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,11 @@ public class MeritListService {
         this.applicantRepository = applicantRepository;
         this.departmentRepository = departmentRepository;
         this.meritListMapper = meritListMapper;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MeritListResponse> getAll(Pageable pageable) {
+        return meritListRepository.findAll(pageable).map(meritListMapper::toResponse);
     }
 
     @Transactional
@@ -86,6 +93,7 @@ public class MeritListService {
         meritListRepository.saveAll(entries);
     }
 
+    @Transactional(readOnly = true)
     public List<MeritListResponse> getPublishedByCircular(Long circularId) {
         return meritListRepository.findByCircularIdAndPublishedTrue(circularId).stream()
                 .map(meritListMapper::toResponse)

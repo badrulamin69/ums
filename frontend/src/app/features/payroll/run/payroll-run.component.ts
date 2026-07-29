@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -108,6 +109,7 @@ export class PayrollRunComponent implements OnInit {
   currentPage = signal(0);
   totalPages = signal(1);
   totalElements = signal(0);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -122,7 +124,7 @@ export class PayrollRunComponent implements OnInit {
     if (!this.selectedMonth || !this.selectedYear) return;
 
     this.running.set(true);
-    this.crud.customPost<any, any>(`payroll/run-v2`, { month: this.selectedMonth, year: this.selectedYear }).subscribe({
+    this.crud.customPost<any, any>(`payroll/run-v2`, { month: this.selectedMonth, year: this.selectedYear }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(`Payroll executed for ${this.getMonthName(this.selectedMonth)} ${this.selectedYear}`);
         this.running.set(false);
@@ -137,7 +139,7 @@ export class PayrollRunComponent implements OnInit {
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<PayrollRun>('payroll/runs', page, 10).subscribe({
+    this.crud.list<PayrollRun>('payroll/runs', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => {
         this.rows.set(d.content || []);
         this.currentPage.set(d.number);

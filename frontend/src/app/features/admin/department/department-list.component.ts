@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -144,6 +145,7 @@ export class DepartmentListComponent implements OnInit {
   confirmDelete = signal<Department | null>(null);
 
   form: DepartmentRequest = { name: '', code: '', facultyId: 0 };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -156,14 +158,14 @@ export class DepartmentListComponent implements OnInit {
   }
 
   loadFaculties(): void {
-    this.crud.listAll<Faculty>('faculties/active').subscribe({
+    this.crud.listAll<Faculty>('faculties/active').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.faculties.set(data),
     });
   }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Department>('departments', page, 10).subscribe({
+    this.crud.list<Department>('departments', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content);
         this.currentPage.set(data.number);
@@ -203,7 +205,7 @@ export class DepartmentListComponent implements OnInit {
       ? this.crud.update<DepartmentRequest>('departments', this.editing()!.id, this.form)
       : this.crud.create<DepartmentRequest>('departments', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Department updated' : 'Department created');
         this.closeModal();
@@ -217,7 +219,7 @@ export class DepartmentListComponent implements OnInit {
   doDelete(): void {
     const dept = this.confirmDelete();
     if (!dept) return;
-    this.crud.delete('departments', dept.id).subscribe({
+    this.crud.delete('departments', dept.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Department deactivated');
         this.confirmDelete.set(null);

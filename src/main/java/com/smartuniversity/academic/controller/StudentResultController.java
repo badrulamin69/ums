@@ -4,6 +4,8 @@ import com.smartuniversity.academic.dto.*;
 import com.smartuniversity.academic.service.StudentResultService;
 import com.smartuniversity.common.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,12 @@ public class StudentResultController {
 
     public StudentResultController(StudentResultService resultService) {
         this.resultService = resultService;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY')")
+    public ResponseEntity<ApiResponse<Page<StudentResultResponse>>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(resultService.getAll(pageable)));
     }
 
     @PostMapping

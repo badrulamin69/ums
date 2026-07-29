@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { CrudService } from '../../../core/services/crud.service';
@@ -135,6 +136,7 @@ interface Employee {
 export class EmployeeDetailComponent implements OnInit {
   employee = signal<Employee | null>(null);
   loading = signal(true);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -152,7 +154,7 @@ export class EmployeeDetailComponent implements OnInit {
   }
 
   loadEmployee(id: number): void {
-    this.crud.getById<Employee>('employees', id).subscribe({
+    this.crud.getById<Employee>('employees', id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.employee.set(data);
         this.loading.set(false);

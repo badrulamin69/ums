@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { CrudService } from '../../../core/services/crud.service';
@@ -95,10 +96,11 @@ export class MeritListPageComponent implements OnInit {
   circulars = signal<AdmissionCircular[]>([]);
   generating = signal(false);
   publishing = signal(false);
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService, private toast: ToastService) {}
   ngOnInit(): void {
-    this.crud.listAll<AdmissionCircular>('admission-circulars').subscribe({
+    this.crud.listAll<AdmissionCircular>('admission-circulars').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.circulars.set(data || []),
       error: () => this.circulars.set([]),
     });
@@ -106,7 +108,7 @@ export class MeritListPageComponent implements OnInit {
 
   loadMeritList(): void {
     if (this.selectedCircularId === 0) { this.entries.set([]); return; }
-    this.crud.listAll<MeritEntry>(`merit-lists/circular/${this.selectedCircularId}`).subscribe({
+    this.crud.listAll<MeritEntry>(`merit-lists/circular/${this.selectedCircularId}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => this.entries.set(d),
       error: () => this.entries.set([]),
     });
@@ -115,7 +117,7 @@ export class MeritListPageComponent implements OnInit {
   generateList(): void {
     if (!this.selectedCircularId) return;
     this.generating.set(true);
-    this.crud.customPost<any, MeritEntry[]>(`merit-lists/generate/${this.selectedCircularId}`, {}).subscribe({
+    this.crud.customPost<any, MeritEntry[]>(`merit-lists/generate/${this.selectedCircularId}`, {}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => { this.entries.set(d); this.toast.success('Merit list generated'); this.generating.set(false); },
       error: () => { this.toast.error('Failed to generate'); this.generating.set(false); },
     });
@@ -124,7 +126,7 @@ export class MeritListPageComponent implements OnInit {
   publishList(): void {
     if (!this.selectedCircularId) return;
     this.publishing.set(true);
-    this.crud.customPost<any, any>(`merit-lists/publish/${this.selectedCircularId}`, {}).subscribe({
+    this.crud.customPost<any, any>(`merit-lists/publish/${this.selectedCircularId}`, {}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success('Merit list published'); this.loadMeritList(); this.publishing.set(false); },
       error: () => { this.toast.error('Failed to publish'); this.publishing.set(false); },
     });

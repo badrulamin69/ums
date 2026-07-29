@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -249,6 +250,7 @@ export class AppraisalListComponent implements OnInit {
     comments: '',
     reviewerId: 0,
   };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -261,12 +263,12 @@ export class AppraisalListComponent implements OnInit {
   }
 
   loadInitialData(): void {
-    this.crud.listAll('employees').subscribe({ next: (data) => this.employees.set(data || []) });
+    this.crud.listAll('employees').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: (data) => this.employees.set(data || []) });
   }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Appraisal>('appraisals', page, 10).subscribe({
+    this.crud.list<Appraisal>('appraisals', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -334,7 +336,7 @@ export class AppraisalListComponent implements OnInit {
       ? this.crud.update<AppraisalRequest>('appraisals', this.editing()!.id, this.form)
       : this.crud.create<AppraisalRequest>('appraisals', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Appraisal updated' : 'Appraisal created');
         this.closeModal();
@@ -349,7 +351,7 @@ export class AppraisalListComponent implements OnInit {
     const appraisal = this.confirmDelete();
     if (!appraisal) return;
 
-    this.crud.delete('appraisals', appraisal.id).subscribe({
+    this.crud.delete('appraisals', appraisal.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Appraisal deleted');
         this.confirmDelete.set(null);

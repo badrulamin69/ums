@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
 import { CrudService } from '../../../core/services/crud.service';
@@ -42,13 +43,14 @@ export class AuditLogListComponent implements OnInit {
   currentPage = signal(0);
   totalPages = signal(1);
   totalElements = signal(0);
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService) {}
   ngOnInit(): void { this.loadPage(0); }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<AuditLog>('audit-logs', page, 20).subscribe({
+    this.crud.list<AuditLog>('audit-logs', page, 20).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => { this.rows.set(d.content); this.currentPage.set(d.number); this.totalPages.set(d.totalPages); this.totalElements.set(d.totalElements); this.loading.set(false); },
       error: () => this.loading.set(false),
     });

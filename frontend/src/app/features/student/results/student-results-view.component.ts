@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -118,6 +119,7 @@ export class StudentResultsViewComponent implements OnInit {
 
   totalCredits = signal(0);
   sessionGpa = signal('0.00');
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -130,7 +132,7 @@ export class StudentResultsViewComponent implements OnInit {
   }
 
   loadSessions(): void {
-    this.crud.listAll<AcademicSession>('academic-sessions').subscribe({
+    this.crud.listAll<AcademicSession>('academic-sessions').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.sessions.set(data || []),
       error: () => this.sessions.set([]),
     });
@@ -147,7 +149,7 @@ export class StudentResultsViewComponent implements OnInit {
 
     this.crud.list<StudentResult>(
       `student-results/student/${userId}/session/${this.selectedSessionId}`, 0, 200
-    ).subscribe({
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.results.set(data.content || []);
         this.computeSummary(data.content || []);

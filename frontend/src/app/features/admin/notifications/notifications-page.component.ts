@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -81,6 +82,7 @@ export class NotificationsPageComponent implements OnInit {
 
   showMarkAllDialog = signal(false);
   markingAll = signal(false);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -93,7 +95,7 @@ export class NotificationsPageComponent implements OnInit {
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Notification>('notifications', page, 10).subscribe({
+    this.crud.list<Notification>('notifications', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -127,7 +129,7 @@ export class NotificationsPageComponent implements OnInit {
       this.crud.customPost(`notifications/${id}/read`, {})
     );
 
-    forkJoin(requests).subscribe({
+    forkJoin(requests).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('All notifications marked as read');
         this.loadPage(this.currentPage());

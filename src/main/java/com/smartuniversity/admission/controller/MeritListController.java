@@ -3,6 +3,8 @@ package com.smartuniversity.admission.controller;
 import com.smartuniversity.admission.dto.MeritListResponse;
 import com.smartuniversity.admission.service.MeritListService;
 import com.smartuniversity.common.ApiResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +20,12 @@ public class MeritListController {
 
     public MeritListController(MeritListService meritListService) {
         this.meritListService = meritListService;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMISSION')")
+    public ResponseEntity<ApiResponse<Page<MeritListResponse>>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(meritListService.getAll(pageable)));
     }
 
     @PostMapping("/generate/{circularId}")

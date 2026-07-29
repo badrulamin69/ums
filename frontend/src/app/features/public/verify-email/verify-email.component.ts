@@ -1,4 +1,5 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, OnInit, inject , DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CrudService } from '../../../core/services/crud.service';
 
@@ -79,6 +80,8 @@ export class VerifyEmailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private crud = inject(CrudService);
 
+  private destroyRef = inject(DestroyRef);
+
   ngOnInit(): void {
     const token = this.route.snapshot.queryParamMap.get('token');
     if (!token) {
@@ -87,7 +90,7 @@ export class VerifyEmailComponent implements OnInit {
       return;
     }
 
-    this.crud.customGet<any>(`auth/verify-email?token=${token}`).subscribe({
+    this.crud.customGet<any>(`auth/verify-email?token=${token}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.loading.set(false);
         this.verified.set(true);

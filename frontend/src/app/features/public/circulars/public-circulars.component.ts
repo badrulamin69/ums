@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { CrudService } from '../../../core/services/crud.service';
 
@@ -178,11 +179,12 @@ interface Circular {
 export class PublicCircularsComponent implements OnInit {
   circulars = signal<Circular[]>([]);
   loading = signal(true);
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService) {}
 
   ngOnInit(): void {
-    this.crud.list<Circular>('admission-circulars', 0, 20).subscribe({
+    this.crud.list<Circular>('admission-circulars', 0, 20).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => { this.circulars.set(d.content.filter(c => c.active)); this.loading.set(false); },
       error: () => this.loading.set(false),
     });

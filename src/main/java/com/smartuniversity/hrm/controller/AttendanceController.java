@@ -7,6 +7,8 @@ import com.smartuniversity.security.entity.User;
 import com.smartuniversity.security.repository.UserRepository;
 import com.smartuniversity.common.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +29,12 @@ public class AttendanceController {
     public AttendanceController(AttendanceService attendanceService, UserRepository userRepository) {
         this.attendanceService = attendanceService;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('HR') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Page<AttendanceResponse>>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(attendanceService.getAll(pageable)));
     }
 
     @PostMapping("/check-in")

@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { CrudService } from '../../../core/services/crud.service';
@@ -206,6 +207,7 @@ export class PaymentResultComponent implements OnInit {
 
   private transactionId = '';
   private timer: any;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -228,7 +230,7 @@ export class PaymentResultComponent implements OnInit {
   }
 
   loadPayment(): void {
-    this.crud.getById<PaymentResult>('payments', this.transactionId).subscribe({
+    this.crud.getById<PaymentResult>('payments', this.transactionId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.payment.set(data);
         this.loading.set(false);

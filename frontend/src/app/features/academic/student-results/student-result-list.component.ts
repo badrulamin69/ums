@@ -1,4 +1,5 @@
-import { Component, signal, OnInit, computed } from '@angular/core';
+import { Component, signal, OnInit, computed , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -373,6 +374,7 @@ export class StudentResultListComponent implements OnInit {
   };
 
   gradeOptions = computed(() => [4.0, 3.7, 3.3, 3.0, 2.7, 2.3, 2.0, 1.7, 1.3, 1.0, 0.7, 0.0]);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -384,17 +386,17 @@ export class StudentResultListComponent implements OnInit {
   }
 
   loadInitialData(): void {
-    this.crud.listAll<Student>('students').subscribe({
+    this.crud.listAll<Student>('students').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.students.set(data || []),
       error: () => this.students.set([]),
     });
 
-    this.crud.listAll<AcademicSession>('academic-sessions').subscribe({
+    this.crud.listAll<AcademicSession>('academic-sessions').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.academicSessions.set(data || []),
       error: () => this.academicSessions.set([]),
     });
 
-    this.crud.list<{ id: number; courseCode: string; name: string }>('courses', 0, 100).subscribe({
+    this.crud.list<{ id: number; courseCode: string; name: string }>('courses', 0, 100).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.courses.set(data.content || []),
       error: () => this.courses.set([]),
     });
@@ -508,7 +510,7 @@ export class StudentResultListComponent implements OnInit {
       ? this.crud.update<StudentResultRequest>('student-results', this.editing()!.id, this.form)
       : this.crud.create<StudentResultRequest>('student-results', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Result updated' : 'Result entered');
         this.closeModal();
@@ -525,7 +527,7 @@ export class StudentResultListComponent implements OnInit {
     const result = this.confirmDelete();
     if (!result) return;
 
-    this.crud.delete('student-results', result.id).subscribe({
+    this.crud.delete('student-results', result.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Result deleted');
         this.confirmDelete.set(null);
@@ -548,7 +550,7 @@ export class StudentResultListComponent implements OnInit {
 
     this.crud.list<StudentResult>(
       `student-results/student/${this.selectedStudent()}/session/${this.selectedSession()}`, page, 10
-    ).subscribe({
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -570,7 +572,7 @@ export class StudentResultListComponent implements OnInit {
 
     this.crud.customPost(
       `student-results/publish/student/${this.selectedStudent()}/session/${this.selectedSession()}`, {}
-    ).subscribe({
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Results published and GPA recalculated');
         this.loadPage(this.currentPage());

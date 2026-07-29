@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -83,13 +84,14 @@ export class DesignationListComponent implements OnInit {
   saving = signal(false);
   confirmDelete = signal<Designation | null>(null);
   form = { name: '', description: '' };
+  private destroyRef = inject(DestroyRef);
 
   constructor(private crud: CrudService, private toast: ToastService) {}
   ngOnInit(): void { this.loadPage(0); }
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<Designation>('designations', page, 10).subscribe({
+    this.crud.list<Designation>('designations', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => { this.rows.set(d.content); this.currentPage.set(d.number); this.totalPages.set(d.totalPages); this.totalElements.set(d.totalElements); this.loading.set(false); },
       error: () => this.loading.set(false),
     });
@@ -106,7 +108,7 @@ export class DesignationListComponent implements OnInit {
     if (!this.form.name) return;
     this.saving.set(true);
     const obs = this.editing() ? this.crud.update('designations', this.editing()!.id, this.form) : this.crud.create('designations', this.form);
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success(this.editing() ? 'Updated' : 'Created'); this.closeModal(); this.loadPage(this.currentPage()); this.saving.set(false); },
       error: () => this.saving.set(false),
     });
@@ -115,7 +117,7 @@ export class DesignationListComponent implements OnInit {
   doDelete(): void {
     const item = this.confirmDelete();
     if (!item) return;
-    this.crud.delete('designations', item.id).subscribe({
+    this.crud.delete('designations', item.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { this.toast.success('Deleted'); this.confirmDelete.set(null); this.loadPage(this.currentPage()); },
     });
   }

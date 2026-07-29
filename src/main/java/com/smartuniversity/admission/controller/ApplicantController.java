@@ -89,6 +89,12 @@ public class ApplicantController {
                 .body(ApiResponse.success("Photo uploaded", response));
     }
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMISSION')")
+    public ResponseEntity<ApiResponse<Page<ApplicantResponse>>> list(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(applicantService.list(pageable)));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADMISSION') or @resourceSecurity.isApplicantOwner(#id)")
     public ResponseEntity<ApiResponse<ApplicantResponse>> getById(@PathVariable Long id) {
@@ -115,6 +121,16 @@ public class ApplicantController {
     public ResponseEntity<ApiResponse<Page<ApplicantResponse>>> getByCircularId(
             @PathVariable Long circularId, Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(applicantService.getByCircularId(circularId, pageable)));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<ApiResponse<ApplicantResponse>> updateMyProfile(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody ApplicantProfileUpdateRequest request) {
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", userDetails.getUsername()));
+        return ResponseEntity.ok(ApiResponse.success("Profile updated",
+                applicantService.updateProfile(user.getId(), request)));
     }
 
     @PutMapping("/{id}/department/{departmentId}")

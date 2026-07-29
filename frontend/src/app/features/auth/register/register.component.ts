@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -314,6 +315,7 @@ export class RegisterComponent {
   confirmPassword = '';
   showPassword = signal(false);
   loading = signal(false);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private auth: AuthService,
@@ -343,7 +345,7 @@ export class RegisterComponent {
 
     this.loading.set(true);
 
-    this.auth.register({ email: this.email, password: this.password }).subscribe({
+    this.auth.register({ email: this.email, password: this.password }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.loading.set(false);
         if (res.success) {

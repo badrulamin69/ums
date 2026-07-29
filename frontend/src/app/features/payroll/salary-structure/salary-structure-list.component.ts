@@ -1,4 +1,5 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
@@ -238,6 +239,7 @@ export class SalaryStructureListComponent implements OnInit {
     effectiveFrom: '',
     effectiveTo: '',
   };
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private crud: CrudService,
@@ -250,7 +252,7 @@ export class SalaryStructureListComponent implements OnInit {
 
   loadPage(page: number): void {
     this.loading.set(true);
-    this.crud.list<SalaryStructure>('salary-structures', page, 10).subscribe({
+    this.crud.list<SalaryStructure>('salary-structures', page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.rows.set(data.content || []);
         this.currentPage.set(data.number);
@@ -312,7 +314,7 @@ export class SalaryStructureListComponent implements OnInit {
       ? this.crud.update<SalaryStructureRequest>('salary-structures', this.editing()!.id, this.form)
       : this.crud.create<SalaryStructureRequest>('salary-structures', this.form);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.editing() ? 'Salary structure updated' : 'Salary structure created');
         this.closeModal();
@@ -327,7 +329,7 @@ export class SalaryStructureListComponent implements OnInit {
     const structure = this.confirmDelete();
     if (!structure) return;
 
-    this.crud.delete('salary-structures', structure.id).subscribe({
+    this.crud.delete('salary-structures', structure.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('Salary structure deactivated');
         this.confirmDelete.set(null);

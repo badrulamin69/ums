@@ -1,4 +1,5 @@
-import { Component, ViewChild, signal } from '@angular/core';
+import { Component, ViewChild, signal , DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FaceCaptureComponent } from '../../../shared/components/face-capture/face-capture.component';
 import { FaceService } from '../../../core/services/face.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -176,6 +177,7 @@ export class EmployeeFaceComponent {
   resultMessage = signal<string | null>(null);
   resultSuccess = signal(false);
   noEmployeeProfile = signal(false);
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private faceService: FaceService,
@@ -185,7 +187,7 @@ export class EmployeeFaceComponent {
   }
 
   loadStatus() {
-    this.faceService.getEmployeeFaceStatus().subscribe({
+    this.faceService.getEmployeeFaceStatus().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success) {
           this.isEnrolled.set(res.data.enrolled);
@@ -200,7 +202,7 @@ export class EmployeeFaceComponent {
   }
 
   onEnroll(base64: string) {
-    this.faceService.enrollEmployeeSelf(base64).subscribe({
+    this.faceService.enrollEmployeeSelf(base64).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success) {
           this.toast.success('Face enrolled successfully!');
@@ -218,11 +220,11 @@ export class EmployeeFaceComponent {
   }
 
   onCheckIn(base64: string) {
-    this.faceService.verifyEmployeeCheckIn(base64).subscribe({
+    this.faceService.verifyEmployeeCheckIn(base64).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success && res.data.matched) {
           this.toast.success(`Checked in successfully! Welcome, ${res.data.employeeName}`);
-          this.resultMessage.set(`Checked in â€” ${res.data.employeeName} (confidence: ${(res.data.confidence * 100).toFixed(1)}%)`);
+          this.resultMessage.set(`Checked in — ${res.data.employeeName} (confidence: ${(res.data.confidence * 100).toFixed(1)}%)`);
           this.resultSuccess.set(true);
         } else {
           this.resultMessage.set(res.data?.message || 'Face not recognized');
@@ -237,11 +239,11 @@ export class EmployeeFaceComponent {
   }
 
   onCheckOut(base64: string) {
-    this.faceService.verifyEmployeeCheckOut(base64).subscribe({
+    this.faceService.verifyEmployeeCheckOut(base64).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success && res.data.matched) {
           this.toast.success(`Checked out successfully! Goodbye, ${res.data.employeeName}`);
-          this.resultMessage.set(`Checked out â€” ${res.data.employeeName} (confidence: ${(res.data.confidence * 100).toFixed(1)}%)`);
+          this.resultMessage.set(`Checked out — ${res.data.employeeName} (confidence: ${(res.data.confidence * 100).toFixed(1)}%)`);
           this.resultSuccess.set(true);
         } else {
           this.resultMessage.set(res.data?.message || 'Face not recognized');
